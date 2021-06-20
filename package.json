@@ -4,6 +4,7 @@
   "description": "This package is used to integration [tailwindcss](https://tailwindcss.com/) and (StencilJS)[https://stenciljs.com/]. This plugin for Stencil is specifically focused on the integration between tailwindcss in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM.",
   "main": "src/index.js",
   "scripts": {
+    "lint": "eslint --fix ./src"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,24 @@
   "bugs": {
     "url": "https://github.com/Poimen/stencil-tailwind-plugin/issues"
   },
-  "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme"
+  "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme",
+  "devDependencies": {
+    "@types/cssnano": "^4.0.0",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.12.4",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "chalk": "^4.1.1",
+    "cssnano": "^5.0.6",
+    "eslint": "^7.29.0",
+    "eslint-config-semistandard": "^16.0.0",
+    "eslint-config-standard": "^16.0.3",
+    "jest": "^27.0.4",
+    "postfix": "^0.0.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.52.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "typescript": "^4.3.4"
+  }
 }
