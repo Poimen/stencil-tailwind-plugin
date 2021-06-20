@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist",
+    "module": "esnext",
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "target": "es2017",
+    "skipLibCheck": true,
+    "lib": [
+      "dom",
+      "es2017"
+    ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "allowUnreachableCode": false,
+    "experimentalDecorators": true,
+  },
+  "include": [
+    "src/index.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
