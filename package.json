@@ -1,0 +1,19 @@
+{
+  "name": "stencil-tailwind-plugin",
+  "version": "0.0.1",
+  "description": "This package is used to integration [tailwindcss](https://tailwindcss.com/) and (StencilJS)[https://stenciljs.com/]. This plugin for Stencil is specifically focused on the integration between tailwindcss in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM.",
+  "main": "src/index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Poimen/stencil-tailwind-plugin.git"
+  },
+  "keywords": [],
+  "author": "Richard Shephard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Poimen/stencil-tailwind-plugin/issues"
+  },
+  "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme"
+}
