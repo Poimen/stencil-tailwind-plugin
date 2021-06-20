@@ -19,6 +19,7 @@
     "jsxFactory": "h",
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/index.ts"
