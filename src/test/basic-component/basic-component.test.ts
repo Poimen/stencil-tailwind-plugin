@@ -1,4 +1,4 @@
-import { transform } from '../../transformers/typescript';
+import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
 
 describe('basic-component', () => {

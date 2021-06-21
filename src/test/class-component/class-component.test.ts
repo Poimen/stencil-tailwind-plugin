@@ -1,5 +1,4 @@
-import { transform } from '../../transformers/typescript';
-import 'jest-extended';
+import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
 
 describe('class-component', () => {
