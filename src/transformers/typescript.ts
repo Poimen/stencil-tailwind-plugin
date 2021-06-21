@@ -32,10 +32,7 @@ async function processSourceTextForTailwindInlineClasses(sourceText: string, fil
 function findNodeInTree(file: SourceFile, walkPath: ASTMatcher[], action: (node: Node) => Node): TransformerFactory<Node> {
   let treeLevel = 0;
 
-  const hasReachedLastSelector = () => {
-    log.warn('level', treeLevel, 'walk', walkPath.length);
-    return treeLevel === walkPath.length;
-  };
+  const hasReachedLastSelector = () => treeLevel === walkPath.length;
 
   function doesNodeMatch(node: Node) {
     const pathNode = walkPath[treeLevel];
@@ -65,14 +62,14 @@ function findNodeInTree(file: SourceFile, walkPath: ASTMatcher[], action: (node:
 
   return function(context: TransformationContext): Transformer<Node> {
     function visit(node: Node): Node | Array<Node> {
-      log.debug('Visiting ' + SyntaxKind[node.kind]);
+      log.debug('[Typescript]', 'Visiting ' + SyntaxKind[node.kind]);
 
       if (doesNodeMatch(node)) {
         treeLevel++;
         if (hasReachedLastSelector()) {
           return action(node);
         }
-        log.debug('Moving to next tree level', treeLevel, 'looking for', SyntaxKind[walkPath[treeLevel].nodeKind]);
+        log.debug('[Typescript]', 'Moving to next tree level', treeLevel, 'looking for', SyntaxKind[walkPath[treeLevel].nodeKind]);
         node = ts.visitEachChild(node, visit, context);
         return node;
       }
@@ -124,7 +121,7 @@ function transformSourceToIncludeNewTailwindStyles(sourceText: string, css: stri
       const originalExpression = binaryStatement.right as Identifier;
       return ts.factory.updateBinaryExpression(binaryStatement, binaryStatement.left, ts.SyntaxKind.EqualsToken, ts.factory.createIdentifier(`'${css} ' +  ${originalExpression.escapedText}`));
     }
-    log.error('Found a binary statement, but failed to match it to style!');
+    log.error('[Typescript]', 'Found a binary statement, but failed to match it to style!');
     return node;
   };
 
@@ -135,7 +132,7 @@ function transformSourceToIncludeNewTailwindStyles(sourceText: string, css: stri
   }
 
   if (!rewroteStyles) {
-    log.error('Expected to re-write styles for components, but no style definition was found!');
+    log.error('[Typescript]', 'Expected to re-write styles for components, but no style definition was found!');
   }
 
   const [transformed] = result.transformed;
@@ -144,7 +141,7 @@ function transformSourceToIncludeNewTailwindStyles(sourceText: string, css: stri
 }
 
 export async function transform(sourceText: string, fileName: string): Promise<string> {
-  log.debug('Processing source file:', fileName);
+  log.debug('[Typescript]', 'Processing source file:', fileName);
 
   // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
   const tailwindClasses = await processSourceTextForTailwindInlineClasses(sourceText, fileName);

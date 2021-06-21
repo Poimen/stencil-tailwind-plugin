@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic-component given class component *with* tailwindcss styles and other get accessors, should output tailwind styles only in style accessor 1`] = `
+exports[`class-component given class component *with* tailwindcss styles and other get accessors, should output tailwind styles only in style accessor 1`] = `
 "/* eslint-disable */
 import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
 import { Host, h } from \\"@stencil/core/internal/client\\";
@@ -20,7 +20,7 @@ export const BasicComponent = class extends HTMLElement {
 "
 `;
 
-exports[`basic-component given class component *with* tailwindcss styles, should output tailwind styles 1`] = `
+exports[`class-component given class component *with* tailwindcss styles, should output tailwind styles 1`] = `
 "/* eslint-disable */
 import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
 import { Host, h } from \\"@stencil/core/internal/client\\";
@@ -39,7 +39,7 @@ export const BasicComponent = class extends HTMLElement {
 "
 `;
 
-exports[`basic-component given class component with no tailwindcss styles and other get accessors, should output unaltered styles 1`] = `
+exports[`class-component given class component with no tailwindcss styles and other get accessors, should output unaltered styles 1`] = `
 "/* eslint-disable */
 import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
 import { Host, h } from \\"@stencil/core/internal/client\\";
@@ -59,7 +59,7 @@ export const BasicComponent = class extends HTMLElement {
 "
 `;
 
-exports[`basic-component given class component with no tailwindcss styles, should output unaltered styles 1`] = `
+exports[`class-component given class component with no tailwindcss styles, should output unaltered styles 1`] = `
 "/* eslint-disable */
 import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
 import { Host, h } from \\"@stencil/core/internal/client\\";

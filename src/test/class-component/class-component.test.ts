@@ -2,7 +2,7 @@ import { transform } from '../../transformers/typescript';
 import 'jest-extended';
 import { loadTestComponent } from '../utils';
 
-describe('basic-component', () => {
+describe('class-component', () => {
   it('given class component with no tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('class-component', 'class-component.tsx');
