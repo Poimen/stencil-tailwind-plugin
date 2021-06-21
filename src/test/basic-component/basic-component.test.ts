@@ -1,30 +1,22 @@
-import fs from 'fs-extra';
-import path from 'path';
 import { transform } from '../../transformers/typescript';
-
-test('passes when value is null or undefined', () => {
-  expect(null).toBeNil();
-  expect(undefined).toBeNil();
-  expect(true).not.toBeNil();
-});
+import { loadTestComponent } from '../utils';
 
 describe('basic-component', () => {
   it('given basic component with no tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
-    const component = fs.readFileSync(path.resolve(path.join('src', 'test', 'basic-component', 'files', 'basic-component.tsx'))).toString();
+    const loadedFile = loadTestComponent('basic-component', 'basic-component.tsx');
     // Act
-    const result = await transform(component, 'basic-component.tsx');
+    const result = await transform(loadedFile.text, loadedFile.path);
     // Assert
-    expect(result).toEqual(component);
+    expect(result).toMatchSnapshot();
   });
 
   it('given basic component *with* tailwindcss styles, should output tailwind styles appended', async () => {
     // Arrange
-    const component = fs.readFileSync(path.resolve(path.join('src', 'test', 'basic-component', 'files', 'basic-component-tailwind.tsx'))).toString();
+    const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
     // Act
-    const result = await transform(component, 'basic-component.tsx');
+    const result = await transform(loadedFile.text, loadedFile.path);
     // Assert
-    expect('hello world').toEndWith('world');
-    expect(result).toEndWith("BasicComponent.style = '.flex{display:flex}.flex-col{flex-direction:column} ' + basicComponentStyle;");
+    expect(result).toMatchSnapshot();
   });
 });

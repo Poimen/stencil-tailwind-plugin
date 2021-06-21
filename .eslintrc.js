@@ -17,6 +17,7 @@ module.exports = {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'space-before-function-paren': ['error', {
       anonymous: 'never',
       named: 'never',
@@ -25,12 +26,16 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': ['error', {
       allowedNames: ['render']
     }],
-    'no-multi-spaces': ['error', { ignoreEOLComments: true }]
+    'no-multi-spaces': ['error', { ignoreEOLComments: true }],
+    'dot-notation': ['error', { allowPattern: 'name' }]
   },
   overrides: [{
     files: ['*.ts', '*.tsx'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': ['error']
+    },
+    env: {
+      jest: true
     }
   }, {
     files: ['*.js'],

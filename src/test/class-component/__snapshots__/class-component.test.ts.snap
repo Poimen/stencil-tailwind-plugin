@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic-component given class component *with* tailwindcss styles and other get accessors, should output tailwind styles only in style accessor 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
+import { Host, h } from \\"@stencil/core/internal/client\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class extends HTMLElement {
+    constructor() {
+        super();
+        this.__registerHost();
+        __stencil_attachShadow(this);
+    }
+    render() {
+        return (h(Host, null, h(\\"div\\", { class: \\"flex\\" }, h(\\"slot\\", null))));
+    }
+    static get anotherGetter() { return \\"this should not change\\"; }
+    static get style() { return '.static{position:static}.flex{display:flex}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+};
+"
+`;
+
+exports[`basic-component given class component *with* tailwindcss styles, should output tailwind styles 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
+import { Host, h } from \\"@stencil/core/internal/client\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class extends HTMLElement {
+    constructor() {
+        super();
+        this.__registerHost();
+        __stencil_attachShadow(this);
+    }
+    render() {
+        return (h(Host, null, h(\\"div\\", { class: \\"flex flex-row\\" }, h(\\"slot\\", null))));
+    }
+    static get style() { return '.static{position:static}.flex{display:flex}.flex-row{flex-direction:row}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+};
+"
+`;
+
+exports[`basic-component given class component with no tailwindcss styles and other get accessors, should output unaltered styles 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
+import { Host, h } from \\"@stencil/core/internal/client\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class extends HTMLElement {
+    constructor() {
+        super();
+        this.__registerHost();
+        __stencil_attachShadow(this);
+    }
+    render() {
+        return (h(Host, null, h(\\"div\\", { class: \\"other-styles\\" }, h(\\"slot\\", null))));
+    }
+    static get anotherGetter() { return \\"this should not change\\"; }
+    static get style() { return '.static{position:static}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+};
+"
+`;
+
+exports[`basic-component given class component with no tailwindcss styles, should output unaltered styles 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
+import { Host, h } from \\"@stencil/core/internal/client\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class extends HTMLElement {
+    constructor() {
+        super();
+        this.__registerHost();
+        __stencil_attachShadow(this);
+    }
+    render() {
+        return (h(Host, null, h(\\"div\\", { class: \\"other-styles\\" }, h(\\"slot\\", null))));
+    }
+    static get style() { return '.static{position:static}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+};
+"
+`;

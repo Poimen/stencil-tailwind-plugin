@@ -5,7 +5,7 @@
     "module": "esnext",
     "noEmitOnError": true,
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "./dist",
     "target": "es2017",
     "skipLibCheck": true,
@@ -13,11 +13,11 @@
       "dom",
       "es2017"
     ],
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "jsx": "react",
     "jsxFactory": "h",
-    "allowUnreachableCode": false,
+    "allowUnreachableCode": true,
     "experimentalDecorators": true,
     "esModuleInterop": true
   },

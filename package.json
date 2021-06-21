@@ -10,7 +10,7 @@
     "build": "rollup -c",
     "lint": "eslint --fix ./src",
     "test": "jest --ci --runInBand",
-    "test:watch": "jest --runInBand --watch"
+    "test:watch": "jest --runInBand --no-cache --watch"
   },
   "repository": {
     "type": "git",
@@ -29,15 +29,19 @@
     "url": "https://github.com/Poimen/stencil-tailwind-plugin/issues"
   },
   "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme",
+  "peerDependencies": {
+    "tailwindcss": "^2.2.2",
+    "cssnano": "^5.0.6"
+  },
   "devDependencies": {
     "@types/cssnano": "^4.0.0",
     "@types/fs-extra": "^9.0.11",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.4",
+    "@types/tailwindcss": "^2.0.6",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "chalk": "^4.1.1",
-    "cssnano": "^5.0.6",
     "eslint": "^7.29.0",
     "eslint-config-semistandard": "^16.0.0",
     "eslint-config-standard": "^16.0.3",
