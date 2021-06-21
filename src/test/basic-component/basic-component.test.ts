@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { transform } from '../../typescript/transformer';
+import { transform } from '../../transformers/typescript';
 
 test('passes when value is null or undefined', () => {
   expect(null).toBeNil();

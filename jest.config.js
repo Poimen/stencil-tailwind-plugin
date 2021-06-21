@@ -9,6 +9,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
-  // setupTestFrameworkScriptFile: 'jest-extended'
   setupFilesAfterEnv: ['jest-extended', './src/test/test-setup.ts']
 };
