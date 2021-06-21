@@ -30,8 +30,8 @@
   },
   "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme",
   "peerDependencies": {
-    "tailwindcss": "^2.2.2",
-    "cssnano": "^5.0.6"
+    "cssnano": "^5.0.6",
+    "tailwindcss": "^2.2.2"
   },
   "devDependencies": {
     "@types/cssnano": "^4.0.0",
@@ -47,7 +47,6 @@
     "eslint-config-standard": "^16.0.3",
     "fs-extra": "^8.1.0",
     "jest": "^27.0.4",
-    "jest-extended": "^0.11.5",
     "postfix": "^0.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.52.1",
