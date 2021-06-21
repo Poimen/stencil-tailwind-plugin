@@ -25,6 +25,6 @@ TODO
 
 A lot of inspiration for this plugin was taken from the similarly named plugin, (stencil-tailwind)[https://github.com/jrowlingson/stencil-tailwind] by *Jack Rowlingson*.
 
-Inspiration also taken from (proto-stencil-tailwind)[https://github.com/eswat2/proto-stencil-tailwind] that moves stencil-tailwind forward by *Richard Hess*.
+Inspiration also taken from (proto-stencil-tailwind)[https://github.com/eswat2/proto-stencil-tailwind] that moves `stencil-tailwind` forward by *Richard Hess*.
 
 Special thanks to the above.
