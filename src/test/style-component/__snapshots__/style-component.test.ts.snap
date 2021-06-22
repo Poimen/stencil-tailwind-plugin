@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`style-component given style component with no tailwindcss styles, should output unaltered styles 1`] = `
+"/* eslint-disable */
+const basicComponentCss = \\":host{display:block}\\";
+export default basicComponentCss;
+"
+`;
+
+exports[`style-component given style component with no tailwindcss styles, should output unaltered styles 2`] = `
+"/* eslint-disable */
+const basicComponentCss = \\":host{display:block}.md{--tw-text-opacity:1;color:rgba(254,226,226,var(--tw-text-opacity))}\\";
+export default basicComponentCss;
+"
+`;
