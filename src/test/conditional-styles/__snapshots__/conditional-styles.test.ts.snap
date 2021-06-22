@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`conditional-styles-component given basic component with conditional tailwindcss styles, should output tailwind styles 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance } from \\"@stencil/core\\";
+import { Component, Host, h, Prop } from \\"@stencil/core\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+    }
+    render() {
+        const conditionalStyles = {
+            \\"flex flex-col\\": true,
+            \\"bg-red-50\\": this.inputProp,
+            \\"bg-green-50\\": !this.inputProp,
+        };
+        return (h(Host, null, h(\\"div\\", { class: conditionalStyles }, h(\\"slot\\", null))));
+    }
+};
+BasicComponent.style = '.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle;
+"
+`;
+
+exports[`conditional-styles-component given class component with conditional tailwindcss styles, should output tailwind styles 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance, attachShadow as __stencil_attachShadow } from \\"@stencil/core/internal/client\\";
+import { Host, h } from \\"@stencil/core/internal/client\\";
+import basicComponentStyle from \\"./basic-component.css?tag=basic-component&encapsulation=shadow\\";
+export const BasicComponent = class extends HTMLElement {
+    constructor() {
+        super();
+        this.__registerHost();
+        __stencil_attachShadow(this);
+    }
+    render() {
+        const conditionalStyles = {
+            \\"flex flex-col\\": true,
+            \\"bg-red-50\\": this.inputProp,
+            \\"bg-green-50\\": !this.inputProp,
+        };
+        return (h(Host, null, h(\\"div\\", { class: conditionalStyles }, h(\\"slot\\", null))));
+    }
+    static get style() { return '.static{position:static}.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+};
+"
+`;
