@@ -1,13 +1,10 @@
-import path from 'path';
-import fs from 'fs-extra';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
-import { makeTailwindConfig } from '../config/tailwind';
+import { fetchTailwindDefaultCssConf, makeTailwindConfig } from '../config/tailwindConfiguration';
 
 export async function processSourceTextForTailwindInlineClasses(fileName: string, sourceText?: string): Promise<string> {
-  // TODO: this should be a config...
-  const cssToProcess = sourceText ?? fs.readFileSync(path.resolve(path.join('src', 'config', 'app.css')));
+  const cssToProcess = sourceText ?? fetchTailwindDefaultCssConf();
 
   const twConf = makeTailwindConfig([fileName]);
 
