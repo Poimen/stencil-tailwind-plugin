@@ -1,5 +1,5 @@
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
-import { Plugin } from 'rollup';
+import { Plugin, PluginContext } from 'rollup';
 import { setupTailwindConfiguration } from './config/tailwindConfiguration';
 import { configureLogging } from './debug/logger';
 import * as plugin from './plugin';
@@ -28,6 +28,7 @@ export default function tailwindPlugin(opts?: PluginOptions): Plugin {
   return {
     name: 'tailwind',
     buildStart: plugin.buildStart,
-    transform: plugin.transform
+    transform: plugin.transform,
+    buildEnd: plugin.buildEnd
   };
 }

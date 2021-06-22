@@ -1,4 +1,4 @@
-import { InputOptions, TransformResult } from 'rollup';
+import { InputOptions, PluginContext, TransformResult } from 'rollup';
 import * as log from './debug/logger';
 import { transform as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
@@ -7,7 +7,11 @@ export function buildStart(options: InputOptions): void {
   log.debug('Starting build');
 }
 
-export function buildEnd(options: InputOptions): void {
+export function buildEnd(err?: Error): void {
+  if (err) {
+    log.error('Something went wrong!', err.message);
+    log.error(err.stack);
+  }
   log.debug('Build completed');
 }
 
@@ -28,7 +32,7 @@ export async function transform(code: string, id: string): Promise<TransformResu
   }
 
   return {
-    code: '',
+    code: codeResult,
     map: null
   };
 }
