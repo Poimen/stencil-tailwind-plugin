@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`styles-url-component given component that uses style urls, should output tailwind styles for each mode 1`] = `
+"/* eslint-disable */
+import { registerInstance as __stencil_registerInstance } from \\"@stencil/core\\";
+import { Component, Host, h } from \\"@stencil/core\\";
+import modeComponentIosStyle from \\"./mode-component.ios.css?tag=mode-component&mode=ios&encapsulation=shadow\\";
+import modeComponentMdStyle from \\"./mode-component.md.scss?tag=mode-component&mode=md&encapsulation=shadow\\";
+export const ModeComponent = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+    }
+    render() {
+        return (h(Host, null, h(\\"div\\", { class: \\"flex flex-row-reverse\\" }, h(\\"slot\\", null))));
+    }
+};
+ModeComponent.style = { ios: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  modeComponentIosStyle, md: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  modeComponentMdStyle };
+"
+`;

@@ -1,5 +1,5 @@
 import path from 'path';
-import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, StringLiteral, SyntaxKind } from 'typescript';
+import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, StringLiteral, SyntaxKind, ObjectLiteralExpression, PropertyAssignment } from 'typescript';
 import * as log from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
@@ -29,8 +29,8 @@ function reWriteStyleForGetAccessor(sourceFile: SourceFile, css: string) {
   return transformNodeWith(sourceFile, getAccessorPath, returnStatementRewriter);
 }
 
-function reWriteStyleClassAssignment(sourceFile: SourceFile, css: string) {
-  // Stencil creates binary property assignment that use:
+function reWriteStylePropertyAssignment(sourceFile: SourceFile, css: string) {
+  // Stencil creates binary property assignment that uses:
   // ComponentClass.style = '...'
   // This re-writes the assignment to include tailwind's styles
   const binaryExpressionStylePath = [
@@ -39,12 +39,41 @@ function reWriteStyleClassAssignment(sourceFile: SourceFile, css: string) {
     makeMatcher(SyntaxKind.BinaryExpression)
   ];
 
+  const createNewIdentifier = (origValue: ts.__String) => ts.factory.createIdentifier(`'${css} ' +  ${origValue}`);
+
   const binaryExpressionRewriter = (node: Node) => {
     const binaryStatement = node as BinaryExpression;
 
     if (ts.isPropertyAccessExpression(binaryStatement.left) && binaryStatement.left.name && binaryStatement.left.name.escapedText === 'style') {
-      const originalExpression = binaryStatement.right as Identifier;
-      return ts.factory.updateBinaryExpression(binaryStatement, binaryStatement.left, ts.SyntaxKind.EqualsToken, ts.factory.createIdentifier(`'${css} ' +  ${originalExpression.escapedText}`));
+      if (ts.isObjectLiteralExpression(binaryStatement.right)) {
+        // Object literals have multiple style properties involved, so add tailwind styles to each one
+        const originalExpression = binaryStatement.right as ObjectLiteralExpression;
+        const updatedProperties = originalExpression.properties.map(p => {
+          const propertyAssignment = p as PropertyAssignment;
+          const propertyName = (p.name as Identifier).escapedText as string;
+          const originalAssignmentValue = (propertyAssignment.initializer as Identifier).escapedText;
+          return ts.factory.createPropertyAssignment(
+            propertyName,
+            createNewIdentifier(originalAssignmentValue)
+          );
+        });
+        return ts.factory.updateBinaryExpression(
+          binaryStatement,
+          binaryStatement.left,
+          ts.SyntaxKind.EqualsToken,
+          ts.factory.createObjectLiteralExpression(updatedProperties)
+        );
+      } else if (ts.isIdentifier(binaryStatement.right)) {
+        const originalExpression = binaryStatement.right as Identifier;
+        return ts.factory.updateBinaryExpression(
+          binaryStatement,
+          binaryStatement.left,
+          ts.SyntaxKind.EqualsToken,
+          createNewIdentifier(originalExpression.escapedText)
+        );
+      } else {
+        log.warn('[Typescript]', 'Found a binary expression but', binaryStatement.right.kind, 'is not currently handled');
+      }
     }
     log.error('[Typescript]', 'Found a binary statement, but failed to match it to style!');
     return node;
@@ -78,15 +107,8 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
   let result = reWriteStyleForGetAccessor(sourceFile, css);
   if (!result.found) {
     // If there is no get accessor, fallback to the binary property setter on the class
-    result = reWriteStyleClassAssignment(sourceFile, css);
+    result = reWriteStylePropertyAssignment(sourceFile, css);
   }
-
-  // if (!result.found) {
-  //   // No placeholder for the css found - register this css for a later style import
-  //   registerAllImports();
-  // }
-
-  // if (!result.found) log.error('[Typescript]', 'Expected to re-write styles for components, but no style definition was found!');
 
   return {
     text: result.fullText,

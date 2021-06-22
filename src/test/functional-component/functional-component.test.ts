@@ -1,7 +1,6 @@
 import { transform as transformTypescript } from '../../processors/typescript';
 import { transform as transformStylesheet } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
-import { dump } from '../../store/store';
 
 describe('functional-component', () => {
   it('given functional component in same file as component, should output tailwind styles', async () => {

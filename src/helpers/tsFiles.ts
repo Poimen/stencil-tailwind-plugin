@@ -81,7 +81,6 @@ export function makeMatcher(kind: SyntaxKind, name?: string, modifier?: Modifier
   return { nodeKind: kind, name, has: modifier };
 }
 
-
 function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): TransformerFactory<Node> {
   let treeLevel = 0;
   const doesMatch = doesNodeMatch(walkPath);
