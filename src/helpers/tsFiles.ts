@@ -1,11 +1,19 @@
 import ts, { ModifierSyntaxKind, Node, ScriptTarget, SourceFile, SyntaxKind, TransformationContext, TransformerFactory, Transformer } from 'typescript';
 import * as log from '../debug/logger';
 
+export interface TransformedResult {
+  found: boolean;
+  fullText: string;
+}
+
 export interface ASTMatcher {
   nodeKind: SyntaxKind;
   name?: string;
   has?: ModifierSyntaxKind;
 }
+
+export type ASTMatchCallback = (node: Node) => Node;
+export type WalkerNodeCallback = (node: Node) => boolean;
 
 export function loadTypescriptCodeFromMemory(code: string): SourceFile {
   return ts.createSourceFile('placeholder.ts', code, ScriptTarget.Latest);
@@ -57,11 +65,22 @@ export function walkTo(file: SourceFile, walkPath: ASTMatcher[]): Node {
   return walkChildNodeTree(file);
 }
 
+export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCallback): void {
+  function walkChildNodeTree(node: Node) {
+    if (node.kind === nodeKind) {
+      if (cb(node)) {
+        return node;
+      }
+    }
+    return ts.forEachChild(node, walkChildNodeTree);
+  }
+  return walkChildNodeTree(file);
+}
+
 export function makeMatcher(kind: SyntaxKind, name?: string, modifier?: ModifierSyntaxKind): ASTMatcher {
   return { nodeKind: kind, name, has: modifier };
 }
 
-export type ASTMatchCallback = (node: Node) => Node;
 
 function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): TransformerFactory<Node> {
   let treeLevel = 0;
@@ -91,11 +110,6 @@ function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): T
       return ts.visitNode(node, visit);
     };
   };
-}
-
-export interface TransformedResult {
-  found: boolean;
-  fullText: string;
 }
 
 export function transformNodeWith(sourceFile: SourceFile, walkPath: ASTMatcher[], userAction: ASTMatchCallback): TransformedResult {

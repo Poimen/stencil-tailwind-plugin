@@ -1,7 +1,9 @@
-import ts, { BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, SyntaxKind } from 'typescript';
+import path from 'path';
+import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, StringLiteral, SyntaxKind } from 'typescript';
 import * as log from '../debug/logger';
-import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith } from '../helpers/tsFiles';
+import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
+import { registerCssForInjection, registerImportForFile } from '../store/store';
 
 function reWriteStyleForGetAccessor(sourceFile: SourceFile, css: string) {
   // Stencil creates variable class declarations that use:
@@ -51,18 +53,45 @@ function reWriteStyleClassAssignment(sourceFile: SourceFile, css: string) {
   return transformNodeWith(sourceFile, binaryExpressionStylePath, binaryExpressionRewriter);
 }
 
-function transformSourceToIncludeNewTailwindStyles(sourceText: string, css: string): string {
-  const sourceFile = loadTypescriptCodeFromMemory(sourceText);
+function registerAllImports(sourceFile: SourceFile, filename: string) {
+  const file = path.parse(filename);
 
+  function handleImportDeclaration(node: Node): boolean {
+    const importDecl = node as ImportDeclaration;
+    const importFilename = importDecl.moduleSpecifier as StringLiteral;
+    const importedFile = path.resolve(file.dir, importFilename.text);
+
+    registerImportForFile(filename, importedFile);
+
+    return false;
+  }
+
+  walkAll(sourceFile, SyntaxKind.ImportDeclaration, handleImportDeclaration);
+}
+
+interface TransformSuccessResult {
+  text: string;
+  transformed: boolean;
+}
+
+function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: string): TransformSuccessResult {
   let result = reWriteStyleForGetAccessor(sourceFile, css);
   if (!result.found) {
     // If there is no get accessor, fallback to the binary property setter on the class
     result = reWriteStyleClassAssignment(sourceFile, css);
   }
 
-  if (!result.found) log.error('[Typescript]', 'Expected to re-write styles for components, but no style definition was found!');
+  // if (!result.found) {
+  //   // No placeholder for the css found - register this css for a later style import
+  //   registerAllImports();
+  // }
 
-  return result.fullText;
+  // if (!result.found) log.error('[Typescript]', 'Expected to re-write styles for components, but no style definition was found!');
+
+  return {
+    text: result.fullText,
+    transformed: result.found
+  };
 }
 
 export async function transform(sourceText: string, fileName: string): Promise<string> {
@@ -76,6 +105,15 @@ export async function transform(sourceText: string, fileName: string): Promise<s
     return sourceText;
   }
 
-  const emitResult = transformSourceToIncludeNewTailwindStyles(sourceText, tailwindClasses);
-  return emitResult;
+  const sourceFile = loadTypescriptCodeFromMemory(sourceText);
+  registerAllImports(sourceFile, fileName);
+
+  const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, tailwindClasses);
+
+  if (!emitResult.transformed) {
+    // No placeholder for the css found - register this css for a later style import
+    registerCssForInjection(fileName, tailwindClasses);
+  }
+
+  return emitResult.text;
 }

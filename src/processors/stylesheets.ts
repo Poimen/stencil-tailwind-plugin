@@ -2,6 +2,7 @@ import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
 import * as log from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
+import { getAllExternalCssForInjection } from '../store/store';
 
 async function transformStyleStatement(sourceFile: SourceFile, fileName: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
@@ -15,12 +16,14 @@ async function transformStyleStatement(sourceFile: SourceFile, fileName: string)
     makeMatcher(SyntaxKind.StringLiteral)
   ];
 
+  const injectedCss = getAllExternalCssForInjection(fileName);
+
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
     const tailwindClasses = await processSourceTextForTailwindInlineClasses(fileName, originalCss);
 
-    cssNode.text = tailwindClasses;
+    cssNode.text = injectedCss + tailwindClasses;
   };
 
   const cssNode = walkTo(sourceFile, stringLiteralPath);
