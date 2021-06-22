@@ -31,7 +31,3 @@ export default function tailwindPlugin(opts?: PluginOptions): Plugin {
     transform: plugin.transform
   };
 }
-
-export function hello(): string {
-  return 'world';
-}
