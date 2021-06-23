@@ -15,7 +15,7 @@ Install the necessary dependencies:
 npm install -D stencil-tailwind-plugin
 ```
 
-Tailwind is provided by a peer dependency so Tailwind can be installed separately as well:
+Tailwind is provided by a peer dependency so tailwind can be installed separately as well (if required):
 ```bash
 npm install -D tailwindcss
 ```
@@ -24,6 +24,7 @@ npm install -D tailwindcss
 
 In the Stencil configuration, consume the plugin:
 ```ts
+// stencil.config.ts
 import { Config } from '@stencil/core'
 import tailwind from 'proto-stencil-tailwind'
 
@@ -34,14 +35,17 @@ export const config: Config = {
   devServer: {
     reloadStrategy: 'pageReload'
   }
-}
+};
 ```
 
 In some configurations, the `reloadStrategy` can be left as `hmr` but on occasions new styles are not applied as expected.
 
 There are also a number of options that can be given to the plugin:
 ```ts
-plugins: [
+// stencil.config.ts
+export const config: Config = {
+  // ...
+  plugins: [
     tailwind({
       debug: false,         // Enable debug logging
       tailwindConf: ...,    // A tailwind configuration object that should be used
@@ -49,15 +53,17 @@ plugins: [
       tailwindCssPath: ...  // A custom path to provide tailwind jit css configuration to use
     })
   ],
+  // ...
+};
 ```
 
 ## Usage
 
-This plugin hooks into the build process for Stencil. The Tailwind JIT process run as a secondary build set and as such the css classes are applied after the component has been transpiled.
+This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the css classes are applied after the component has been transpiled.
 
 ### Using @apply is css/sass files
 
-The Tailwind `@apply` directive can be used in any css/sass file as per Tailwind spec:
+The tailwind `@apply` directive can be used in any css/sass file as per tailwind spec:
 ```css
 .apply-styles {
   @apply text-red-100;
@@ -120,11 +126,60 @@ Assuming the component has declared:
 })
 ```
 
-In this case, all Tailwind styles will be added to both `md` and `ios` style definitions.
+In this case, all tailwind styles will be added to both `md` and `ios` style definitions.
 
 ## Caveat on Function Components
 
 There are some issues around functional components when they are located in external files to a component. The plugin attempts to insert the Function Component styles into the host component and in so doing, the Stencil HMR does not detect the changes correctly and *will* require a rebuild when this happens.
+
+As an example, given:
+```tsx
+// component-A.tsx
+import { FuncComp } from '../common/UtilsFunctionalComponents'
+
+// rest of the normal component that uses <FuncComp />
+```
+And:
+```tsx
+// component-B.tsx
+import { FuncComp } from '../common/UtilsFunctionalComponents'
+
+// rest of the normal component that uses <FuncComp />
+```
+And:
+```tsx
+// common/UtilsFunctionalComponents.tsx
+export const FuncComp: FunctionalComponent<FunctionalCompProps> = ({ name }) => (
+  <h1 class="text-indigo-700">This is a functional one - Hello, {name}!</h1>
+);
+```
+
+In this example, `component-A` and `component-B` will both contain the style definition for `text-indigo-700` because they both import `FuncComp`.
+
+If `common/UtilsFunctionalComponents.tsx` is updated, neither `component-A.tsx` or `component-B.tsx` will be build by Stencil's HMR, hence the style class change from `FuncComp` will not reflect.
+
+## Caveat on base reset styles
+
+This plugin does not include base tailwind reset styles as this would bloat all the components with bse styles. If this is required, provide the plugin with the tailwind css:
+```css
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+```
+
+This can be do through the configuration:
+```ts
+// stencil.config.ts
+export const config: Config = {
+  // ...
+  plugins: [
+    tailwind({
+      tailwindCssPath: ... // path to css to that includes the tailwind definitions
+    })
+  ],
+  // ...
+};
+```
 
 ## Development
 
@@ -137,8 +192,6 @@ Run tests:
 ```bash
 npm run tests
 ```
-
-##
 
 ## Honourable mentions
 
