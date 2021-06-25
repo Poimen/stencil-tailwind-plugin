@@ -18,7 +18,7 @@ export const BasicComponent = class {
         return (h(Host, null, h(\\"div\\", { class: conditionalStyles }, h(\\"slot\\", null))));
     }
 };
-BasicComponent.style = '.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle;
+BasicComponent.style = '.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)};' + basicComponentStyle;
 "
 `;
 
@@ -41,7 +41,7 @@ export const BasicComponent = class extends HTMLElement {
         };
         return (h(Host, null, h(\\"div\\", { class: conditionalStyles }, h(\\"slot\\", null))));
     }
-    static get style() { return '.static{position:static}.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  basicComponentStyle; }
+    static get style() { return '.static{position:static}.flex{display:flex}.flex-col{flex-direction:column}.bg-red-50{--tw-bg-opacity:1;background-color:rgba(254,242,242,var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgba(236,253,245,var(--tw-bg-opacity))}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)};' + basicComponentStyle; }
 };
 "
 `;

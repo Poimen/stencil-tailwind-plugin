@@ -7,7 +7,7 @@ export const BasicComponent = class {
     __stencil_registerInstance(this, hostRef);
   }
   render() {
-    return (h(Host, null, h("div", { class: "flex flex-col" }, h("slot", null))));
+    return (h(Host, null, h("div", { class: "flex flex-col bg-[#343da3] text-[3em] text-[#dedede] w-6/12" }, h("slot", null))));
   }
 };
 BasicComponent.style = basicComponentStyle;

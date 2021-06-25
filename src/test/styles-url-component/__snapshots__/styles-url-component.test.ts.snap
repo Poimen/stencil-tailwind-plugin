@@ -14,6 +14,6 @@ export const ModeComponent = class {
         return (h(Host, null, h(\\"div\\", { class: \\"flex flex-row-reverse\\" }, h(\\"slot\\", null))));
     }
 };
-ModeComponent.style = { ios: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  modeComponentIosStyle, md: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)} ' +  modeComponentMdStyle };
+ModeComponent.style = { ios: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)};' + modeComponentIosStyle, md: '.flex{display:flex}.flex-row-reverse{flex-direction:row-reverse}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)};' + modeComponentMdStyle };
 "
 `;
