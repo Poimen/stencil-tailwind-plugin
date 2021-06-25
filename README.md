@@ -4,6 +4,8 @@ This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [S
 
 This plugin also aims to allow users to make use of all the tailwindcss classes and postcss plugins like [@apply](https://tailwindcss.com/docs/functions-and-directives#apply). In such both styles of tailwindcss usage can be used in a single component. This plugin also aims to allow the use of object initialisers to conditionally set styles.
 
+For an example of a basic Stencil integration, see the [example](https://github.com/Poimen/stencil-tailwind-plugin-example).
+
 ## Getting started
 
 This guide assumes that a Stencil project has already been initialized and configured.
