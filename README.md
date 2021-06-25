@@ -59,11 +59,47 @@ export const config: Config = {
 };
 ```
 
+### Configuration with other plugins
+
+It is important to note that when using `sass` files, that the `sass` Stencil plugin appears before the tailwind plugin. The `sass` plugin needs to process the `sass` files first before the raw `css` is pasted to the tailwind postcss processor. An example configuration could look like:
+```ts
+// stencil.config.ts
+import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
+import { postcss } from '@stencil/postcss';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
+import tailwind from 'stencil-tailwind-plugin';
+import { inlineSvg } from 'stencil-inline-svg';
+import tailwindConfig from './tailwind.config';
+
+export const config: Config = {
+  outputTargets: [ /* ... */],
+  plugins: [
+    inlineSvg(),
+    sass({
+      includePaths: [
+        /* ... */
+      ]
+    }),
+    tailwind({
+      tailwindCssPath: './src/styles/tailwind.pcss',
+      tailwindConf: tailwindConfig
+    }),
+    postcss({
+      plugins: [
+        autoprefixer(),
+        cssnano()
+      ]
+    })
+  ]
+```
+
 ## Usage
 
-This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the css classes are applied after the component has been transpiled.
+This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the `css` classes are applied after the component has been transpiled.
 
-### Using @apply is css/sass files
+### Using @apply is `css`/`sass` files
 
 The tailwind `@apply` directive can be used in any css/sass file as per tailwind spec:
 ```css
