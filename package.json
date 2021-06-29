@@ -34,8 +34,10 @@
   },
   "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme",
   "peerDependencies": {
+    "@fullhuman/postcss-purgecss": "^4.0.3",
     "cssnano": "^5.0.6",
     "postcss": "^8.3.5",
+    "postcss-discard-comments": "^5.0.1",
     "tailwindcss": "^2.2.2",
     "typescript": "^4.3.4"
   },

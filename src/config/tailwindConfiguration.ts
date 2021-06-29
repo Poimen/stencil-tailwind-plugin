@@ -17,6 +17,7 @@ export function fetchTailwindDefaultCssConf(): string {
 
 function setDefaultTailwindCssContents(tailwindCssPath?: string) {
   const _defaultPackageTailwindCss = `
+    @tailwind base;
     @tailwind utilities;
     @tailwind components;
   `;

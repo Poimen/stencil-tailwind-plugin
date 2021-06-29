@@ -1,3 +1,5 @@
+import discardComments from 'postcss-discard-comments';
+import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
@@ -9,8 +11,25 @@ export async function processSourceTextForTailwindInlineClasses(fileName: string
 
   const twConf = makeTailwindConfig([fileName]);
 
+  // Safe selector list not to purge
+  const webComponentSpecificSafeSelectors = [
+    ':root',
+    ':host',
+    ':shadow',
+    '/deep/',
+    '::part',
+    '::theme'
+  ];
+
   const postcssPlugins: AcceptedPlugin[] = [
     tailwindcss(twConf),
+    purgecss({
+      content: [fileName],
+      safelist: webComponentSpecificSafeSelectors
+    }),
+    discardComments({
+      removeAll: true
+    }),
     cssnano() as AcceptedPlugin
   ];
 
