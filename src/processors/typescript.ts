@@ -116,11 +116,11 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
   };
 }
 
-export async function transform(sourceText: string, fileName: string): Promise<string> {
-  log.debug('[Typescript]', 'Processing source file:', fileName);
+export async function transform(sourceText: string, filename: string): Promise<string> {
+  log.debug('[Typescript]', 'Processing source file:', filename);
 
   // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-  const tailwindClasses = await processSourceTextForTailwindInlineClasses(fileName);
+  const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename);
 
   if (tailwindClasses.length === 0) {
     // No classes from tailwind to add, just give source back
@@ -128,13 +128,13 @@ export async function transform(sourceText: string, fileName: string): Promise<s
   }
 
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
-  registerAllImports(sourceFile, fileName);
+  registerAllImports(sourceFile, filename);
 
   const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, tailwindClasses);
 
   if (!emitResult.transformed) {
     // No placeholder for the css found - register this css for a later style import
-    registerCssForInjection(fileName, tailwindClasses);
+    registerCssForInjection(filename, tailwindClasses);
   }
 
   return emitResult.text;

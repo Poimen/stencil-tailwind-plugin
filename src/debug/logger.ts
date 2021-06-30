@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-let _debugEnabled = true;
+let _debugEnabled = false;
 
 export function json(obj: Record<string, unknown>): void {
   _debugEnabled && console.dir(obj, { depth: null });

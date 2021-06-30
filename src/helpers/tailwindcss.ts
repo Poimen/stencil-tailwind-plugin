@@ -1,3 +1,4 @@
+import path from 'path';
 import discardComments from 'postcss-discard-comments';
 import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
@@ -6,10 +7,11 @@ import postcss, { AcceptedPlugin } from 'postcss';
 import { fetchTailwindDefaultCssConf, makeTailwindConfig, shouldStripComments } from '../config/tailwindConfiguration';
 import * as log from '../debug/logger';
 
-export async function processSourceTextForTailwindInlineClasses(fileName: string, sourceText?: string): Promise<string> {
+export async function processSourceTextForTailwindInlineClasses(filename: string, sourceText?: string): Promise<string> {
   const cssToProcess = sourceText ?? fetchTailwindDefaultCssConf();
 
-  const twConf = makeTailwindConfig([fileName]);
+  const relativePath = path.join('.', path.relative(process.cwd(), filename));
+  const twConf = makeTailwindConfig([relativePath]);
 
   // Safe selector list not to purge
   const webComponentSpecificSafeSelectors = [
@@ -24,7 +26,7 @@ export async function processSourceTextForTailwindInlineClasses(fileName: string
   const postcssPlugins: AcceptedPlugin[] = [
     tailwindcss(twConf),
     purgecss({
-      content: [fileName],
+      content: [relativePath],
       safelist: webComponentSpecificSafeSelectors
     }),
     cssnano() as AcceptedPlugin
@@ -38,7 +40,7 @@ export async function processSourceTextForTailwindInlineClasses(fileName: string
     );
   }
 
-  const result = await postcss(postcssPlugins).process(cssToProcess, { from: fileName });
+  const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
 
   // Tailwind JIT syntax needs to escape the '#', '[', ']', etc. in the css output. When writing
   // the escaped characters, the tailwind escaping is lost as the string output doesn't keep the
