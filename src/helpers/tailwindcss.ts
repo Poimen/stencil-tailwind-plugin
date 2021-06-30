@@ -4,43 +4,27 @@ import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
-import * as twConfig from '../config/pluginConfiguration';
+import * as pluginConf from '../config/pluginConfiguration';
 import * as log from '../debug/logger';
 
-// function getPurgeConfiguration() {
-//   const webComponentSpecificSafeSelectors = [
-//     ':root',
-//     ':host',
-//     ':shadow',
-//     '/deep/',
-//     '::part',
-//     '::theme'
-//   ];
-
-// }
-
-export async function processSourceTextForTailwindInlineClasses(filename: string, sourceText?: string): Promise<string> {
-  const conf = twConfig.getConfiguration();
-  const cssToProcess = sourceText ?? conf.tailwindCssContents;
-
-  const relativePath = path.join('.', path.relative(process.cwd(), filename));
-  const twConf = twConfig.makeTailwindConfig([relativePath]);
-
-  // const postcssPlugins = [
-  //   tailwindcss(twConf)
-  // ];
-
-  // Safe selector list not to purge
+function getPostCssPlugins(conf: pluginConf.PluginConfigOpts, relativePath: string, allowPurge: boolean): AcceptedPlugin[] {
+  const twConf = pluginConf.makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
-    tailwindcss(twConf),
-    purgecss({
+    tailwindcss(twConf)
+  ];
+
+  if (allowPurge && conf.purgeEnable) {
+    postcssPlugins.push(purgecss({
       content: [relativePath],
       safelist: conf.purgeSafeList,
       defaultExtractor: conf.purgeExtractor
-    }),
-    cssnano() as AcceptedPlugin
-  ];
+    }));
+  }
+
+  if (conf.minify) {
+    postcssPlugins.push(cssnano());
+  }
 
   if (conf.stripComments) {
     postcssPlugins.push(
@@ -49,6 +33,17 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
       })
     );
   }
+
+  return postcssPlugins;
+}
+
+export async function processSourceTextForTailwindInlineClasses(filename: string, allowPurge: boolean, sourceText?: string): Promise<string> {
+  const conf = pluginConf.getConfiguration();
+  const cssToProcess = sourceText ?? conf.tailwindCssContents;
+
+  const relativePath = path.join('.', path.relative(process.cwd(), filename));
+
+  const postcssPlugins = getPostCssPlugins(conf, relativePath, allowPurge);
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
 

@@ -2,7 +2,7 @@
 
 exports[`style-component given style component with no tailwindcss styles, should output unaltered styles 1`] = `
 "/* eslint-disable */
-const basicComponentCss = \\":host{display:block}.text-red-100 {--tw-text-opacity: 1;color: rgba(254, 226, 226, var(--tw-text-opacity))}\\";
+const basicComponentCss = \\":host{display:block}\\";
 export default basicComponentCss;
 "
 `;

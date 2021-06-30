@@ -120,7 +120,7 @@ export async function transform(sourceText: string, filename: string): Promise<s
   log.debug('[Typescript]', 'Processing source file:', filename);
 
   // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-  const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename);
+  const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, true);
 
   if (tailwindClasses.length === 0) {
     // No classes from tailwind to add, just give source back

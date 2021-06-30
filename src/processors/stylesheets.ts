@@ -21,7 +21,7 @@ async function transformStyleStatement(sourceFile: SourceFile, filename: string)
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, originalCss);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, false, originalCss);
 
     cssNode.text = injectedCss + tailwindClasses;
   };
