@@ -39,11 +39,11 @@
     "cssnano": "^5.0.6",
     "postcss": "^8.3.5",
     "postcss-discard-comments": "^5.0.1",
-    "tailwindcss": "^2.2.4"
+    "tailwindcss": "^2.2.4",
+    "typescript": "^4.3.4"
   },
   "dependencies": {
-    "fs-extra": "^10.0.0",
-    "typescript": "^4.3.4"
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^19.0.0",
