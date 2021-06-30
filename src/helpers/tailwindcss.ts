@@ -20,7 +20,8 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
     ':shadow',
     '/deep/',
     '::part',
-    '::theme'
+    '::theme',
+    /\w+-\[/
   ];
 
   const postcssPlugins: AcceptedPlugin[] = [
