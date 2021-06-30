@@ -2,7 +2,7 @@
 
 exports[`configuration given *no* configuration should set default options 1`] = `
 Object {
-  "debug": false,
+  "enableDebug": false,
   "enablePurge": true,
   "minify": true,
   "purgeExtractor": [Function],
@@ -28,7 +28,7 @@ Object {
 
 exports[`configuration given configuration should set options 1`] = `
 Object {
-  "debug": true,
+  "enableDebug": true,
   "enablePurge": false,
   "minify": false,
   "purgeExtractor": [Function],
@@ -65,7 +65,7 @@ Object {
 
 exports[`configuration given modified default configuration should set default options 1`] = `
 Object {
-  "debug": false,
+  "enableDebug": false,
   "enablePurge": true,
   "minify": true,
   "purgeExtractor": [Function],

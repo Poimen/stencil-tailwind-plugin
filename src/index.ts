@@ -5,6 +5,7 @@ import { configureLogging } from './debug/logger';
 import * as plugin from './plugin';
 
 export interface PluginConfigOpts {
+  enableDebug?: boolean;
   tailwindCssPath?: string;
   tailwindCssContents?: string;
   tailwindConf?: TailwindConfig;
@@ -22,10 +23,10 @@ export interface PluginConfigOptsDefaults {
 export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(conf.PluginConfigDefaults);
 
 function configureOptions(opts?: PluginConfigOpts) {
-  const options = Object.assign({}, { debug: false }, PluginOpts.DEFAULT, opts);
+  const options = Object.assign({}, PluginOpts.DEFAULT, opts);
 
   conf.configurePluginOptions(options);
-  configureLogging(options.debug);
+  configureLogging(options.enableDebug);
 }
 
 export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {

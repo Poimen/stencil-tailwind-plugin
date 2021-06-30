@@ -20,6 +20,7 @@ function makeDefaultTailwindConf(): TailwindConfig {
 
 export const PluginConfigDefaults: PluginConfigOptsDefaults = {
   DEFAULT: {
+    enableDebug: false,
     tailwindCssPath: undefined,
     tailwindCssContents: '@tailwind base;@tailwind utilities;@tailwind components;',
     tailwindConf: makeDefaultTailwindConf(),

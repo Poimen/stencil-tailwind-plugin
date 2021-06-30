@@ -1,12 +1,12 @@
-import plugin, { PluginOptions, PluginOpts } from '../../index';
+import plugin, { PluginConfigOpts, PluginOpts } from '../../index';
 import * as conf from '../../config/pluginConfiguration';
 import * as log from '../../debug/logger';
 
 describe('configuration', () => {
   it('given configuration should set options', () => {
     // Arrange
-    const opts: PluginOptions = {
-      debug: true,
+    const opts: PluginConfigOpts = {
+      enableDebug: true,
       tailwindCssPath: 'src/test/configuration/tailwindcss.css',
       tailwindCssContents: '',
       tailwindConf: require('./tailwind.config'),
@@ -35,7 +35,7 @@ describe('configuration', () => {
 
   it('given modified default configuration should set default options', () => {
     // Arrange
-    const opts = Object.assign({}, PluginOpts.DEFAULT, { debug: false, stripComments: true });
+    const opts = Object.assign({}, PluginOpts.DEFAULT, { enableDebug: false, stripComments: true });
     // Act
     plugin(opts);
     // Assert
