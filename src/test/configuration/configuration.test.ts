@@ -8,12 +8,12 @@ describe('configuration', () => {
     // Arrange
     const opts: PluginOptions = {
       debug: true,
-      tailwindCssPath: path.join('src', 'test', 'configuration', 'tailwindcss.css'),
+      tailwindCssPath: 'src/test/configuration/tailwindcss.css',
       tailwindCssContents: '',
       tailwindConf: require('./tailwind.config'),
       stripComments: true,
       minify: false,
-      purgeEnable: false,
+      enablePurge: false,
       purgeSafeList: ['Im', 'safe']
     };
     // Act

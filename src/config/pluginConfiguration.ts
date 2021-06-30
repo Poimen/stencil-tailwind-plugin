@@ -11,7 +11,7 @@ export interface PluginConfigOpts {
   tailwindConf?: TailwindConfig;
   stripComments?: boolean;
   minify?: boolean;
-  purgeEnable?: boolean;
+  enablePurge?: boolean;
   purgeSafeList?: string[];
   purgeExtractor?: (content: string) => string[]
 }
@@ -39,7 +39,7 @@ export const PluginConfigOpts: PluginConfigOptsDefaults = {
     tailwindConf: makeDefaultTailwindConf(),
     stripComments: false,
     minify: true,
-    purgeEnable: true,
+    enablePurge: true,
     purgeSafeList: [
       ':root',
       ':host',

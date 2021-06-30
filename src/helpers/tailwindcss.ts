@@ -14,7 +14,7 @@ function getPostCssPlugins(conf: pluginConf.PluginConfigOpts, relativePath: stri
     tailwindcss(twConf)
   ];
 
-  if (allowPurge && conf.purgeEnable) {
+  if (allowPurge && conf.enablePurge) {
     postcssPlugins.push(purgecss({
       content: [relativePath],
       safelist: conf.purgeSafeList,

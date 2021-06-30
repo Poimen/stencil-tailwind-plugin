@@ -3,8 +3,8 @@
 exports[`configuration given *no* configuration should set default options 1`] = `
 Object {
   "debug": false,
+  "enablePurge": true,
   "minify": true,
-  "purgeEnable": true,
   "purgeExtractor": [Function],
   "purgeSafeList": Array [
     ":root",
@@ -29,8 +29,8 @@ Object {
 exports[`configuration given configuration should set options 1`] = `
 Object {
   "debug": true,
+  "enablePurge": false,
   "minify": false,
-  "purgeEnable": false,
   "purgeExtractor": [Function],
   "purgeSafeList": Array [
     "Im",
@@ -59,15 +59,15 @@ Object {
   },
   "tailwindCssContents": "@tailwind base;
 ",
-  "tailwindCssPath": "src\\\\test\\\\configuration\\\\tailwindcss.css",
+  "tailwindCssPath": "src/test/configuration/tailwindcss.css",
 }
 `;
 
 exports[`configuration given modified default configuration should set default options 1`] = `
 Object {
   "debug": false,
+  "enablePurge": true,
   "minify": true,
-  "purgeEnable": true,
   "purgeExtractor": [Function],
   "purgeSafeList": Array [
     ":root",
