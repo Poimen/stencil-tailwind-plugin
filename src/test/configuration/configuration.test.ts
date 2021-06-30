@@ -1,5 +1,4 @@
-import path from 'path';
-import plugin, { PluginOptions, PluginOptionDefaults } from '../../index';
+import plugin, { PluginOptions, PluginOpts } from '../../index';
 import * as conf from '../../config/pluginConfiguration';
 import * as log from '../../debug/logger';
 
@@ -36,7 +35,7 @@ describe('configuration', () => {
 
   it('given modified default configuration should set default options', () => {
     // Arrange
-    const opts = Object.assign({}, PluginOptionDefaults, { debug: false, stripComments: true });
+    const opts = Object.assign({}, PluginOpts.DEFAULT, { debug: false, stripComments: true });
     // Act
     plugin(opts);
     // Assert

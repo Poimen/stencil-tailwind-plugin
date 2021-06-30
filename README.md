@@ -61,9 +61,9 @@ There are also a number of options that can be given to the plugin:
 The default options can be referenced from the plugin as well:
 ```ts
 // stencil.config.ts
-import tailwind, { PluginOptionDefaults } from 'stencil-tailwind-plugin';
+import tailwind, { PluginOpts } from 'stencil-tailwind-plugin';
 
-const opts = Object.assign({}, PluginOptionDefaults, { debug: false, stripComments: true });
+const opts = Object.assign({}, PluginOpts.DEFAULT, { debug: false, stripComments: true });
 
 export const config: Config = {
   // ...

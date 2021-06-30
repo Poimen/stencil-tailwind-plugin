@@ -5,7 +5,7 @@ import * as conf from '../../config/pluginConfiguration';
 
 describe('functional-component', () => {
   beforeEach(() => {
-    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+    conf.configurePluginOptions(conf.PluginConfigDefaults.DEFAULT);
   });
 
   it('given functional component in same file as component, should output tailwind styles', async () => {

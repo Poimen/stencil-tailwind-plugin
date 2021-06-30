@@ -4,7 +4,7 @@ import * as conf from '../../config/pluginConfiguration';
 
 describe('class-component', () => {
   beforeEach(() => {
-    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+    conf.configurePluginOptions(conf.PluginConfigDefaults.DEFAULT);
   });
 
   it('given class component with no tailwindcss styles, should output unaltered styles', async () => {

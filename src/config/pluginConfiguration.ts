@@ -1,24 +1,10 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
+import { PluginConfigOpts, PluginConfigOptsDefaults } from '../index';
 import * as log from '../debug/logger';
 
 let _configuration: PluginConfigOpts | undefined;
-
-export interface PluginConfigOpts {
-  tailwindCssPath?: string;
-  tailwindCssContents?: string;
-  tailwindConf?: TailwindConfig;
-  stripComments?: boolean;
-  minify?: boolean;
-  enablePurge?: boolean;
-  purgeSafeList?: string[];
-  purgeExtractor?: (content: string) => string[]
-}
-
-export interface PluginConfigOptsDefaults {
-  DEFAULT: PluginConfigOpts
-}
 
 function makeDefaultTailwindConf(): TailwindConfig {
   const twConf = {
@@ -32,7 +18,7 @@ function makeDefaultTailwindConf(): TailwindConfig {
   return (twConf as unknown) as TailwindConfig;
 }
 
-export const PluginConfigOpts: PluginConfigOptsDefaults = {
+export const PluginConfigDefaults: PluginConfigOptsDefaults = {
   DEFAULT: {
     tailwindCssPath: undefined,
     tailwindCssContents: '@tailwind base;@tailwind utilities;@tailwind components;',
@@ -62,7 +48,7 @@ export const PluginConfigOpts: PluginConfigOptsDefaults = {
 };
 
 export function getConfiguration(): PluginConfigOpts {
-  return _configuration ?? PluginConfigOpts.DEFAULT;
+  return _configuration ?? PluginConfigDefaults.DEFAULT;
 }
 
 export function makeTailwindConfig(purgeFileList: string[]): TailwindConfig {
