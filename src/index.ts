@@ -19,20 +19,16 @@ export interface PluginConfigOptsDefaults {
   DEFAULT: PluginConfigOpts
 }
 
-export interface PluginOptions extends PluginConfigOpts {
-  debug?: boolean;
-}
-
 export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(conf.PluginConfigDefaults);
 
-function configureOptions(opts?: PluginOptions) {
+function configureOptions(opts?: PluginConfigOpts) {
   const options = Object.assign({}, { debug: false }, PluginOpts.DEFAULT, opts);
 
   conf.configurePluginOptions(options);
   configureLogging(options.debug);
 }
 
-export default function tailwindPlugin(opts?: PluginOptions): Plugin {
+export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
   configureOptions(opts);
 
   return {
