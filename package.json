@@ -1,6 +1,6 @@
 {
   "name": "stencil-tailwind-plugin",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
