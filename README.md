@@ -52,7 +52,8 @@ export const config: Config = {
       debug: false,         // Enable debug logging
       tailwindConf: ...,    // A tailwind configuration object that should be used
                             // It is expected that mode: 'jit' is set
-      tailwindCssPath: ...  // A custom path to provide tailwind jit css configuration to use
+      tailwindCssPath: ..., // A custom path to provide tailwind jit css configuration to use
+      stripComments: false  // Strip comments in Tailwind output to further reduce size of component css
     })
   ],
   // ...
@@ -198,26 +199,7 @@ If `common/UtilsFunctionalComponents.tsx` is updated, neither `component-A.tsx` 
 
 ## Caveat on base reset styles
 
-This plugin does not include base tailwind reset styles as this would bloat all the components with bse styles. If this is required, provide the plugin with the tailwind css:
-```css
-@tailwind base;
-@tailwind utilities;
-@tailwind components;
-```
-
-This can be do through the configuration:
-```ts
-// stencil.config.ts
-export const config: Config = {
-  // ...
-  plugins: [
-    tailwind({
-      tailwindCssPath: ... // path to css to that includes the tailwind definitions
-    })
-  ],
-  // ...
-};
-```
+This plugin does not include base tailwind reset styles as this would bloat all the components with base styles. If based reset styles are required, the best is to place them in the `:host` selector. The plugin keeps the `:host` selector for being purged.
 
 ## Development
 
