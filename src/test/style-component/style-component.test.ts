@@ -1,7 +1,12 @@
 import { transform } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
+import * as conf from '../../config/pluginConfiguration';
 
 describe('style-component', () => {
+  beforeEach(() => {
+    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+  });
+
   it('given style component with no tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('style-component', 'style-component.tsx');

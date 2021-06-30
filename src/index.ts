@@ -1,30 +1,18 @@
-import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { Plugin } from 'rollup';
-import { setupTailwindConfiguration } from './config/tailwindConfiguration';
+import * as conf from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
 import * as plugin from './plugin';
 
-export interface PluginOptions {
+export interface PluginOptions extends conf.PluginConfigOpts {
   debug?: boolean;
-  tailwindConf?: TailwindConfig;
-  tailwindCssPath?: string;
-  stripComments?: boolean;
 }
 
-function configureOptions(opts?: PluginOptions) {
-  const defaults = {
-    debug: false,
-    tailwindConf: undefined,
-    tailwindCssPath: undefined,
-    stripComments: false
-  };
+export const StencilTailwindPluginDefaults = Object.freeze(conf.PluginConfigOpts.DEFAULT);
 
-  const options = Object.assign({}, defaults, opts);
-  setupTailwindConfiguration({
-    tailwindCssPath: options.tailwindCssPath,
-    tailwindConf: options.tailwindConf,
-    stripComments: options.stripComments
-  });
+function configureOptions(opts?: PluginOptions) {
+  const options = Object.assign({}, { debug: false }, StencilTailwindPluginDefaults, opts);
+
+  conf.configurePluginOptions(options);
   configureLogging(options.debug);
 }
 

@@ -15,11 +15,11 @@ export function buildEnd(err?: Error): void {
   log.debug('Build completed');
 }
 
-function useStyleSheetTransform(filename) {
+function useStyleSheetTransform(filename: string) {
   return filename.match(/\.s?css/);
 }
 
-function useTypescriptXTransform(filename) {
+function useTypescriptXTransform(filename: string) {
   return filename.match(/\.tsx/);
 }
 

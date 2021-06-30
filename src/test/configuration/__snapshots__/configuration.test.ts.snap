@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`configuration given *no* configuration should set default options 1`] = `
+Object {
+  "debug": false,
+  "minify": true,
+  "purgeEnable": true,
+  "purgeExtractor": [Function],
+  "purgeSafeList": Array [
+    ":root",
+    ":host",
+    ":shadow",
+    "/deep/",
+    "::part",
+    "::theme",
+  ],
+  "stripComments": false,
+  "tailwindConf": Object {
+    "darkMode": false,
+    "mode": "jit",
+    "plugins": Array [],
+    "purge": Array [],
+  },
+  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
+  "tailwindCssPath": undefined,
+}
+`;
+
+exports[`configuration given configuration should set options 1`] = `
+Object {
+  "debug": true,
+  "minify": false,
+  "purgeEnable": false,
+  "purgeExtractor": [Function],
+  "purgeSafeList": Array [
+    "Im",
+    "safe",
+  ],
+  "stripComments": true,
+  "tailwindConf": Object {
+    "darkMode": false,
+    "mode": "jit",
+    "plugins": Array [],
+    "purge": Object {
+      "content": Array [
+        "./src/**/*.html",
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.tsx",
+      ],
+      "enabled": true,
+    },
+    "theme": Object {
+      "extend": Object {},
+    },
+    "variants": Object {
+      "extend": Object {},
+    },
+  },
+  "tailwindCssContents": "@tailwind base;
+",
+  "tailwindCssPath": "src\\\\test\\\\configuration\\\\tailwindcss.css",
+}
+`;

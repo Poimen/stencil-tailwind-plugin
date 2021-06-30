@@ -4,36 +4,45 @@ import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
-import { fetchTailwindDefaultCssConf, makeTailwindConfig, shouldStripComments } from '../config/tailwindConfiguration';
+import * as twConfig from '../config/pluginConfiguration';
 import * as log from '../debug/logger';
 
+// function getPurgeConfiguration() {
+//   const webComponentSpecificSafeSelectors = [
+//     ':root',
+//     ':host',
+//     ':shadow',
+//     '/deep/',
+//     '::part',
+//     '::theme'
+//   ];
+
+// }
+
 export async function processSourceTextForTailwindInlineClasses(filename: string, sourceText?: string): Promise<string> {
-  const cssToProcess = sourceText ?? fetchTailwindDefaultCssConf();
+  const conf = twConfig.getConfiguration();
+  const cssToProcess = sourceText ?? conf.tailwindCssContents;
 
   const relativePath = path.join('.', path.relative(process.cwd(), filename));
-  const twConf = makeTailwindConfig([relativePath]);
+  const twConf = twConfig.makeTailwindConfig([relativePath]);
+
+  // const postcssPlugins = [
+  //   tailwindcss(twConf)
+  // ];
 
   // Safe selector list not to purge
-  const webComponentSpecificSafeSelectors = [
-    ':root',
-    ':host',
-    ':shadow',
-    '/deep/',
-    '::part',
-    '::theme',
-    /\w+-\[/
-  ];
 
   const postcssPlugins: AcceptedPlugin[] = [
     tailwindcss(twConf),
     purgecss({
       content: [relativePath],
-      safelist: webComponentSpecificSafeSelectors
+      safelist: conf.purgeSafeList,
+      defaultExtractor: conf.purgeExtractor
     }),
     cssnano() as AcceptedPlugin
   ];
 
-  if (shouldStripComments()) {
+  if (conf.stripComments) {
     postcssPlugins.push(
       discardComments({
         removeAll: true
@@ -51,7 +60,7 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
   // is correct when applied to styles in css.
   let css = result.css.replace(/\\/g, '\\\\');
 
-  if (shouldStripComments()) {
+  if (conf.stripComments) {
     // For whatever reason discard comments leaves blocks of `/*!*/ /*!*/` in the code, but removes other comments - post strip these if required
     css = result.css.replace(/\/\*!\*\/ \/\*!\*\//g, '');
   }

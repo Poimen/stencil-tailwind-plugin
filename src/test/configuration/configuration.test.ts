@@ -1,0 +1,36 @@
+import path from 'path';
+import plugin, { PluginOptions } from '../../index';
+import * as conf from '../../config/pluginConfiguration';
+import * as log from '../../debug/logger';
+
+describe('configuration', () => {
+  it('given configuration should set options', () => {
+    // Arrange
+    const opts: PluginOptions = {
+      debug: true,
+      tailwindCssPath: path.join('src', 'test', 'configuration', 'tailwindcss.css'),
+      tailwindCssContents: '',
+      tailwindConf: require('./tailwind.config'),
+      stripComments: true,
+      minify: false,
+      purgeEnable: false,
+      purgeSafeList: ['Im', 'safe']
+    };
+    // Act
+    const result = plugin(opts);
+    // Assert
+    expect(conf.getConfiguration()).toMatchSnapshot();
+    expect(log.isDebugEnabled()).toBe(true);
+    expect(result.name).toBe('tailwind');
+    expect(typeof result.buildStart).toBe(typeof Function);
+    expect(typeof result.buildEnd).toBe(typeof Function);
+  });
+
+  it('given *no* configuration should set default options', () => {
+    // Arrange & Act
+    plugin();
+    // Assert
+    expect(conf.getConfiguration()).toMatchSnapshot();
+    expect(log.isDebugEnabled()).toBe(false);
+  });
+});

@@ -1,7 +1,12 @@
 import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
+import * as conf from '../../config/pluginConfiguration';
 
 describe('styles-url-component', () => {
+  beforeEach(() => {
+    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+  });
+
   it('given component that uses style urls, should output tailwind styles for each mode', async () => {
     // Arrange
     const loadedFile = loadTestComponent('styles-url-component', 'mode-component.tsx');

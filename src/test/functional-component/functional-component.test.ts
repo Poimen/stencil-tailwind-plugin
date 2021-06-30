@@ -1,8 +1,13 @@
 import { transform as transformTypescript } from '../../processors/typescript';
 import { transform as transformStylesheet } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
+import * as conf from '../../config/pluginConfiguration';
 
 describe('functional-component', () => {
+  beforeEach(() => {
+    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+  });
+
   it('given functional component in same file as component, should output tailwind styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('functional-component', 'functional-component.tsx');

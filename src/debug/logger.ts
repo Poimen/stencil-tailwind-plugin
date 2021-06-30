@@ -25,3 +25,7 @@ export function error(...statements: Array<any>): void {
 export function configureLogging(enableDebug: boolean): void {
   _debugEnabled = enableDebug;
 }
+
+export function isDebugEnabled(): boolean {
+  return _debugEnabled;
+}

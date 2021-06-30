@@ -1,8 +1,13 @@
 import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
-import { setupTailwindConfiguration } from '../../config/tailwindConfiguration';
+import { configurePluginOptions } from '../../config/pluginConfiguration';
+import * as conf from '../../config/pluginConfiguration';
 
 describe('basic-component', () => {
+  beforeEach(() => {
+    conf.configurePluginOptions(conf.PluginConfigOpts.DEFAULT);
+  });
+
   it('given basic component with no tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('basic-component', 'basic-component.tsx');
@@ -24,7 +29,7 @@ describe('basic-component', () => {
   it('given basic component *with* tailwindcss styles, should strip comments', async () => {
     // Arrange
     const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
-    setupTailwindConfiguration({ stripComments: true });
+    configurePluginOptions(Object.assign({}, conf.PluginConfigOpts.DEFAULT, { stripComments: true }));
     // Act
     const result = await transform(loadedFile.text, loadedFile.path);
     // Assert
