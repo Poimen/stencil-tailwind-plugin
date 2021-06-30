@@ -22,6 +22,7 @@ export default {
     file: pkg.main,
     format: 'cjs', // commonJS
     sourcemap: true,
+    exports: 'default',
     banner,
     plugins: [
       terser()
@@ -30,6 +31,7 @@ export default {
     file: pkg.module,
     format: 'esm', // ES Modules
     sourcemap: true,
+    exports: 'default',
     banner,
     plugins: [
       terser()
