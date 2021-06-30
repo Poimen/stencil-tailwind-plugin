@@ -1,9 +1,9 @@
-import { InputOptions, TransformResult } from 'rollup';
+import { TransformResult } from 'rollup';
 import * as log from './debug/logger';
 import { transform as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
 
-export function buildStart(options: InputOptions): void {
+export function buildStart(): void {
   log.debug('Starting build');
 }
 

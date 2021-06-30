@@ -1,5 +1,5 @@
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
-import { Plugin, PluginContext } from 'rollup';
+import { Plugin } from 'rollup';
 import { setupTailwindConfiguration } from './config/tailwindConfiguration';
 import { configureLogging } from './debug/logger';
 import * as plugin from './plugin';
