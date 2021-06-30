@@ -46,18 +46,29 @@ export const config: Config = {
 In some configurations, the `reloadStrategy` can be left as `hmr` but on occasions new styles are not applied as expected.
 
 There are also a number of options that can be given to the plugin:
+
+| Property          | Description                                               | Default      |
+| ----------------- | --------------------------------------------------------- | ------------ |
+| `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilites and @components are used. | `undefined`  |
+| `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as teh source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
+| `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
+| `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
+| `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
+| `purgeEnable` | Indicate if the css should be purged using `purgecss`. In some cases the purging may introduce loss of class so the plugin add the ability to customise the purge process or disable it altogether | `true`   |
+| `purgeSafeList` | Set the `purgecss` safelist of selectors to consider | Web component pseudo styles (`:root`/`:host`/etc.)    |
+| `purgeExtractor` | Default extractor function to use. See `purgecss` documentation when using this | A default purge selector regex generator function    |
+
+The default options can be referenced from the plugin as well:
 ```ts
 // stencil.config.ts
+import tailwind, { PluginOptionDefaults } from 'stencil-tailwind-plugin';
+
+const opts = Object.assign({}, PluginOptionDefaults, { debug: false, stripComments: true });
+
 export const config: Config = {
   // ...
   plugins: [
-    tailwind({
-      debug: false,         // Enable debug logging
-      tailwindConf: ...,    // A tailwind configuration object that should be used
-                            // It is expected that mode: 'jit' is set
-      tailwindCssPath: ..., // A custom path to provide tailwind jit css configuration to use
-      stripComments: false  // Strip comments in Tailwind output to further reduce size of component css
-    })
+    tailwind(opts)
   ],
   // ...
 };
