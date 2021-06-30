@@ -20,10 +20,7 @@ Install the necessary dependencies:
 npm install -D stencil-tailwind-plugin
 ```
 
-Tailwind is provided by a peer dependency so tailwind can be installed separately as well (if required):
-```bash
-npm install -D tailwindcss
-```
+Tailwind is provided by a peer dependency so tailwind can be installed separately as well, if required.
 
 ### Configuration
 
@@ -114,6 +111,8 @@ export const config: Config = {
 
 This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the `css` classes are applied after the component has been transpiled.
 
+For an example of a basic Stencil integration, see the [example](https://github.com/Poimen/stencil-tailwind-plugin-example).
+
 ### Using @apply is `css`/`sass` files
 
 The tailwind `@apply` directive can be used in any css/sass file as per tailwind spec:
@@ -127,7 +126,7 @@ The `@apply` directive will be applied as expected:
 ```css
 .apply-styles {
   --tw-text-opacity: 1;
-  color:rgba(254, 226, 226, var(--tw-text-opacity));
+  color: rgba(254, 226, 226, var(--tw-text-opacity));
 }
 ```
 
@@ -153,7 +152,7 @@ Assuming a component declares a `render` function of:
 render() {
   const styles = {
     'text-red-100': true,
-    'text-red-200: someCondition
+    'text-red-200': this.someCondition
   };
   return (
     <div class={styles}>
