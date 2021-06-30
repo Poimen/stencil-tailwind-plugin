@@ -8,17 +8,23 @@ export interface PluginOptions {
   debug?: boolean;
   tailwindConf?: TailwindConfig;
   tailwindCssPath?: string;
+  stripComments?: boolean;
 }
 
 function configureOptions(opts?: PluginOptions) {
   const defaults = {
     debug: false,
     tailwindConf: undefined,
-    tailwindCssPath: undefined
+    tailwindCssPath: undefined,
+    stripComments: false
   };
 
   const options = Object.assign({}, defaults, opts);
-  setupTailwindConfiguration(options.tailwindCssPath, options.tailwindConf);
+  setupTailwindConfiguration({
+    tailwindCssPath: options.tailwindCssPath,
+    tailwindConf: options.tailwindConf,
+    stripComments: options.stripComments
+  });
   configureLogging(options.debug);
 }
 

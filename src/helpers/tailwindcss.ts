@@ -3,7 +3,7 @@ import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
-import { fetchTailwindDefaultCssConf, makeTailwindConfig } from '../config/tailwindConfiguration';
+import { fetchTailwindDefaultCssConf, makeTailwindConfig, shouldStripComments } from '../config/tailwindConfiguration';
 import * as log from '../debug/logger';
 
 export async function processSourceTextForTailwindInlineClasses(fileName: string, sourceText?: string): Promise<string> {
@@ -27,11 +27,16 @@ export async function processSourceTextForTailwindInlineClasses(fileName: string
       content: [fileName],
       safelist: webComponentSpecificSafeSelectors
     }),
-    discardComments({
-      removeAll: true
-    }),
     cssnano() as AcceptedPlugin
   ];
+
+  if (shouldStripComments()) {
+    postcssPlugins.push(
+      discardComments({
+        removeAll: true
+      })
+    );
+  }
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: fileName });
 
@@ -41,7 +46,12 @@ export async function processSourceTextForTailwindInlineClasses(fileName: string
   //
   // This replacement ensures the escaped characters from tailwind are kept escaped so the ending css
   // is correct when applied to styles in css.
-  const css = result.css.replace(/\\/g, '\\\\');
+  let css = result.css.replace(/\\/g, '\\\\');
+
+  if (shouldStripComments()) {
+    // For whatever reason discard comments leaves blocks of `/*!*/ /*!*/` in the code, but removes other comments - post strip these if required
+    css = result.css.replace(/\/\*!\*\/ \/\*!\*\//g, '');
+  }
 
   log.debug('[TW]', 'Tailwind styles:', css);
 

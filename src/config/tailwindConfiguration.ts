@@ -5,6 +5,7 @@ import * as log from '../debug/logger';
 
 let _tailwindCssContents: string;
 let _tailwindConf: TailwindConfig;
+let _stripComments = false;
 
 export function makeTailwindConfig(purgeFileList: string[]): TailwindConfig {
   _tailwindConf.purge = purgeFileList;
@@ -49,9 +50,14 @@ function setDefaultTailwindConf(tailwindConf?: TailwindConfig) {
   }
 }
 
-export function setupTailwindConfiguration(tailwindCssPath?: string, tailwindConf?: TailwindConfig) : void {
+export function setupTailwindConfiguration({ tailwindCssPath, tailwindConf, stripComments }: {tailwindCssPath?: string, tailwindConf?: TailwindConfig, stripComments?: boolean}) : void {
   setDefaultTailwindCssContents(tailwindCssPath);
   setDefaultTailwindConf(tailwindConf);
+  _stripComments = stripComments ?? false;
+}
+
+export function shouldStripComments(): boolean {
+  return _stripComments;
 }
 
 setDefaultTailwindConf();

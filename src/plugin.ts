@@ -1,4 +1,4 @@
-import { InputOptions, PluginContext, TransformResult } from 'rollup';
+import { InputOptions, TransformResult } from 'rollup';
 import * as log from './debug/logger';
 import { transform as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
