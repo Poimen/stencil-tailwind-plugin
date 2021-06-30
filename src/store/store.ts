@@ -34,7 +34,7 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   const file = path.parse(filenameRef);
 
   const importName = path.join(file.dir, file.name);
-  Object.entries(_importFileReferences).forEach(([k, v]) => {
+  Object.entries(_importFileReferences).forEach(([_, v]) => {
     if (v.imports.includes(importName)) {
       log.debug('[STORE]', 'Found cross reference for imported file', importName, 'to store css against');
       v.css += css;
