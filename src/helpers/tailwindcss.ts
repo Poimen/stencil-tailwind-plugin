@@ -6,8 +6,9 @@ import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
 import * as pluginConf from '../config/pluginConfiguration';
 import * as log from '../debug/logger';
+import { PluginConfigOpts } from '../index';
 
-function getPostCssPlugins(conf: pluginConf.PluginConfigOpts, relativePath: string, allowPurge: boolean): AcceptedPlugin[] {
+function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPurge: boolean): AcceptedPlugin[] {
   const twConf = pluginConf.makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
