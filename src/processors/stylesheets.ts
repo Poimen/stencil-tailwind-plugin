@@ -2,7 +2,7 @@ import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
 import * as log from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
-import { getAllExternalCssForInjection } from '../store/store';
+// import { getAllExternalCssForInjection } from '../store/store';
 
 async function transformStyleStatement(sourceFile: SourceFile, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
@@ -16,14 +16,18 @@ async function transformStyleStatement(sourceFile: SourceFile, filename: string)
     makeMatcher(SyntaxKind.StringLiteral)
   ];
 
-  const injectedCss = getAllExternalCssForInjection(filename);
+  // After solving the race condition on the build, stencil 2.6 seems to
+  // be correctly doing this injection. Leaving this code here for now for
+  // further testing
+  // const injectedCss = getAllExternalCssForInjection(filename);
 
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
     const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, false, originalCss);
 
-    cssNode.text = injectedCss + tailwindClasses;
+    // cssNode.text = injectedCss + tailwindClasses;
+    cssNode.text = tailwindClasses;
   };
 
   const cssNode = walkTo(sourceFile, stringLiteralPath);
