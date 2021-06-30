@@ -7,10 +7,10 @@ export interface PluginOptions extends conf.PluginConfigOpts {
   debug?: boolean;
 }
 
-export const StencilTailwindPluginDefaults = Object.freeze(conf.PluginConfigOpts.DEFAULT);
+export const PluginOptionDefaults = Object.freeze(conf.PluginConfigOpts.DEFAULT);
 
 function configureOptions(opts?: PluginOptions) {
-  const options = Object.assign({}, { debug: false }, StencilTailwindPluginDefaults, opts);
+  const options = Object.assign({}, { debug: false }, PluginOptionDefaults, opts);
 
   conf.configurePluginOptions(options);
   configureLogging(options.debug);

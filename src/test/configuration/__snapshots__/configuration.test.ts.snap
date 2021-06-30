@@ -62,3 +62,29 @@ Object {
   "tailwindCssPath": "src\\\\test\\\\configuration\\\\tailwindcss.css",
 }
 `;
+
+exports[`configuration given modified default configuration should set default options 1`] = `
+Object {
+  "debug": false,
+  "minify": true,
+  "purgeEnable": true,
+  "purgeExtractor": [Function],
+  "purgeSafeList": Array [
+    ":root",
+    ":host",
+    ":shadow",
+    "/deep/",
+    "::part",
+    "::theme",
+  ],
+  "stripComments": true,
+  "tailwindConf": Object {
+    "darkMode": false,
+    "mode": "jit",
+    "plugins": Array [],
+    "purge": Array [],
+  },
+  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
+  "tailwindCssPath": undefined,
+}
+`;
