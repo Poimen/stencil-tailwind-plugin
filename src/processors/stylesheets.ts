@@ -4,7 +4,7 @@ import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/ts
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
 import { getAllExternalCssForInjection } from '../store/store';
 
-async function transformStyleStatement(sourceFile: SourceFile, fileName: string) {
+async function transformStyleStatement(sourceFile: SourceFile, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
   // variable statement in the file. As such there is no clean way of detecting this, so just go grab the
   // first statement
@@ -16,12 +16,12 @@ async function transformStyleStatement(sourceFile: SourceFile, fileName: string)
     makeMatcher(SyntaxKind.StringLiteral)
   ];
 
-  const injectedCss = getAllExternalCssForInjection(fileName);
+  const injectedCss = getAllExternalCssForInjection(filename);
 
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(fileName, originalCss);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, originalCss);
 
     cssNode.text = injectedCss + tailwindClasses;
   };
@@ -33,11 +33,11 @@ async function transformStyleStatement(sourceFile: SourceFile, fileName: string)
   return printer.printFile(sourceFile);
 }
 
-export async function transform(sourceText: string, fileName: string): Promise<string> {
-  log.debug('[Stylesheets]', 'Processing source file:', fileName);
+export async function transform(sourceText: string, filename: string): Promise<string> {
+  log.debug('[Stylesheets]', 'Processing source file:', filename);
 
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
-  const transformed = await transformStyleStatement(sourceFile, fileName);
+  const transformed = await transformStyleStatement(sourceFile, filename);
 
   return transformed;
 }
