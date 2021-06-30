@@ -23,7 +23,7 @@ function getPostCssPlugins(conf: pluginConf.PluginConfigOpts, relativePath: stri
   }
 
   if (conf.minify) {
-    postcssPlugins.push(cssnano());
+    postcssPlugins.push(cssnano() as AcceptedPlugin);
   }
 
   if (conf.stripComments) {
