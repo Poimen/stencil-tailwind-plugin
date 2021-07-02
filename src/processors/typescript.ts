@@ -23,7 +23,7 @@ function reWriteStyleForGetAccessor(sourceFile: SourceFile, css: string) {
   const returnStatementRewriter = (node: Node) => {
     const returnStatement = node as ReturnStatement;
     const originalExpression = returnStatement.expression as Identifier;
-    return ts.factory.updateReturnStatement(returnStatement, ts.factory.createIdentifier(`'${css};' + ${originalExpression.escapedText}`));
+    return ts.factory.updateReturnStatement(returnStatement, ts.factory.createIdentifier(`${originalExpression.escapedText} + '${css}'`));
   };
 
   return transformNodeWith(sourceFile, getAccessorPath, returnStatementRewriter);
@@ -39,7 +39,7 @@ function reWriteStylePropertyAssignment(sourceFile: SourceFile, css: string) {
     makeMatcher(SyntaxKind.BinaryExpression)
   ];
 
-  const createNewIdentifier = (origValue: ts.__String) => ts.factory.createIdentifier(`'${css};' + ${origValue}`);
+  const createNewIdentifier = (origValue: ts.__String) => ts.factory.createIdentifier(`${origValue} + '${css}'`);
 
   const binaryExpressionRewriter = (node: Node) => {
     const binaryStatement = node as BinaryExpression;
