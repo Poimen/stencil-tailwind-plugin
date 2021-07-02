@@ -1,10 +1,10 @@
 import { transform } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
-import * as conf from '../../config/pluginConfiguration';
+import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 
 describe('style-component', () => {
   beforeEach(() => {
-    conf.configurePluginOptions(conf.PluginConfigDefaults.DEFAULT);
+    configurePluginOptions(PluginConfigDefaults.DEFAULT);
   });
 
   it('given style component with no tailwindcss styles, should output unaltered styles', async () => {

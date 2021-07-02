@@ -1,5 +1,5 @@
 import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
-import * as log from '../debug/logger';
+import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
 import { getAllExternalCssForInjection } from '../store/store';
@@ -35,7 +35,7 @@ async function transformStyleStatement(sourceFile: SourceFile, filename: string)
 }
 
 export async function transform(sourceText: string, filename: string): Promise<string> {
-  log.debug('[Stylesheets]', 'Processing source file:', filename);
+  debug('[Stylesheets]', 'Processing source file:', filename);
 
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
   const transformed = await transformStyleStatement(sourceFile, filename);

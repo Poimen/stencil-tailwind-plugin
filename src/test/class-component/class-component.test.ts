@@ -1,10 +1,10 @@
 import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
-import * as conf from '../../config/pluginConfiguration';
+import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 
 describe('class-component', () => {
   beforeEach(() => {
-    conf.configurePluginOptions(conf.PluginConfigDefaults.DEFAULT);
+    configurePluginOptions(PluginConfigDefaults.DEFAULT);
   });
 
   it('given class component with no tailwindcss styles, should output unaltered styles', async () => {

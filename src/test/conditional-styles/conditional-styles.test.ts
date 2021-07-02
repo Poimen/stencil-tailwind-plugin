@@ -1,10 +1,10 @@
 import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
-import * as conf from '../../config/pluginConfiguration';
+import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 
 describe('conditional-styles-component', () => {
   beforeEach(() => {
-    conf.configurePluginOptions(conf.PluginConfigDefaults.DEFAULT);
+    configurePluginOptions(PluginConfigDefaults.DEFAULT);
   });
 
   it('given basic component with conditional tailwindcss styles, should output tailwind styles', async () => {

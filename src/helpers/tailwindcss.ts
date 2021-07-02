@@ -7,7 +7,7 @@ import postcss, { AcceptedPlugin } from 'postcss';
 import combine from 'postcss-combine-duplicated-selectors';
 import sortMediaQueries from 'postcss-sort-media-queries';
 import { makeTailwindConfig, getConfiguration } from '../config/pluginConfiguration';
-import * as log from '../debug/logger';
+import { debug } from '../debug/logger';
 import { PluginConfigOpts } from '../index';
 
 function stripCommentsPlugin() {
@@ -76,7 +76,7 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
 
   const css = applyRawEscaping(result.css, conf.minify);
 
-  log.debug('[TW]', 'Tailwind styles:', css);
+  debug('[TW]', 'Tailwind styles:', css);
 
   return css;
 }

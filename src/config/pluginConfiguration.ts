@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { PluginConfigOpts, PluginConfigOptsDefaults } from '../index';
-import * as log from '../debug/logger';
+import { warn } from '../debug/logger';
 
 let _configuration: PluginConfigOpts | undefined;
 
@@ -61,7 +61,7 @@ function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
   const tailwindCssContents = fs.readFileSync(path.resolve(tailwindCssPath)).toString();
 
   if (tailwindCssContents.length === 0) {
-    log.warn('No css found when reading Tailwind configuration css - path', tailwindCssPath);
+    warn('No css found when reading Tailwind configuration css - path', tailwindCssPath);
     return null;
   }
 

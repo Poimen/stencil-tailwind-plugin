@@ -1,19 +1,19 @@
 import { TransformResult } from 'rollup';
 import PQueue from 'p-queue';
-import * as log from './debug/logger';
+import { debug, error } from './debug/logger';
 import { transform as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
 
 export function buildStart(): void {
-  log.debug('Starting build');
+  debug('Starting build');
 }
 
 export function buildEnd(err?: Error): void {
   if (err) {
-    log.error('Oh noes! Something went wrong!', err.message);
-    log.error(err.stack);
+    error('Oh noes! Something went wrong!', err.message);
+    error(err.stack);
   }
-  log.debug('Build completed');
+  debug('Build completed');
 }
 
 function useStyleSheetTransform(filename: string) {

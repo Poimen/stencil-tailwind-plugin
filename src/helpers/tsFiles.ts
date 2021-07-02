@@ -1,5 +1,5 @@
 import ts, { ModifierSyntaxKind, Node, ScriptTarget, SourceFile, SyntaxKind, TransformationContext, TransformerFactory, Transformer } from 'typescript';
-import * as log from '../debug/logger';
+import { debug } from '../debug/logger';
 
 export interface TransformedResult {
   found: boolean;
@@ -89,7 +89,7 @@ function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): T
 
   return function(context: TransformationContext): Transformer<Node> {
     function visit(node: Node): Node | Array<Node> {
-      log.debug('[Typescript]', 'Visiting ' + SyntaxKind[node.kind]);
+      debug('[Typescript]', 'Visiting ' + SyntaxKind[node.kind]);
 
       if (doesMatch(node, treeLevel)) {
         treeLevel++;
@@ -97,7 +97,7 @@ function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): T
           return action(node);
         }
 
-        log.debug('[Typescript]', 'Moving to next tree level', treeLevel, 'looking for', SyntaxKind[walkPath[treeLevel].nodeKind]);
+        debug('[Typescript]', 'Moving to next tree level', treeLevel, 'looking for', SyntaxKind[walkPath[treeLevel].nodeKind]);
         node = ts.visitEachChild(node, visit, context);
         return node;
       }
@@ -115,7 +115,7 @@ export function transformNodeWith(sourceFile: SourceFile, walkPath: ASTMatcher[]
   let foundNodeInTree = false;
 
   function foundNodeInAST(node: Node) {
-    log.debug('Found Node, calling user processing');
+    debug('Found Node, calling user processing');
     foundNodeInTree = true;
 
     return userAction(node);

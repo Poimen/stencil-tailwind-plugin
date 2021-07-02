@@ -1,8 +1,8 @@
 import { Plugin } from 'rollup';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
-import * as conf from './config/pluginConfiguration';
+import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
-import * as plugin from './plugin';
+import { buildStart, transform, buildEnd } from './plugin';
 
 export interface PluginConfigOpts {
   enableDebug?: boolean;
@@ -20,12 +20,12 @@ export interface PluginConfigOptsDefaults {
   DEFAULT: PluginConfigOpts
 }
 
-export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(conf.PluginConfigDefaults);
+export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDefaults);
 
 function configureOptions(opts?: PluginConfigOpts) {
   const options = Object.assign({}, PluginOpts.DEFAULT, opts);
 
-  conf.configurePluginOptions(options);
+  configurePluginOptions(options);
   configureLogging(options.enableDebug);
 }
 
@@ -34,8 +34,8 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
 
   return {
     name: 'tailwind',
-    buildStart: plugin.buildStart,
-    transform: plugin.transform,
-    buildEnd: plugin.buildEnd
+    buildStart: buildStart,
+    transform: transform,
+    buildEnd: buildEnd
   };
 }

@@ -1,5 +1,5 @@
 import path from 'path';
-import * as log from '../debug/logger';
+import { debug } from '../debug/logger';
 
 interface ImportFileReference {
   imports: string[];
@@ -20,13 +20,13 @@ function makeFileReference(fileRef: string) {
 }
 
 export function registerImportForFile(filenameRef: string, importedFilename: string): void {
-  log.debug('[STORE]', 'Registering import', importedFilename, 'against', filenameRef);
+  debug('[STORE]', 'Registering import', importedFilename, 'against', filenameRef);
   const importRef = makeFileReference(filenameRef);
   importRef.imports.push(importedFilename);
 }
 
 export function registerCssForInjection(filenameRef: string, css: string): void {
-  log.debug('[STORE]', 'Registering css for', filenameRef, 'against', css);
+  debug('[STORE]', 'Registering css for', filenameRef, 'against', css);
 
   // When we register css against a filename reference, the filename reference is the file that we are presently processing
   // so need to cross reference this filename reference with all the imports to find where this file is imported. That import
@@ -36,20 +36,20 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   const importName = path.join(file.dir, file.name);
   Object.entries(_importFileReferences).forEach(([_, v]) => {
     if (v.imports.includes(importName)) {
-      log.debug('[STORE]', 'Found cross reference for imported file', importName, 'to store css against');
+      debug('[STORE]', 'Found cross reference for imported file', importName, 'to store css against');
       v.css += css;
     }
   });
 }
 
 export function getAllExternalCssForInjection(filenameRef: string): string {
-  log.debug('[STORE]', 'Looking up import of', filenameRef);
+  debug('[STORE]', 'Looking up import of', filenameRef);
 
   let cssInjection = '';
 
   Object.entries(_importFileReferences).forEach(([k, v]) => {
     if (v.imports.includes(filenameRef)) {
-      log.debug('[STORE]', 'Found imported file to store grab css to inject', k);
+      debug('[STORE]', 'Found imported file to store grab css to inject', k);
       cssInjection += v.css;
     }
   });

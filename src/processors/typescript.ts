@@ -1,6 +1,6 @@
 import path from 'path';
 import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, StringLiteral, SyntaxKind, ObjectLiteralExpression, PropertyAssignment } from 'typescript';
-import * as log from '../debug/logger';
+import { debug, warn, error } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
 import { registerCssForInjection, registerImportForFile } from '../store/store';
@@ -72,10 +72,10 @@ function reWriteStylePropertyAssignment(sourceFile: SourceFile, css: string) {
           createNewIdentifier(originalExpression.escapedText)
         );
       } else {
-        log.warn('[Typescript]', 'Found a binary expression but', binaryStatement.right.kind, 'is not currently handled');
+        warn('[Typescript]', 'Found a binary expression but', binaryStatement.right.kind, 'is not currently handled');
       }
     }
-    log.error('[Typescript]', 'Found a binary statement, but failed to match it to style!');
+    error('[Typescript]', 'Found a binary statement, but failed to match it to style!');
     return node;
   };
 
@@ -117,11 +117,17 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
 }
 
 function preserveTailwindCssEscaping(css: string) {
+  // Tailwind JIT syntax needs to escape the '#', '[', ']', etc. in the css output. When writing
+  // the escaped characters, the tailwind escaping is lost as the string output doesn't keep the
+  // escaping as it doesn't know that they should be escaped in css.
+  //
+  // This replacement ensures the escaped characters from tailwind are kept escaped so the ending css
+  // is correct when applied to styles in css.
   return css.replace(/\\/g, '\\\\');
 }
 
 export async function transform(sourceText: string, filename: string): Promise<string> {
-  log.debug('[Typescript]', 'Processing source file:', filename);
+  debug('[Typescript]', 'Processing source file:', filename);
 
   // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
   const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, true);
