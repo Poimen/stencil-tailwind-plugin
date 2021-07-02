@@ -54,12 +54,10 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
   //
   // This replacement ensures the escaped characters from tailwind are kept escaped so the ending css
   // is correct when applied to styles in css.
-  let css = result.css.replace(/\\/g, '\\\\');
+  const css = result.css.replace(/\\/g, '\\\\');
 
-  if (conf.stripComments) {
-    // For whatever reason discard comments leaves blocks of `/*!*/ /*!*/` in the code, but removes other comments - post strip these if required
-    css = result.css.replace(/\/\*!\*\/ \/\*!\*\//g, '');
-  }
+  // For whatever reason discard comments leaves blocks of `/*!*/ /*!*/` in the code, but removes other comments - post strip these if required
+  // css = result.css.replace(/\/\*!\*\/ \/\*!\*\//g, '');
 
   log.debug('[TW]', 'Tailwind styles:', css);
 
