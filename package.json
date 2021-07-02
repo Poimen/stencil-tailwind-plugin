@@ -38,7 +38,9 @@
     "chalk": "^4.1.1",
     "cssnano": "^5.0.6",
     "postcss": "^8.3.5",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-discard-comments": "^5.0.1",
+    "postcss-sort-media-queries": "^3.11.12",
     "tailwindcss": "^2.2.4",
     "typescript": "^4.3.4"
   },

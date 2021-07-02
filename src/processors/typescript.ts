@@ -116,6 +116,10 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
   };
 }
 
+function preserveTailwindCssEscaping(css: string) {
+  return css.replace(/\\/g, '\\\\');
+}
+
 export async function transform(sourceText: string, filename: string): Promise<string> {
   log.debug('[Typescript]', 'Processing source file:', filename);
 
@@ -127,10 +131,12 @@ export async function transform(sourceText: string, filename: string): Promise<s
     return sourceText;
   }
 
+  const escapedCss = preserveTailwindCssEscaping(tailwindClasses);
+
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
   registerAllImports(sourceFile, filename);
 
-  const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, tailwindClasses);
+  const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, escapedCss);
 
   if (!emitResult.transformed) {
     // No placeholder for the css found - register this css for a later style import

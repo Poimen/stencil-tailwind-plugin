@@ -1,8 +1,8 @@
 import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
 import * as log from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
-import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
-// import { getAllExternalCssForInjection } from '../store/store';
+import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
+import { getAllExternalCssForInjection } from '../store/store';
 
 async function transformStyleStatement(sourceFile: SourceFile, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
@@ -16,18 +16,15 @@ async function transformStyleStatement(sourceFile: SourceFile, filename: string)
     makeMatcher(SyntaxKind.StringLiteral)
   ];
 
-  // After solving the race condition on the build, stencil 2.6 seems to
-  // be correctly doing this injection. Leaving this code here for now for
-  // further testing
-  // const injectedCss = getAllExternalCssForInjection(filename);
-
+  // Grab any css that needs to be injected by functional components that this component imported
+  const injectedCss = getAllExternalCssForInjection(filename);
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
     const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, false, originalCss);
+    const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(filename, tailwindClasses, injectedCss);
 
-    // cssNode.text = injectedCss + tailwindClasses;
-    cssNode.text = tailwindClasses;
+    cssNode.text = reducedClasses;
   };
 
   const cssNode = walkTo(sourceFile, stringLiteralPath);

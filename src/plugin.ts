@@ -10,7 +10,7 @@ export function buildStart(): void {
 
 export function buildEnd(err?: Error): void {
   if (err) {
-    log.error('Something went wrong!', err.message);
+    log.error('Oh noes! Something went wrong!', err.message);
     log.error(err.stack);
   }
   log.debug('Build completed');

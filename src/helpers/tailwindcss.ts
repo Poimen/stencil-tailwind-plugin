@@ -4,12 +4,42 @@ import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
-import * as pluginConf from '../config/pluginConfiguration';
+import combine from 'postcss-combine-duplicated-selectors';
+import sortMediaQueries from 'postcss-sort-media-queries';
+import { makeTailwindConfig, getConfiguration } from '../config/pluginConfiguration';
 import * as log from '../debug/logger';
 import { PluginConfigOpts } from '../index';
 
+function stripCommentsPlugin() {
+  return discardComments({
+    removeAll: true
+  });
+}
+
+function getMinifyPlugins(): AcceptedPlugin[] {
+  return [
+    sortMediaQueries(),
+    combine(),
+    cssnano() as AcceptedPlugin
+  ];
+}
+
+function applyRawEscaping(css: string, wasMinified: boolean): string {
+  if (wasMinified) {
+    // cssnano would have escaped most things...
+    return css;
+  }
+
+  // cssnano was not run, do some basic escaping
+  return css
+    .replace(/\n/g, '')
+    .replace(/'/g, '"')
+    .replace(/`/g, '\\`')
+    .replace(/\t/g, ' ');
+}
+
 function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPurge: boolean): AcceptedPlugin[] {
-  const twConf = pluginConf.makeTailwindConfig([relativePath]);
+  const twConf = makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
     tailwindcss(twConf)
@@ -24,22 +54,18 @@ function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPu
   }
 
   if (conf.minify) {
-    postcssPlugins.push(cssnano() as AcceptedPlugin);
+    postcssPlugins.push(...getMinifyPlugins());
   }
 
   if (conf.stripComments) {
-    postcssPlugins.push(
-      discardComments({
-        removeAll: true
-      })
-    );
+    postcssPlugins.push(stripCommentsPlugin());
   }
 
   return postcssPlugins;
 }
 
 export async function processSourceTextForTailwindInlineClasses(filename: string, allowPurge: boolean, sourceText?: string): Promise<string> {
-  const conf = pluginConf.getConfiguration();
+  const conf = getConfiguration();
   const cssToProcess = sourceText ?? conf.tailwindCssContents;
 
   const relativePath = path.join('.', path.relative(process.cwd(), filename));
@@ -48,18 +74,29 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
 
-  // Tailwind JIT syntax needs to escape the '#', '[', ']', etc. in the css output. When writing
-  // the escaped characters, the tailwind escaping is lost as the string output doesn't keep the
-  // escaping as it doesn't know that they should be escaped in css.
-  //
-  // This replacement ensures the escaped characters from tailwind are kept escaped so the ending css
-  // is correct when applied to styles in css.
-  const css = result.css.replace(/\\/g, '\\\\');
-
-  // For whatever reason discard comments leaves blocks of `/*!*/ /*!*/` in the code, but removes other comments - post strip these if required
-  // css = result.css.replace(/\/\*!\*\/ \/\*!\*\//g, '');
+  const css = applyRawEscaping(result.css, conf.minify);
 
   log.debug('[TW]', 'Tailwind styles:', css);
 
   return css;
+}
+
+export async function reduceDuplicatedClassesFromFunctionalComponentInjection(filename: string, componentCss: string, injectCss: string): Promise<string> {
+  const { minify, stripComments } = getConfiguration();
+  const cssToProcess = componentCss + injectCss;
+
+  if (!minify || injectCss.length === 0) {
+    return cssToProcess;
+  }
+
+  const relativePath = path.join('.', path.relative(process.cwd(), filename));
+
+  const postcssPlugins = getMinifyPlugins();
+
+  if (stripComments) {
+    postcssPlugins.push(stripCommentsPlugin());
+  }
+  const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
+
+  return result.css;
 }
