@@ -46,7 +46,7 @@ There are also a number of options that can be given to the plugin:
 
 | Property          | Description                                               | Default      |
 | ----------------- | --------------------------------------------------------- | ------------ |
-| `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilites and @components are used. | `undefined`  |
+| `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilities and @components are used. | `undefined`  |
 | `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as teh source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
 | `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
@@ -213,6 +213,21 @@ If `common/UtilsFunctionalComponents.tsx` is updated, neither `component-A.tsx` 
 ## Caveat on base reset styles
 
 This plugin does not include base tailwind reset styles as this would bloat all the components with base styles. If based reset styles are required, the best is to place them in the `:host` selector. The plugin keeps the `:host` selector for being purged.
+
+## Peer Dependencies
+
+This plugin requires the following peer dependencies:
+  - @fullhuman/postcss-purgecss
+  - chalk
+  - cssnano
+  - postcss
+  - postcss-combine-duplicated-selectors
+  - postcss-discard-comments
+  - postcss-sort-media-queries
+  - tailwindcss
+  - typescript
+
+These are provided as peer dependencies so consumers can override the versions.
 
 ## Development
 
