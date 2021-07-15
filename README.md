@@ -217,13 +217,6 @@ This plugin does not include base tailwind reset styles as this would bloat all 
 ## Peer Dependencies
 
 This plugin requires the following peer dependencies:
-  - @fullhuman/postcss-purgecss
-  - chalk
-  - cssnano
-  - postcss
-  - postcss-combine-duplicated-selectors
-  - postcss-discard-comments
-  - postcss-sort-media-queries
   - tailwindcss
   - typescript
 
