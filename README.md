@@ -22,6 +22,11 @@ npm install -D stencil-tailwind-plugin
 
 Tailwind is provided by a peer dependency so tailwind can be installed separately as well, if required.
 
+For lower versions of npm (below v7) and yarn, peer dependencies are not automatically installed, so install the dependencies:
+```bash
+npm install -D tailwindcss typescript
+```
+
 ### Configuration
 
 In the Stencil configuration, consume the plugin:
