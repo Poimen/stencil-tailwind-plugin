@@ -46,6 +46,7 @@
     "postcss": "^8.3.5",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-discard-comments": "^5.0.1",
+    "postcss-import": "^14.0.2",
     "postcss-sort-media-queries": "^3.11.12"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
 import combine from 'postcss-combine-duplicated-selectors';
 import sortMediaQueries from 'postcss-sort-media-queries';
+import atImport from 'postcss-import';
 import { makeTailwindConfig, getConfiguration } from '../config/pluginConfiguration';
 import { debug } from '../debug/logger';
 import { PluginConfigOpts } from '../index';
@@ -42,6 +43,7 @@ function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPu
   const twConf = makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
+    atImport(),
     tailwindcss(twConf)
   ];
 
