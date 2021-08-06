@@ -1,4 +1,5 @@
 import { Plugin } from 'rollup';
+import { AtImportOptions } from 'postcss-import';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
@@ -13,7 +14,8 @@ export interface PluginConfigOpts {
   minify?: boolean;
   enablePurge?: boolean;
   purgeSafeList?: string[];
-  purgeExtractor?: (content: string) => string[]
+  purgeExtractor?: (content: string) => string[],
+  atImportConf?: AtImportOptions;
 }
 
 export interface PluginConfigOptsDefaults {

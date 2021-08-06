@@ -43,7 +43,7 @@ function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPu
   const twConf = makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
-    atImport(),
+    atImport(conf.atImportConf),
     tailwindcss(twConf)
   ];
 

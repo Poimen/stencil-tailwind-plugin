@@ -44,7 +44,8 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
       const innerMatches = content.match(/[^<>"'`\s.(){}[\]#=%]*[^<>"'`\s.(){}[\]#=%:]/g) || [];
 
       return broadMatches.concat(broadMatchesWithoutTrailingSlash).concat(innerMatches);
-    }
+    },
+    atImportConf: {}
   }
 };
 
