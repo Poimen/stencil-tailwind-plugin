@@ -59,6 +59,7 @@ There are also a number of options that can be given to the plugin:
 | `enablePurge` | Indicate if the css should be purged using `purgecss`. In some cases the purging may introduce loss of class so the plugin add the ability to customise the purge process or disable it altogether | `true`   |
 | `purgeSafeList` | Set the `purgecss` safelist of selectors to consider | Web component pseudo styles (`:root`/`:host`/etc.)    |
 | `purgeExtractor` | Default extractor function to use. See `purgecss` documentation when using this | A default purge selector regex generator function    |
+| `atImportConf` | Configuration object to be used for `postcss-import` when using import functions in css file passed to tailwind | An empty object |
 
 The default options can be referenced from the plugin as well:
 ```ts
