@@ -1,6 +1,8 @@
 import plugin, { PluginConfigOpts, PluginOpts } from '../../index';
 import { getConfiguration } from '../../config/pluginConfiguration';
 import { isDebugEnabled } from '../../debug/logger';
+import { processSourceTextForTailwindInlineClasses } from '../../helpers/tailwindcss';
+import { loadTestComponent } from '../utils';
 
 describe('configuration', () => {
   it('given configuration should set options', () => {
@@ -41,5 +43,23 @@ describe('configuration', () => {
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
     expect(isDebugEnabled()).toBe(false);
+  });
+
+  it('given configuration that does imports to another css file, should set options', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
+    const opts: PluginConfigOpts = {
+      tailwindCssPath: 'src/test/configuration/tailwind.atimport.css',
+      atImportConf: {
+        path: [
+          'src/test/configuration'
+        ]
+      }
+    };
+    // Act
+    plugin(opts);
+    // Assert
+    expect(getConfiguration()).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
   });
 });
