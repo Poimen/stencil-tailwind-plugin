@@ -60,6 +60,8 @@ There are also a number of options that can be given to the plugin:
 | `purgeSafeList` | Set the `purgecss` safelist of selectors to consider | Web component pseudo styles (`:root`/`:host`/etc.)    |
 | `purgeExtractor` | Default extractor function to use. See `purgecss` documentation when using this | A default purge selector regex generator function    |
 | `atImportConf` | Configuration object to be used for `postcss-import` when using import functions in css file passed to tailwind | An empty object |
+| `autoprefixerOptions` | Configuration object to be used for `autoprefixer` postcss plugin | An empty object |
+| `postcssConfig` | Path to postcss configuration object. This is optional and will use `postcss` configuration if found | `process.cwd()` |
 
 The default options can be referenced from the plugin as well:
 ```ts
@@ -77,6 +79,29 @@ export const config: Config = {
 };
 ```
 
+### Postcss custom configuration
+
+There are a number of `postcss` plugins that might be wanted when processing the tailwind output specifically. The nature of the stencil build makes it difficult to pass the custom css directly back into the css pipeline building. Hence, the `postcss` configuration can be completely overridden by specifying the `postcss` configuration path, or by creating a `postcss` configuration file.
+
+The plugin uses the default `postcss-load-config` [package](https://github.com/postcss/postcss-load-config). Hence, any the configuration options can be used as a file. If a `postcss` configuration file exists in the `process.cwd()`, then that `postcss` configuration will be used over the built-in `postcss` configuration.
+
+The `postcssConfig` can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
+
+As an example of a `postcss` configuration that could be used:
+```js
+// postcss.config.js
+module.exports = {
+  plugins: [
+    require('postcss-import'),
+    require('tailwindcss'),
+    require('autoprefixer'),
+    require('postcss-sort-media-queries'),
+    require('postcss-combine-duplicated-selectors'),
+    require('cssnano')
+  ]
+};
+```
+
 ### Configuration with other plugins
 
 It is important to note that when using `sass` files, that the `sass` Stencil plugin appears before the tailwind plugin. The `sass` plugin needs to process the `sass` files first before the raw `css` is pasted to the tailwind postcss processor. An example configuration could look like:
@@ -86,7 +111,6 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 import { postcss } from '@stencil/postcss';
 import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
 import tailwind from 'stencil-tailwind-plugin';
 import { inlineSvg } from 'stencil-inline-svg';
 import tailwindConfig from './tailwind.config';
@@ -106,8 +130,7 @@ export const config: Config = {
     }),
     postcss({
       plugins: [
-        autoprefixer(),
-        cssnano()
+        autoprefixer()
       ]
     })
   ]

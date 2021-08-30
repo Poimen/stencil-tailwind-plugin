@@ -8,7 +8,7 @@ export const ModeComponent = class {
     __stencil_registerInstance(this, hostRef);
   }
   render() {
-    return (h(Host, null, h("div", { class: "flex flex-row-reverse" }, h("slot", null))));
+    return (h(Host, null, h("div", { class: "flex flex-row-reverse autoplacement-example" }, h("slot", null))));
   }
 };
 ModeComponent.style = {

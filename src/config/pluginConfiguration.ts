@@ -45,7 +45,8 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
 
       return broadMatches.concat(broadMatchesWithoutTrailingSlash).concat(innerMatches);
     },
-    atImportConf: {}
+    atImportConf: {},
+    autoprefixerOptions: {}
   }
 };
 
@@ -54,8 +55,8 @@ export function getConfiguration(): PluginConfigOpts {
 }
 
 export function makeTailwindConfig(purgeFileList: string[]): TailwindConfig {
-  _configuration.tailwindConf.purge = purgeFileList;
-  return _configuration.tailwindConf;
+  const twConf = Object.assign({}, _configuration.tailwindConf, { purge: purgeFileList });
+  return twConf;
 }
 
 function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
@@ -70,7 +71,7 @@ function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
 }
 
 export function configurePluginOptions(opts: PluginConfigOpts) : void {
-  _configuration = opts;
+  _configuration = Object.assign({}, opts);
 
   if (_configuration.tailwindCssPath) {
     _configuration.tailwindCssContents = fetchTailwindCssContents(_configuration.tailwindCssPath) ?? _configuration.tailwindCssContents;
