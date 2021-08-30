@@ -34,40 +34,41 @@
   },
   "homepage": "https://github.com/Poimen/stencil-tailwind-plugin#readme",
   "peerDependencies": {
-    "tailwindcss": "^2.2.4",
-    "typescript": "^4.3.4"
+    "tailwindcss": "^2.2.9",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.3",
-    "chalk": "^4.1.1",
-    "cssnano": "^5.0.6",
+    "autoprefixer": "^10.3.3",
+    "chalk": "^4.1.2",
+    "cssnano": "^5.0.8",
     "fs-extra": "^10.0.0",
     "p-queue": "^6.6.2",
-    "postcss": "^8.3.5",
+    "postcss": "^8.3.6",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-discard-comments": "^5.0.1",
     "postcss-import": "^14.0.2",
     "postcss-sort-media-queries": "^3.11.12"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@types/cssnano": "^4.0.0",
-    "@types/fs-extra": "^9.0.11",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^15.12.5",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@types/cssnano": "^4.0.1",
+    "@types/fs-extra": "^9.0.12",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.7",
     "@types/postcss-import": "^12.0.1",
-    "@types/tailwindcss": "^2.2.0",
-    "@typescript-eslint/eslint-plugin": "^4.28.1",
-    "@typescript-eslint/parser": "^4.28.1",
-    "eslint": "^7.29.0",
+    "@types/tailwindcss": "^2.2.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.32.0",
     "eslint-config-semistandard": "^16.0.0",
     "eslint-config-standard": "^16.0.3",
-    "jest": "^27.0.6",
+    "jest": "^27.1.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.52.4",
+    "rollup": "^2.56.3",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
-    "ts-jest": "^27.0.3"
+    "ts-jest": "^27.0.5"
   }
 }
