@@ -83,6 +83,7 @@ async function tryGetPostcssUserConfig(conf: PluginConfigOpts) {
     }
     // No config file found, fallthrough to manually configuring postcss
     // fallthrough expected
+    debug('[TW]', 'No postcss configuration file found in:', configPath);
   }
   return null;
 }
