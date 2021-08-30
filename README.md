@@ -60,6 +60,7 @@ There are also a number of options that can be given to the plugin:
 | `purgeSafeList` | Set the `purgecss` safelist of selectors to consider | Web component pseudo styles (`:root`/`:host`/etc.)    |
 | `purgeExtractor` | Default extractor function to use. See `purgecss` documentation when using this | A default purge selector regex generator function    |
 | `atImportConf` | Configuration object to be used for `postcss-import` when using import functions in css file passed to tailwind | An empty object |
+| `autoprefixerOptions` | Configuration object to be used for `autoprefixer` postcss plugin | An empty object |
 
 The default options can be referenced from the plugin as well:
 ```ts
@@ -86,7 +87,6 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 import { postcss } from '@stencil/postcss';
 import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
 import tailwind from 'stencil-tailwind-plugin';
 import { inlineSvg } from 'stencil-inline-svg';
 import tailwindConfig from './tailwind.config';
@@ -106,8 +106,7 @@ export const config: Config = {
     }),
     postcss({
       plugins: [
-        autoprefixer(),
-        cssnano()
+        autoprefixer()
       ]
     })
   ]

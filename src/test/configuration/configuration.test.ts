@@ -9,7 +9,7 @@ describe('configuration', () => {
     // Arrange
     const opts: PluginConfigOpts = {
       enableDebug: true,
-      tailwindCssPath: 'src/test/configuration/tailwindcss.css',
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
       tailwindCssContents: '',
       tailwindConf: require('./tailwind.config'),
       stripComments: true,
@@ -54,6 +54,22 @@ describe('configuration', () => {
         path: [
           'src/test/configuration'
         ]
+      }
+    };
+    // Act
+    plugin(opts);
+    // Assert
+    expect(getConfiguration()).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
+  });
+
+  it('given configuration that specifies autoprefixer config, should set options', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
+    const opts: PluginConfigOpts = {
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      autoprefixerOptions: {
+        grid: 'autoplace'
       }
     };
     // Act

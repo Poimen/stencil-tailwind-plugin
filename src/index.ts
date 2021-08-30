@@ -1,5 +1,6 @@
 import { Plugin } from 'rollup';
 import { AtImportOptions } from 'postcss-import';
+import autoprefixer from 'autoprefixer';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
@@ -16,6 +17,7 @@ export interface PluginConfigOpts {
   purgeSafeList?: string[];
   purgeExtractor?: (content: string) => string[],
   atImportConf?: AtImportOptions;
+  autoprefixerOptions?: autoprefixer.Options;
 }
 
 export interface PluginConfigOptsDefaults {

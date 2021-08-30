@@ -60,8 +60,17 @@ Object {
     },
   },
   "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
 ",
-  "tailwindCssPath": "src/test/configuration/tailwindcss.css",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
 }
 `;
 
@@ -91,13 +100,57 @@ Object {
     "plugins": Array [],
     "purge": Array [],
   },
-  "tailwindCssContents": "@import 'tailwindcss.css';
+  "tailwindCssContents": "@import 'tailwind.css';
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.atimport.css",
 }
 `;
 
-exports[`configuration given configuration that does imports to another css file, should set options 2`] = `"/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com*//*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,:after,:before{border:0 solid;box-sizing:border-box}"`;
+exports[`configuration given configuration that does imports to another css file, should set options 2`] = `"/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com*//*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,:after,:before{border:0 solid;box-sizing:border-box}.autoplacement-example{grid-gap:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto}"`;
+
+exports[`configuration given configuration that specifies autoprefixer config, should set options 1`] = `
+Object {
+  "atImportConf": Object {},
+  "autoprefixerOptions": Object {
+    "grid": "autoplace",
+  },
+  "enableDebug": false,
+  "enablePurge": true,
+  "minify": true,
+  "purgeExtractor": [Function],
+  "purgeSafeList": Array [
+    ":root",
+    ":host",
+    ":shadow",
+    "/deep/",
+    "::part",
+    "::theme",
+  ],
+  "stripComments": false,
+  "tailwindConf": Object {
+    "darkMode": false,
+    "mode": "jit",
+    "plugins": Array [],
+    "purge": Array [
+      "src\\\\test\\\\configuration\\\\files\\\\config-component.tsx",
+    ],
+  },
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+}
+`;
+
+exports[`configuration given configuration that specifies autoprefixer config, should set options 2`] = `"/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com*//*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,:after,:before{border:0 solid;box-sizing:border-box}.autoplacement-example{-ms-grid-columns:1fr 20px 1fr;-ms-grid-rows:auto 20px auto;grid-gap:20px;display:-ms-grid;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.autoplacement-example>:first-child{-ms-grid-column:1;-ms-grid-row:1}.autoplacement-example>:nth-child(2){-ms-grid-column:3;-ms-grid-row:1}.autoplacement-example>:nth-child(3){-ms-grid-column:1;-ms-grid-row:3}.autoplacement-example>:nth-child(4){-ms-grid-column:3;-ms-grid-row:3}"`;
 
 exports[`configuration given modified default configuration should set default options 1`] = `
 Object {
