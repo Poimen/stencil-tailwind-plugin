@@ -3,6 +3,7 @@
 exports[`configuration given *no* configuration should set default options 1`] = `
 Object {
   "atImportConf": Object {},
+  "autoprefixerOptions": Object {},
   "enableDebug": false,
   "enablePurge": true,
   "minify": true,
@@ -30,6 +31,7 @@ Object {
 exports[`configuration given configuration should set options 1`] = `
 Object {
   "atImportConf": Object {},
+  "autoprefixerOptions": Object {},
   "enableDebug": true,
   "enablePurge": false,
   "minify": false,
@@ -78,9 +80,10 @@ exports[`configuration given configuration that does imports to another css file
 Object {
   "atImportConf": Object {
     "path": Array [
-      "src\\\\test\\\\configuration",
+      "src/test/configuration",
     ],
   },
+  "autoprefixerOptions": Object {},
   "enableDebug": false,
   "enablePurge": true,
   "minify": true,
@@ -98,7 +101,21 @@ Object {
     "darkMode": false,
     "mode": "jit",
     "plugins": Array [],
-    "purge": Array [],
+    "purge": Object {
+      "content": Array [
+        "./src/**/*.html",
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.tsx",
+      ],
+      "enabled": true,
+    },
+    "theme": Object {
+      "extend": Object {},
+    },
+    "variants": Object {
+      "extend": Object {},
+    },
   },
   "tailwindCssContents": "@import 'tailwind.css';
 ",
@@ -131,9 +148,21 @@ Object {
     "darkMode": false,
     "mode": "jit",
     "plugins": Array [],
-    "purge": Array [
-      "src\\\\test\\\\configuration\\\\files\\\\config-component.tsx",
-    ],
+    "purge": Object {
+      "content": Array [
+        "./src/**/*.html",
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.tsx",
+      ],
+      "enabled": true,
+    },
+    "theme": Object {
+      "extend": Object {},
+    },
+    "variants": Object {
+      "extend": Object {},
+    },
   },
   "tailwindCssContents": "@tailwind base;
 
@@ -150,8 +179,6 @@ Object {
 }
 `;
 
-exports[`configuration given configuration that specifies autoprefixer config, should set options 2`] = `"/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com*//*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,:after,:before{border:0 solid;box-sizing:border-box}.autoplacement-example{-ms-grid-columns:1fr 20px 1fr;-ms-grid-rows:auto 20px auto;grid-gap:20px;display:-ms-grid;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.autoplacement-example>:first-child{-ms-grid-column:1;-ms-grid-row:1}.autoplacement-example>:nth-child(2){-ms-grid-column:3;-ms-grid-row:1}.autoplacement-example>:nth-child(3){-ms-grid-column:1;-ms-grid-row:3}.autoplacement-example>:nth-child(4){-ms-grid-column:3;-ms-grid-row:3}"`;
-
 exports[`configuration given full postcss configuration, should override options 1`] = `
 Object {
   "atImportConf": Object {},
@@ -161,7 +188,7 @@ Object {
   "enableDebug": false,
   "enablePurge": true,
   "minify": true,
-  "postcssConfig": "C:\\\\git\\\\stencil-tailwind-plugin\\\\src\\\\test\\\\configuration\\\\postcss.config.js",
+  "postcssConfig": "src/test/configuration/postcss.config.js",
   "purgeExtractor": [Function],
   "purgeSafeList": Array [
     ":root",
@@ -176,9 +203,21 @@ Object {
     "darkMode": false,
     "mode": "jit",
     "plugins": Array [],
-    "purge": Array [
-      "src\\\\test\\\\configuration\\\\files\\\\config-component.tsx",
-    ],
+    "purge": Object {
+      "content": Array [
+        "./src/**/*.html",
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.tsx",
+      ],
+      "enabled": true,
+    },
+    "theme": Object {
+      "extend": Object {},
+    },
+    "variants": Object {
+      "extend": Object {},
+    },
   },
   "tailwindCssContents": "@import 'tailwind.css';
 ",
@@ -191,6 +230,7 @@ exports[`configuration given full postcss configuration, should override options
 exports[`configuration given modified default configuration should set default options 1`] = `
 Object {
   "atImportConf": Object {},
+  "autoprefixerOptions": Object {},
   "enableDebug": false,
   "enablePurge": true,
   "minify": true,
