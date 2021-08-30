@@ -18,6 +18,7 @@ export interface PluginConfigOpts {
   purgeExtractor?: (content: string) => string[],
   atImportConf?: AtImportOptions;
   autoprefixerOptions?: autoprefixer.Options;
+  postcssConfig?: string;
 }
 
 export interface PluginConfigOptsDefaults {

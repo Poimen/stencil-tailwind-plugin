@@ -1,3 +1,4 @@
+import path from 'path';
 import plugin, { PluginConfigOpts, PluginOpts } from '../../index';
 import { getConfiguration } from '../../config/pluginConfiguration';
 import { isDebugEnabled } from '../../debug/logger';
@@ -52,7 +53,7 @@ describe('configuration', () => {
       tailwindCssPath: 'src/test/configuration/tailwind.atimport.css',
       atImportConf: {
         path: [
-          'src/test/configuration'
+          path.join('src', 'test', 'configuration')
         ]
       }
     };
@@ -71,6 +72,25 @@ describe('configuration', () => {
       autoprefixerOptions: {
         grid: 'autoplace'
       }
+    };
+    // Act
+    plugin(opts);
+    // Assert
+    expect(getConfiguration()).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
+  });
+
+  it('given full postcss configuration, should override options', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
+    const opts: PluginConfigOpts = {
+      tailwindCssPath: 'src/test/configuration/tailwind.atimport.css',
+      // These configuration options should not be used, set for test purposes
+      autoprefixerOptions: {
+        grid: 'autoplace'
+      },
+      // This configuration should be used alone
+      postcssConfig: path.resolve(path.join('src', 'test', 'configuration', 'postcss.config.js'))
     };
     // Act
     plugin(opts);
