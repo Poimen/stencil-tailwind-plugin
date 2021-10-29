@@ -10,6 +10,7 @@ export interface ASTMatcher {
   nodeKind: SyntaxKind;
   name?: string;
   has?: ModifierSyntaxKind;
+  initializerKind?: SyntaxKind;
 }
 
 export type ASTMatchCallback = (node: Node) => Node;
@@ -22,7 +23,7 @@ export function loadTypescriptCodeFromMemory(code: string): SourceFile {
 function doesNodeMatch(walkPath: ASTMatcher[]) {
   return function(node: Node, treeLevel: number) {
     const pathNode = walkPath[treeLevel];
-    if (node.kind === pathNode.nodeKind) {
+    if (pathNode && node.kind === pathNode.nodeKind) {
       if (pathNode.has) {
         if (!node.modifiers) return false;
 
@@ -39,6 +40,10 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
 
       if (pathNode.name) {
         return node['name'] && node['name'].escapedText === pathNode.name;
+      }
+
+      if (pathNode.initializerKind) {
+        return node['initializer'] && node['initializer'].kind === pathNode.initializerKind;
       }
 
       return true;
@@ -77,8 +82,8 @@ export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCa
   return walkChildNodeTree(file);
 }
 
-export function makeMatcher(kind: SyntaxKind, name?: string, modifier?: ModifierSyntaxKind): ASTMatcher {
-  return { nodeKind: kind, name, has: modifier };
+export function makeMatcher(kind: SyntaxKind, { name, modifier, initializer }: { name?: string, modifier?: ModifierSyntaxKind, initializer?: SyntaxKind } = {}): ASTMatcher {
+  return { nodeKind: kind, name, has: modifier, initializerKind: initializer };
 }
 
 function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): TransformerFactory<Node> {
