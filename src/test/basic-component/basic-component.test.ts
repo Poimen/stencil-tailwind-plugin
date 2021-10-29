@@ -54,4 +54,14 @@ describe('basic-component', () => {
     // Assert
     expect(result).toMatchSnapshot();
   });
+
+  it('given basic component *with* tailwindcss styles but no style property, should keep css', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('basic-component', 'basic-no-style-component-tailwind.tsx');
+    configurePluginOptions(Object.assign({}, PluginConfigDefaults.DEFAULT, { minify: false }));
+    // Act
+    const result = await transform(loadedFile.text, loadedFile.path);
+    // Assert
+    expect(result).toMatchSnapshot();
+  });
 });
