@@ -32,8 +32,8 @@ npm install -D tailwindcss typescript
 In the Stencil configuration, consume the plugin:
 ```ts
 // stencil.config.ts
-import { Config } from '@stencil/core'
-import tailwind from 'proto-stencil-tailwind'
+import { Config } from '@stencil/core';
+import tailwind from 'stencil-tailwind-plugin';
 
 export const config: Config = {
   plugins: [
