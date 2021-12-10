@@ -8,9 +8,10 @@ let _configuration: PluginConfigOpts | undefined;
 
 function makeDefaultTailwindConf(): TailwindConfig {
   const twConf = {
-    mode: 'jit',
-    purge: [],
-    darkMode: false,
+    content: [],
+    theme: {
+      extend: {}
+    },
     plugins: []
   };
   // HACK! Current tailwind types don't have the 'jit' mode field so make the type
@@ -26,25 +27,6 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
     tailwindConf: makeDefaultTailwindConf(),
     stripComments: false,
     minify: true,
-    enablePurge: true,
-    purgeSafeList: [
-      ':root',
-      ':host',
-      ':shadow',
-      '/deep/',
-      '::part',
-      '::theme'
-    ],
-    purgeExtractor: function tailwindExtractor(content: string) {
-      // Capture as liberally as possible, including things like `h-(screen-1.5)`
-      const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
-      const broadMatchesWithoutTrailingSlash = broadMatches.map((match: string) => match.trimEnd().replace(/\\/g, ''));
-
-      // Capture classes within other delimiters like .block(class="w-1/2") in Pug
-      const innerMatches = content.match(/[^<>"'`\s.(){}[\]#=%]*[^<>"'`\s.(){}[\]#=%:]/g) || [];
-
-      return broadMatches.concat(broadMatchesWithoutTrailingSlash).concat(innerMatches);
-    },
     atImportConf: {},
     autoprefixerOptions: {}
   }
@@ -55,7 +37,7 @@ export function getConfiguration(): PluginConfigOpts {
 }
 
 export function makeTailwindConfig(purgeFileList: string[]): TailwindConfig {
-  const twConf = Object.assign({}, _configuration.tailwindConf, { purge: purgeFileList });
+  const twConf = Object.assign({}, _configuration.tailwindConf, { content: purgeFileList });
   return twConf;
 }
 
