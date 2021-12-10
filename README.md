@@ -1,9 +1,22 @@
 # stencil-tailwind-plugin
 
+# * NOTE * NOTE *
+
+With the release of Tailwind v3 there is some work that is required to support Tailwind v3. This work is on going in the branch `next`.
+
+Please switch to that branch if you need v3 support.
+
+The `v1` release of this plugin is on npm under the tag `next` if you would like to pull that.
+
+---
+
+### The Below is for v0.6+ on Tailwind v2
+
+#
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/poimen/stencil-tailwind-plugin/main-build)
 ![npm](https://img.shields.io/npm/v/stencil-tailwind-plugin)
 
-This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM.
+This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss v2.x in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM.
 
 This plugin also aims to allow users to make use of all the tailwindcss classes and postcss plugins like [@apply](https://tailwindcss.com/docs/functions-and-directives#apply). In such both styles of tailwindcss usage can be used in a single component. This plugin also aims to allow the use of object initialisers to conditionally set styles.
 
@@ -24,7 +37,7 @@ Tailwind is provided by a peer dependency so tailwind can be installed separatel
 
 For lower versions of npm (below v7) and yarn, peer dependencies are not automatically installed, so install the dependencies:
 ```bash
-npm install -D tailwindcss typescript
+npm install -D tailwindcss@2.2.9 typescript
 ```
 
 ### Configuration
