@@ -19,9 +19,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: tailwindFrozenConfig,
       stripComments: true,
-      minify: false,
-      enablePurge: false,
-      purgeSafeList: ['Im', 'safe']
+      minify: false
     };
     // Act
     const result = plugin(opts);
@@ -84,7 +82,6 @@ describe('configuration', () => {
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    // expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
   });
 
   it('given full postcss configuration, should override options', async () => {
@@ -104,6 +101,6 @@ describe('configuration', () => {
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, undefined)).toMatchSnapshot();
   });
 });

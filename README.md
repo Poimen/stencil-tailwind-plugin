@@ -56,9 +56,6 @@ There are also a number of options that can be given to the plugin:
 | `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
-| `enablePurge` | Indicate if the css should be purged using `purgecss`. In some cases the purging may introduce loss of class so the plugin add the ability to customise the purge process or disable it altogether | `true`   |
-| `purgeSafeList` | Set the `purgecss` safelist of selectors to consider | Web component pseudo styles (`:root`/`:host`/etc.)    |
-| `purgeExtractor` | Default extractor function to use. See `purgecss` documentation when using this | A default purge selector regex generator function    |
 | `atImportConf` | Configuration object to be used for `postcss-import` when using import functions in css file passed to tailwind | An empty object |
 | `autoprefixerOptions` | Configuration object to be used for `autoprefixer` postcss plugin | An empty object |
 | `postcssConfig` | Path to postcss configuration object. This is optional and will use `postcss` configuration if found | `process.cwd()` |

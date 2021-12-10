@@ -13,9 +13,6 @@ export interface PluginConfigOpts {
   tailwindConf?: TailwindConfig;
   stripComments?: boolean;
   minify?: boolean;
-  enablePurge?: boolean;
-  purgeSafeList?: string[];
-  purgeExtractor?: (content: string) => string[],
   atImportConf?: AtImportOptions;
   autoprefixerOptions?: autoprefixer.Options;
   postcssConfig?: string;
