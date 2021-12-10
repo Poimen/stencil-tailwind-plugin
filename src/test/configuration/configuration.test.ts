@@ -65,7 +65,7 @@ describe('configuration', () => {
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path)).toMatchSnapshot();
   });
 
   it('given configuration that specifies autoprefixer config, should set options', async () => {
@@ -101,6 +101,6 @@ describe('configuration', () => {
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, undefined)).toMatchSnapshot();
+    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path)).toMatchSnapshot();
   });
 });

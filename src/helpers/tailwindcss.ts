@@ -1,6 +1,5 @@
 import path from 'path';
 import discardComments from 'postcss-discard-comments';
-import purgecss from '@fullhuman/postcss-purgecss';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
 import postcss, { AcceptedPlugin } from 'postcss';
@@ -41,7 +40,7 @@ function applyRawEscaping(css: string, wasMinified: boolean): string {
     .replace(/\t/g, ' ');
 }
 
-function getDefaultPostcssPlugins(conf: PluginConfigOpts, relativePath: string, allowPurge: boolean): AcceptedPlugin[] {
+function getDefaultPostcssPlugins(conf: PluginConfigOpts, relativePath: string): AcceptedPlugin[] {
   const twConf = makeTailwindConfig([relativePath]);
 
   const postcssPlugins: AcceptedPlugin[] = [
@@ -49,14 +48,6 @@ function getDefaultPostcssPlugins(conf: PluginConfigOpts, relativePath: string, 
     tailwindcss(twConf),
     autoprefixer(conf.autoprefixerOptions)
   ];
-
-  if (allowPurge && conf.enablePurge) {
-    postcssPlugins.push(purgecss({
-      content: [relativePath],
-      safelist: conf.purgeSafeList,
-      defaultExtractor: conf.purgeExtractor
-    }));
-  }
 
   if (conf.minify) {
     postcssPlugins.push(...getMinifyPlugins());
@@ -88,24 +79,25 @@ async function tryGetPostcssUserConfig(conf: PluginConfigOpts) {
   return null;
 }
 
-async function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string, allowPurge: boolean): Promise<AcceptedPlugin[]> {
+async function getPostCssPlugins(conf: PluginConfigOpts, relativePath: string): Promise<AcceptedPlugin[]> {
   const config = await tryGetPostcssUserConfig(conf);
 
   if (config === null) {
-    return getDefaultPostcssPlugins(conf, relativePath, allowPurge);
+    return getDefaultPostcssPlugins(conf, relativePath);
   }
 
   return config;
 }
 
-export async function processSourceTextForTailwindInlineClasses(filename: string, allowPurge: boolean, sourceText?: string): Promise<string> {
+export async function processSourceTextForTailwindInlineClasses(filename: string, sourceText?: string): Promise<string> {
   const conf = getConfiguration();
   const cssToProcess = sourceText ?? conf.tailwindCssContents;
 
   const relativePath = path.join('.', path.relative(process.cwd(), filename));
 
-  const postcssPlugins = await getPostCssPlugins(conf, relativePath, allowPurge);
+  const postcssPlugins = await getPostCssPlugins(conf, relativePath);
 
+  console.log(cssToProcess)
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
 
   const css = applyRawEscaping(result.css, conf.minify);
