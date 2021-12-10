@@ -97,7 +97,6 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
 
   const postcssPlugins = await getPostCssPlugins(conf, relativePath);
 
-  console.log(cssToProcess)
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
 
   const css = applyRawEscaping(result.css, conf.minify);
