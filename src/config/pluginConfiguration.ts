@@ -36,8 +36,8 @@ export function getConfiguration(): PluginConfigOpts {
   return _configuration ?? PluginConfigDefaults.DEFAULT;
 }
 
-export function makeTailwindConfig(purgeFileList: string[]): TailwindConfig {
-  const twConf = Object.assign({}, _configuration.tailwindConf, { content: purgeFileList });
+export function makeTailwindConfig(contentFileList: string[]): TailwindConfig {
+  const twConf = Object.assign({}, _configuration.tailwindConf, { content: contentFileList });
   return twConf;
 }
 
