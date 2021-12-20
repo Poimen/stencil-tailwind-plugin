@@ -43,6 +43,7 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
       }
 
       if (pathNode.initializerKind) {
+        // eslint-disable-next-line dot-notation
         return node['initializer'] && node['initializer'].kind === pathNode.initializerKind;
       }
 
