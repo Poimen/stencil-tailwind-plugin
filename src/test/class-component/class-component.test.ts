@@ -25,7 +25,7 @@ describe('class-component', () => {
     expect(result).toMatchSnapshot();
   });
 
-  it('given class component *with* tailwindcss styles, should output tailwind styles', async () => {
+  it('given class component with tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('class-component', 'class-component-tailwind.tsx');
     // Act
@@ -34,7 +34,7 @@ describe('class-component', () => {
     expect(result).toMatchSnapshot();
   });
 
-  it('given class component *with* tailwindcss styles and other get accessors, should output tailwind styles only in style accessor', async () => {
+  it('given class component with tailwindcss styles and other get accessors, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('class-component', 'class-component-get-accessor-tailwind.tsx');
     // Act

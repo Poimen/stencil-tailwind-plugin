@@ -8,24 +8,6 @@ describe('functional-component', () => {
     configurePluginOptions(PluginConfigDefaults.DEFAULT);
   });
 
-  it('given functional component in same file as component, should output tailwind styles', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('functional-component', 'functional-component.tsx');
-    // Act
-    const result = await transformTypescript(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
-  it('given functional class component in the same file as component, should output tailwind styles', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('functional-component', 'functional-component-class.tsx');
-    // Act
-    const result = await transformTypescript(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
   it('given functional class component in imported file to component, should output tailwind styles from functional import and component', async () => {
     // Arrange
     const component = loadTestComponent('functional-component', 'externally-included-functional-component.tsx');

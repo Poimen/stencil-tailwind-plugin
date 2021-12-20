@@ -16,49 +16,9 @@ describe('basic-component', () => {
     expect(result).toMatchSnapshot();
   });
 
-  it('given basic component *with* tailwindcss styles, should output tailwind styles appended', async () => {
+  it('given basic component with tailwindcss styles, should output unaltered styles', async () => {
     // Arrange
     const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
-    // Act
-    const result = await transform(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
-  it('given basic component *with* tailwindcss styles, should strip comments', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
-    configurePluginOptions(Object.assign({}, PluginConfigDefaults.DEFAULT, { stripComments: true }));
-    // Act
-    const result = await transform(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
-  it('given basic component *with* tailwindcss styles but minify disabled, should keep css', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
-    configurePluginOptions(Object.assign({}, PluginConfigDefaults.DEFAULT, { minify: false }));
-    // Act
-    const result = await transform(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
-  it('given basic component *with* tailwindcss styles but minify and strip enabled, should keep css', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
-    configurePluginOptions(Object.assign({}, PluginConfigDefaults.DEFAULT, { minify: true, stripComments: true }));
-    // Act
-    const result = await transform(loadedFile.text, loadedFile.path);
-    // Assert
-    expect(result).toMatchSnapshot();
-  });
-
-  it('given basic component *with* tailwindcss styles but no style property, should keep css', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('basic-component', 'basic-no-style-component-tailwind.tsx');
-    configurePluginOptions(Object.assign({}, PluginConfigDefaults.DEFAULT, { minify: false }));
     // Act
     const result = await transform(loadedFile.text, loadedFile.path);
     // Assert
