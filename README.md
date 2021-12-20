@@ -1,22 +1,10 @@
 # stencil-tailwind-plugin
 
-# * NOTE * NOTE *
-
-With the release of Tailwind v3 there is some work that is required to support Tailwind v3. This work is on going in the branch `next`.
-
-Please switch to that branch if you need v3 support.
-
-The `v1` release of this plugin is on npm under the tag `next` if you would like to pull that.
-
----
-
-### The Below is for v0.6+ on Tailwind v2
-
 #
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/poimen/stencil-tailwind-plugin/main-build)
 ![npm](https://img.shields.io/npm/v/stencil-tailwind-plugin)
 
-This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss v2.x in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM.
+This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss v3.x and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM. For tailwind v2 support, please see the v0.6+ versions and branch.
 
 This plugin also aims to allow users to make use of all the tailwindcss classes and postcss plugins like [@apply](https://tailwindcss.com/docs/functions-and-directives#apply). In such both styles of tailwindcss usage can be used in a single component. This plugin also aims to allow the use of object initialisers to conditionally set styles.
 
@@ -30,14 +18,7 @@ This guide assumes that a Stencil project has already been initialized and confi
 
 Install the necessary dependencies:
 ```bash
-npm install -D stencil-tailwind-plugin
-```
-
-Tailwind is provided by a peer dependency so tailwind can be installed separately as well, if required.
-
-For lower versions of npm (below v7) and yarn, peer dependencies are not automatically installed, so install the dependencies:
-```bash
-npm install -D tailwindcss@2.2.9 typescript
+npm install -D stencil-tailwind-plugin tailwindcss
 ```
 
 ### Configuration
@@ -69,9 +50,8 @@ There are also a number of options that can be given to the plugin:
 | `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
-| `atImportConf` | Configuration object to be used for `postcss-import` when using import functions in css file passed to tailwind | An empty object |
-| `autoprefixerOptions` | Configuration object to be used for `autoprefixer` postcss plugin | An empty object |
-| `postcssConfig` | Path to postcss configuration object. This is optional and will use `postcss` configuration if found | `process.cwd()` |
+| `useAutoPrefixer` | Indicate if the auto-prefixer should be used used `autoprefixer` | `true`   |
+| `postcss` | Path to postcss configuration object or an object that contains the postcss configuration. If a `postcss` configuration is found in the default paths, it will be used. | `process.cwd()` |
 
 The default options can be referenced from the plugin as well:
 ```ts
@@ -95,7 +75,7 @@ There are a number of `postcss` plugins that might be wanted when processing the
 
 The plugin uses the default `postcss-load-config` [package](https://github.com/postcss/postcss-load-config). Hence, any the configuration options can be used as a file. If a `postcss` configuration file exists in the `process.cwd()`, then that `postcss` configuration will be used over the built-in `postcss` configuration.
 
-The `postcssConfig` can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
+The `postcss` config option can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
 
 As an example of a `postcss` configuration that could be used:
 ```js
@@ -112,6 +92,30 @@ module.exports = {
 };
 ```
 
+or as a Stencil configuration:
+```ts
+// stencil.config.ts
+import tailwind from 'stencil-tailwind-plugin';
+
+export const config: Config = {
+  // ...
+  plugins: [
+    tailwind({
+      postcss: {
+        plugins: [
+          require('postcss-import'),
+          require('tailwindcss'),
+          require('autoprefixer'),
+        ]
+      }
+    })
+  ],
+  // ...
+};
+```
+
+If the `tailwindcss` plugin is not specified, it is assumed that the plugins should be run _before_ the default tailwind options. The `tailwindcss` plugin options will be overwritten by the tailwind configuration provided by the plugin, hence, the postcss `tailwindcss` is used as a marker for where `tailwindcss` should be used in the `postcss` chain of plugins.
+
 ### Configuration with other plugins
 
 It is important to note that when using `sass` files, that the `sass` Stencil plugin appears before the tailwind plugin. The `sass` plugin needs to process the `sass` files first before the raw `css` is pasted to the tailwind postcss processor. An example configuration could look like:
@@ -119,7 +123,6 @@ It is important to note that when using `sass` files, that the `sass` Stencil pl
 // stencil.config.ts
 import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
-import { postcss } from '@stencil/postcss';
 import autoprefixer from 'autoprefixer';
 import tailwind from 'stencil-tailwind-plugin';
 import { inlineSvg } from 'stencil-inline-svg';
@@ -136,13 +139,13 @@ export const config: Config = {
     }),
     tailwind({
       tailwindCssPath: './src/styles/tailwind.pcss',
-      tailwindConf: tailwindConfig
+      tailwindConf: tailwindConfig,
+      postcss: {
+        plugins: [
+          autoprefixer()
+        ]
+      }
     }),
-    postcss({
-      plugins: [
-        autoprefixer()
-      ]
-    })
   ]
 ```
 
