@@ -4,7 +4,7 @@ import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/ts
 import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
 import { getAllExternalCssForInjection } from '../store/store';
 
-async function transformStyleStatement(sourceFile: SourceFile, filename: string) {
+async function transformStyleStatement(sourceFile: SourceFile, sourceText: string, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
   // variable statement in the file. As such there is no clean way of detecting this, so just go grab the
   // first statement
@@ -21,7 +21,7 @@ async function transformStyleStatement(sourceFile: SourceFile, filename: string)
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, originalCss);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, sourceText, originalCss);
     const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(filename, tailwindClasses, injectedCss);
 
     cssNode.text = reducedClasses;
@@ -38,7 +38,7 @@ export async function transform(sourceText: string, filename: string): Promise<s
   debug('[Stylesheets]', 'Processing source file:', filename);
 
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
-  const transformed = await transformStyleStatement(sourceFile, filename);
+  const transformed = await transformStyleStatement(sourceFile, sourceText, filename);
 
   return transformed;
 }

@@ -1,8 +1,29 @@
 import path from 'path';
-import postcss from 'postcss';
-import { getConfiguration } from '../config/pluginConfiguration';
+import postcss, { AcceptedPlugin } from 'postcss';
+import autoprefixer from 'autoprefixer';
+import tailwind from 'tailwindcss/lib/processTailwindFeatures'; // yeah, not great but there are mtimeMS detections that fail without reaching into the context directly
+import resolveConfig from 'tailwindcss/lib/public/resolve-config';
+import { getConfiguration, makeTailwindConfig } from '../config/pluginConfiguration';
 import { debug } from '../debug/logger';
-import { getMinifyPlugins, getPostcssPluginsWithTailwind, stripCommentsPlugin } from './postcss';
+import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
+
+function makeTailwindPlugin(config: any, changedContent: { content: string, extension: string }) {
+  const plugin = () => {
+    return {
+      postcssPlugin: 'tailwindcss',
+      Once(root, { result }) {
+        tailwind(({ createContext }) => {
+          return () => {
+            return createContext(resolveConfig(config), [changedContent]);
+          };
+        })(root, result);
+      }
+    };
+  };
+
+  plugin.postcss = true;
+  return plugin;
+}
 
 function applyRawEscaping(css: string, wasMinified: boolean): string {
   if (wasMinified) {
@@ -18,15 +39,45 @@ function applyRawEscaping(css: string, wasMinified: boolean): string {
     .replace(/\t/g, ' ');
 }
 
-export async function processSourceTextForTailwindInlineClasses(filename: string, sourceText?: string): Promise<string> {
+async function getPostcssPluginsWithTailwind(filenamePath: string, content: string): Promise<AcceptedPlugin[]> {
   const conf = getConfiguration();
-  const cssToProcess = `${conf.tailwindCssContents} ${sourceText ?? ''}`;
+  const twConf = makeTailwindConfig([filenamePath]);
 
-  const relativePath = path.join('.', path.relative(process.cwd(), filename));
+  // Get all the user plugins if there are any
+  const { before, after, hasAutoPrefixer } = await getPostcssPlugins();
 
-  const postcssPlugins = await getPostcssPluginsWithTailwind(relativePath);
+  const tailwindPlugin = makeTailwindPlugin(twConf, {
+    content, extension: 'tsx'
+  });
 
-  const result = await postcss(postcssPlugins).process(cssToProcess, { from: relativePath });
+  const plugins: any = [
+    ...before,
+    tailwindPlugin,
+    ...after
+  ];
+
+  if (conf.useAutoPrefixer && !hasAutoPrefixer) {
+    plugins.push(autoprefixer());
+  }
+
+  if (conf.minify) {
+    plugins.push(...getMinifyPlugins());
+  }
+
+  if (conf.stripComments) {
+    plugins.push(stripCommentsPlugin());
+  }
+
+  return plugins;
+}
+
+export async function processSourceTextForTailwindInlineClasses(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+  const conf = getConfiguration();
+  const cssToProcess = `${conf.tailwindCssContents} ${sourceCss ?? ''}`;
+
+  const postcssPlugins = await getPostcssPluginsWithTailwind(filename, sourceTsx);
+
+  const result = await postcss(postcssPlugins).process(cssToProcess, { from: filename });
 
   const css = applyRawEscaping(result.css, conf.minify);
 

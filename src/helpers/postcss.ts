@@ -1,12 +1,10 @@
-import { getConfiguration, makeTailwindConfig } from '../config/pluginConfiguration';
+import { getConfiguration } from '../config/pluginConfiguration';
 import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
-import tailwind from 'tailwindcss';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
 import sortMediaQueries from 'postcss-sort-media-queries';
 import discardComments from 'postcss-discard-comments';
-import autoprefixer from 'autoprefixer';
 
 import { debug } from '../debug/logger';
 import { PostcssPlugin } from '..';
@@ -91,32 +89,4 @@ export async function getPostcssPlugins(): Promise<PostcssPlugins> {
     after: afterTailwind,
     hasAutoPrefixer
   };
-}
-
-export async function getPostcssPluginsWithTailwind(relativePath: string): Promise<AcceptedPlugin[]> {
-  const conf = getConfiguration();
-  const twConf = makeTailwindConfig([relativePath]);
-
-  // Get all the user plugins if there are any
-  const { before, after, hasAutoPrefixer } = await getPostcssPlugins();
-
-  const plugins: AcceptedPlugin[] = [
-    ...before,
-    tailwind(twConf),
-    ...after
-  ];
-
-  if (conf.useAutoPrefixer && !hasAutoPrefixer) {
-    plugins.push(autoprefixer());
-  }
-
-  if (conf.minify) {
-    plugins.push(...getMinifyPlugins());
-  }
-
-  if (conf.stripComments) {
-    plugins.push(stripCommentsPlugin());
-  }
-
-  return plugins;
 }
