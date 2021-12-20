@@ -1,19 +1,19 @@
 import path from 'path';
-import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, ReturnStatement, SourceFile, StringLiteral, SyntaxKind, ObjectLiteralExpression, PropertyAssignment, VariableDeclaration } from 'typescript';
+import ts, { ImportDeclaration, BinaryExpression, Identifier, Node, SourceFile, StringLiteral, SyntaxKind, ObjectLiteralExpression, PropertyAssignment, VariableDeclaration } from 'typescript';
 import { debug, warn, error } from '../debug/logger';
-import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll } from '../helpers/tsFiles';
+import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
-import { registerCssForInjection, registerImportForFile } from '../store/store';
+import { registerAllImportsForFile, registerCssForInjection } from '../store/store';
 
 interface TransformationResult {
-  text: string;
+  text?: string;
   transformed: boolean;
 }
 
-function reWriteStyleForGetAccessor(sourceFile: SourceFile, css: string) {
+function hasStyleGetAccessor(sourceFile: SourceFile) {
   // Stencil creates variable class declarations that use:
   // static get style() { return '...'; }
-  // This re-writes the return statement to include tailwind's styles
+  // This checks if the class has a get accessor
   const getAccessorPath = [
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.VariableStatement, { modifier: SyntaxKind.ExportKeyword }),
@@ -25,13 +25,19 @@ function reWriteStyleForGetAccessor(sourceFile: SourceFile, css: string) {
     makeMatcher(SyntaxKind.ReturnStatement)
   ];
 
-  const returnStatementRewriter = (node: Node) => {
-    const returnStatement = node as ReturnStatement;
-    const originalExpression = returnStatement.expression as Identifier;
-    return ts.factory.updateReturnStatement(returnStatement, ts.factory.createIdentifier(`${originalExpression.escapedText} + '${css}'`));
-  };
+  return walkTo(sourceFile, getAccessorPath) !== undefined;
+}
 
-  return transformNodeWith(sourceFile, getAccessorPath, returnStatementRewriter);
+function hasStyleProperty(sourceFile: SourceFile) {
+  // Stencil creates binary property assignment that uses:
+  // ComponentClass.style = '...'
+  const binaryExpressionStylePath = [
+    makeMatcher(SyntaxKind.SourceFile),
+    makeMatcher(SyntaxKind.ExpressionStatement),
+    makeMatcher(SyntaxKind.BinaryExpression)
+  ];
+
+  return walkTo(sourceFile, binaryExpressionStylePath) !== undefined;
 }
 
 function reWriteStylePropertyAssignment(sourceFile: SourceFile, css: string) {
@@ -119,30 +125,31 @@ function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
 
 function registerAllImports(sourceFile: SourceFile, filename: string) {
   const file = path.parse(filename);
+  const importedFiles = [];
 
   function handleImportDeclaration(node: Node): boolean {
     const importDecl = node as ImportDeclaration;
     const importFilename = importDecl.moduleSpecifier as StringLiteral;
     const importedFile = path.resolve(file.dir, importFilename.text);
 
-    registerImportForFile(filename, importedFile);
+    importedFiles.push(importedFile);
 
     return false;
   }
 
   walkAll(sourceFile, SyntaxKind.ImportDeclaration, handleImportDeclaration);
+  registerAllImportsForFile(filename, importedFiles);
 }
 
-function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: string): TransformationResult {
-  let result = reWriteStyleForGetAccessor(sourceFile, css);
-  if (!result.found) {
-    // If there is no get accessor, fallback to the binary property setter on the class
-    result = reWriteStylePropertyAssignment(sourceFile, css);
-    if (!result.found) {
-      // If no class style, inject it
-      result = addStylePropertyGetter(sourceFile, css);
-    }
+function attemptTransformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: string): TransformationResult {
+  // If stencil has created the style accessors, then there is a css file coming, don't transform now, push tailwind styles into
+  // css file rather
+  if (hasStyleGetAccessor(sourceFile) || hasStyleProperty(sourceFile)) {
+    return { transformed: false };
   }
+
+  // No styles, attempt to add one
+  const result = addStylePropertyGetter(sourceFile, css);
 
   return {
     text: result.fullText,
@@ -176,11 +183,11 @@ export async function transform(sourceText: string, filename: string): Promise<s
   const sourceFile = loadTypescriptCodeFromMemory(sourceText);
   registerAllImports(sourceFile, filename);
 
-  const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, escapedCss);
-
+  const emitResult = attemptTransformSourceToIncludeNewTailwindStyles(sourceFile, escapedCss);
   if (!emitResult.transformed) {
     // No placeholder for the css found - register this css for a later style import
     registerCssForInjection(filename, tailwindClasses);
+    return sourceText;
   }
 
   return emitResult.text;
