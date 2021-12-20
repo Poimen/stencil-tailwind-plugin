@@ -1,5 +1,5 @@
 import { getConfiguration, makeTailwindConfig } from '../config/pluginConfiguration';
-import postcss, { AcceptedPlugin } from 'postcss';
+import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
 import tailwind from 'tailwindcss';
 import cssnano from 'cssnano';
