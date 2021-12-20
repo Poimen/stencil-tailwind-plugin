@@ -20,7 +20,7 @@ function useStyleSheetTransform(filename: string) {
   return filename.match(/\.s?css/);
 }
 
-function useTypescriptXTransform(filename: string) {
+function useTypescriptTransform(filename: string) {
   return filename.match(/\.tsx/);
 }
 
@@ -33,7 +33,7 @@ export async function transform(code: string, id: string): Promise<TransformResu
   let codeResult = code;
   if (useStyleSheetTransform(id)) {
     codeResult = await queue.add(() => styleSheetTransform(code, id));
-  } else if (useTypescriptXTransform(id)) {
+  } else if (useTypescriptTransform(id)) {
     codeResult = await queue.add(() => typescriptTransform(code, id));
   }
 

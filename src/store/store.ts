@@ -4,25 +4,42 @@ import { debug } from '../debug/logger';
 interface ImportFileReference {
   imports: string[];
   css: string
+  name: string;
 }
 
-interface ImportFileMap {
-  [key: string]: ImportFileReference;
+const filesWithImportMaps: ImportFileReference[] = [];
+
+function findMatchingFileImport(filename: string): ImportFileReference | undefined {
+  return filesWithImportMaps.find(x => x.name === filename);
 }
 
-const _importFileReferences: ImportFileMap = {};
+function makeFileReference(fileRef: string, imports: string[]) {
+  return { imports: imports, css: '', name: fileRef };
+}
 
-function makeFileReference(fileRef: string) {
-  if (!_importFileReferences[fileRef]) {
-    _importFileReferences[fileRef] = { imports: [], css: '' };
+export function registerAllImportsForFile(filenameRef: string, importedFilenames: string[]): void {
+  const file = findMatchingFileImport(filenameRef);
+  if (file === undefined) {
+    debug('[STORE]', 'Registered', importedFilenames, 'with', filenameRef);
+    filesWithImportMaps.push(makeFileReference(filenameRef, importedFilenames));
+    return;
   }
-  return _importFileReferences[fileRef];
+
+  debug('[STORE]', 'Updated', importedFilenames, 'with', filenameRef);
+  file.imports.push(...importedFilenames);
 }
 
-export function registerImportForFile(filenameRef: string, importedFilename: string): void {
-  debug('[STORE]', 'Registering import', importedFilename, 'against', filenameRef);
-  const importRef = makeFileReference(filenameRef);
-  importRef.imports.push(importedFilename);
+function makeFileImportSpec(filenameRef: string) {
+  const parsed = path.parse(filenameRef);
+  return path.join(parsed.dir, parsed.name);
+}
+
+function makeImportAndNameMatcher(filenameRef: string) {
+  const importMatch = makeFileImportSpec(filenameRef);
+
+  return function(file: ImportFileReference) {
+    return file.imports.indexOf(importMatch) !== -1 || file.name === filenameRef;
+  };
 }
 
 export function registerCssForInjection(filenameRef: string, css: string): void {
@@ -31,13 +48,15 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   // When we register css against a filename reference, the filename reference is the file that we are presently processing
   // so need to cross reference this filename reference with all the imports to find where this file is imported. That import
   // needs to have its css updated to include the styles.
-  const file = path.parse(filenameRef);
 
-  const importName = path.join(file.dir, file.name);
-  Object.entries(_importFileReferences).forEach(([_, v]) => {
-    if (v.imports.includes(importName)) {
-      debug('[STORE]', 'Found cross reference for imported file', importName, 'to store css against');
-      v.css += css;
+  // Create a import spec of the file name to match import paths
+  const shouldStoreCss = makeImportAndNameMatcher(filenameRef);
+
+  filesWithImportMaps.forEach(file => {
+    if (shouldStoreCss(file)) {
+      // This file is imported by another module, or this is the master file - store the css against this match
+      debug('[STORE]', 'Found cross reference for imported file', file.name, 'to store css against');
+      file.css += css;
     }
   });
 }
@@ -47,13 +66,15 @@ export function getAllExternalCssForInjection(filenameRef: string): string {
 
   let cssInjection = '';
 
-  Object.entries(_importFileReferences).forEach(([k, v]) => {
-    if (v.imports.includes(filenameRef)) {
-      debug('[STORE]', 'Found imported file to store grab css to inject', k);
-      cssInjection += v.css;
+  const shouldUseCss = (imports: string[]) => imports.includes(filenameRef);
+  filesWithImportMaps.forEach(file => {
+    if (shouldUseCss(file.imports)) {
+      debug('[STORE]', 'Found file', filenameRef, 'is imported in', file.name, ' - grab css to inject');
+      cssInjection += file.css;
     }
   });
 
+  debug('[STORE]', 'Injecting css', cssInjection);
   return cssInjection;
 }
 

@@ -11,6 +11,21 @@ describe('configuration', () => {
     tailwindFrozenConfig = Object.freeze(config.conf);
   });
 
+  it('given no configuration should set default options', () => {
+    // Arrange & Act
+    plugin();
+    // Assert
+    expect(getConfiguration()).toMatchSnapshot();
+    expect(isDebugEnabled()).toBe(false);
+  });
+
+  it('given default configuration should match default options', () => {
+    // Arrange & Act
+    plugin(PluginOpts.DEFAULT);
+    // Assert
+    expect(getConfiguration()).toMatchSnapshot();
+  });
+
   it('given configuration should set options', () => {
     // Arrange
     const opts: PluginConfigOpts = {
@@ -19,9 +34,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: tailwindFrozenConfig,
       stripComments: true,
-      minify: false,
-      enablePurge: false,
-      purgeSafeList: ['Im', 'safe']
+      minify: false
     };
     // Act
     const result = plugin(opts);
@@ -33,33 +46,23 @@ describe('configuration', () => {
     expect(typeof result.buildEnd).toBe(typeof Function);
   });
 
-  it('given *no* configuration should set default options', () => {
-    // Arrange & Act
-    plugin();
-    // Assert
-    expect(getConfiguration()).toMatchSnapshot();
-    expect(isDebugEnabled()).toBe(false);
-  });
-
-  it('given modified default configuration should set default options', () => {
+  it('given full postcssrc configuration, should set postcssrc path', async () => {
     // Arrange
-    const opts = Object.assign({}, PluginOpts.DEFAULT, { enableDebug: false, stripComments: true });
+    const opts: PluginConfigOpts = {
+      postcss: 'src/test/configuration/postcss.config.js'
+    };
     // Act
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    expect(isDebugEnabled()).toBe(false);
   });
 
-  it('given configuration that does imports to another css file, should set options', async () => {
+  it('given full postcss object configuration, should set postcss object', async () => {
     // Arrange
-    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
     const opts: PluginConfigOpts = {
-      tailwindConf: tailwindFrozenConfig,
-      tailwindCssPath: 'src/test/configuration/tailwind.atimport.css',
-      atImportConf: {
-        path: [
-          'src/test/configuration'
+      postcss: {
+        plugins: [
+          require('autoprefixer')
         ]
       }
     };
@@ -67,43 +70,5 @@ describe('configuration', () => {
     plugin(opts);
     // Assert
     expect(getConfiguration()).toMatchSnapshot();
-    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
-  });
-
-  it('given configuration that specifies autoprefixer config, should set options', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
-    const opts: PluginConfigOpts = {
-      tailwindConf: tailwindFrozenConfig,
-      tailwindCssPath: 'src/test/configuration/tailwind.css',
-      autoprefixerOptions: {
-        grid: 'autoplace'
-      }
-    };
-    // Act
-    plugin(opts);
-    // Assert
-    expect(getConfiguration()).toMatchSnapshot();
-    // expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
-  });
-
-  it('given full postcss configuration, should override options', async () => {
-    // Arrange
-    const loadedFile = loadTestComponent('configuration', 'config-component.tsx');
-    const opts: PluginConfigOpts = {
-      tailwindConf: tailwindFrozenConfig,
-      tailwindCssPath: 'src/test/configuration/tailwind.atimport.css',
-      // These configuration options should not be used, set for test purposes
-      autoprefixerOptions: {
-        grid: 'autoplace'
-      },
-      // This configuration should be used alone
-      postcssConfig: 'src/test/configuration/postcss.config.js'
-    };
-    // Act
-    plugin(opts);
-    // Assert
-    expect(getConfiguration()).toMatchSnapshot();
-    expect(await processSourceTextForTailwindInlineClasses(loadedFile.path, true, null)).toMatchSnapshot();
   });
 });

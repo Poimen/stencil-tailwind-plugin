@@ -1,0 +1,3 @@
+/* eslint-disable */
+const modeComponentIosStyle = ":host {\n  display: ios;\n}\n";
+export default modeComponentIosStyle;
