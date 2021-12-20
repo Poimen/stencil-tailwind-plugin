@@ -16,7 +16,7 @@ describe('styles-url-component', () => {
     // Act
     await transformTsx(tsxFile.text, tsxFile.path);
     const iosStyleResult = await transformStyle(iosFile.text, `${iosFile.path}?tag=mode-component&mode=ios&encapsulation=shadow`);
-    const mdStyleResult = await transformStyle(mdFile.text, `${mdFile.path}?tag=mode-component&mode=ios&encapsulation=shadow`);
+    const mdStyleResult = await transformStyle(mdFile.text, `${mdFile.path}?tag=mode-component&mode=md&encapsulation=shadow`);
     // Assert
     expect(iosStyleResult).toMatchSnapshot();
     expect(mdStyleResult).toMatchSnapshot();
