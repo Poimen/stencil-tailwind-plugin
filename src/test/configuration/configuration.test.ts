@@ -1,8 +1,6 @@
 import plugin, { PluginConfigOpts, PluginOpts } from '../../index';
 import { getConfiguration } from '../../config/pluginConfiguration';
 import { isDebugEnabled } from '../../debug/logger';
-import { processSourceTextForTailwindInlineClasses } from '../../helpers/tailwindcss';
-import { loadTestComponent } from '../utils';
 
 describe('configuration', () => {
   let tailwindFrozenConfig;
