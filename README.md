@@ -2,11 +2,7 @@
 
 # * NOTE * NOTE *
 
-With the release of Tailwind v3 there is some work that is required to support Tailwind v3. This work is on going in the branch `next`.
-
-Please switch to that branch if you need v3 support.
-
-The `v1` release of this plugin is on npm under the tag `next` if you would like to pull that.
+This branch is targeted at Tailwind v2. If you require v3 support, please use the main branch.
 
 ---
 
