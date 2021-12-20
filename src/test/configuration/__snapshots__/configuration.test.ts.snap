@@ -1,28 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`configuration given *no* configuration should set default options 1`] = `
-Object {
-  "atImportConf": Object {},
-  "autoprefixerOptions": Object {},
-  "enableDebug": false,
-  "minify": true,
-  "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [],
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-  },
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-}
-`;
-
 exports[`configuration given configuration should set options 1`] = `
 Object {
-  "atImportConf": Object {},
-  "autoprefixerOptions": Object {},
   "enableDebug": true,
   "minify": false,
   "stripComments": true,
@@ -55,128 +34,15 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
 }
 `;
 
-exports[`configuration given configuration that does imports to another css file, should set options 1`] = `
+exports[`configuration given default configuration should match default options 1`] = `
 Object {
-  "atImportConf": Object {
-    "path": Array [
-      "src/test/configuration",
-    ],
-  },
-  "autoprefixerOptions": Object {},
   "enableDebug": false,
   "minify": true,
   "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [
-      "./src/**/*.html",
-      "./src/**/*.js",
-      "./src/**/*.jsx",
-      "./src/**/*.tsx",
-    ],
-    "darkMode": false,
-    "mode": "jit",
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-    "variants": Object {
-      "extend": Object {},
-    },
-  },
-  "tailwindCssContents": "@import 'tailwind.css';
-",
-  "tailwindCssPath": "src/test/configuration/tailwind.atimport.css",
-}
-`;
-
-exports[`configuration given configuration that does imports to another css file, should set options 2`] = `"/*! tailwindcss v3.0.0 | MIT License | https://tailwindcss.com*/*,:after,:before{border:0 solid;box-sizing:border-box}:after,:before{--tw-content:\\"\\"}html{-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4}body{line-height:inherit;margin:0}hr{border-top-width:1px;color:inherit;height:0}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-collapse:collapse;border-color:inherit;text-indent:0}button,input,optgroup,select,textarea{color:inherit;font-family:inherit;font-size:100%;line-height:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{color:#9ca3af;opacity:1}input:-ms-input-placeholder,textarea:-ms-input-placeholder{color:#9ca3af;opacity:1}input::placeholder,textarea::placeholder{color:#9ca3af;opacity:1}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{height:auto;max-width:100%}[hidden]{display:none}.autoplacement-example{grid-gap:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto}"`;
-
-exports[`configuration given configuration that specifies autoprefixer config, should set options 1`] = `
-Object {
-  "atImportConf": Object {},
-  "autoprefixerOptions": Object {
-    "grid": "autoplace",
-  },
-  "enableDebug": false,
-  "minify": true,
-  "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [
-      "./src/**/*.html",
-      "./src/**/*.js",
-      "./src/**/*.jsx",
-      "./src/**/*.tsx",
-    ],
-    "darkMode": false,
-    "mode": "jit",
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-    "variants": Object {
-      "extend": Object {},
-    },
-  },
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
-  "tailwindCssPath": "src/test/configuration/tailwind.css",
-}
-`;
-
-exports[`configuration given full postcss configuration, should override options 1`] = `
-Object {
-  "atImportConf": Object {},
-  "autoprefixerOptions": Object {
-    "grid": "autoplace",
-  },
-  "enableDebug": false,
-  "minify": true,
-  "postcssConfig": "src/test/configuration/postcss.config.js",
-  "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [
-      "./src/**/*.html",
-      "./src/**/*.js",
-      "./src/**/*.jsx",
-      "./src/**/*.tsx",
-    ],
-    "darkMode": false,
-    "mode": "jit",
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-    "variants": Object {
-      "extend": Object {},
-    },
-  },
-  "tailwindCssContents": "@import 'tailwind.css';
-",
-  "tailwindCssPath": "src/test/configuration/tailwind.atimport.css",
-}
-`;
-
-exports[`configuration given full postcss configuration, should override options 2`] = `"/*! tailwindcss v3.0.0 | MIT License | https://tailwindcss.com*/*,:after,:before{border:0 solid;box-sizing:border-box}:after,:before{--tw-content:\\"\\"}html{-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4}body{line-height:inherit;margin:0}hr{border-top-width:1px;color:inherit;height:0}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-collapse:collapse;border-color:inherit;text-indent:0}button,input,optgroup,select,textarea{color:inherit;font-family:inherit;font-size:100%;line-height:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{color:#9ca3af;opacity:1}input:-ms-input-placeholder,textarea:-ms-input-placeholder{color:#9ca3af;opacity:1}input::placeholder,textarea::placeholder{color:#9ca3af;opacity:1}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{height:auto;max-width:100%}[hidden]{display:none}.hover\\\\:scale-110{--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-transform:translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.autoplacement-example{grid-gap:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.hover\\\\:scale-110:hover{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:var(--tw-transform)}"`;
-
-exports[`configuration given modified default configuration should set default options 1`] = `
-Object {
-  "atImportConf": Object {},
-  "autoprefixerOptions": Object {},
-  "enableDebug": false,
-  "minify": true,
-  "stripComments": true,
   "tailwindConf": Object {
     "content": Array [],
     "plugins": Array [],
@@ -186,5 +52,66 @@ Object {
   },
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration given full postcss object configuration, should set postcss object 1`] = `
+Object {
+  "enableDebug": false,
+  "minify": true,
+  "postcss": Object {
+    "plugins": Array [
+      [Function],
+    ],
+  },
+  "stripComments": false,
+  "tailwindConf": Object {
+    "content": Array [],
+    "plugins": Array [],
+    "theme": Object {
+      "extend": Object {},
+    },
+  },
+  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
+  "tailwindCssPath": undefined,
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration given full postcssrc configuration, should set postcssrc path 1`] = `
+Object {
+  "enableDebug": false,
+  "minify": true,
+  "postcss": "src/test/configuration/postcss.config.js",
+  "stripComments": false,
+  "tailwindConf": Object {
+    "content": Array [],
+    "plugins": Array [],
+    "theme": Object {
+      "extend": Object {},
+    },
+  },
+  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
+  "tailwindCssPath": undefined,
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration given no configuration should set default options 1`] = `
+Object {
+  "enableDebug": false,
+  "minify": true,
+  "stripComments": false,
+  "tailwindConf": Object {
+    "content": Array [],
+    "plugins": Array [],
+    "theme": Object {
+      "extend": Object {},
+    },
+  },
+  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
+  "tailwindCssPath": undefined,
+  "useAutoPrefixer": true,
 }
 `;
