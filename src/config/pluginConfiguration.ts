@@ -27,8 +27,7 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
     tailwindConf: makeDefaultTailwindConf(),
     stripComments: false,
     minify: true,
-    atImportConf: {},
-    autoprefixerOptions: {}
+    useAutoPrefixer: false
   }
 };
 
