@@ -1,10 +1,12 @@
 import { Plugin } from 'rollup';
-import { AtImportOptions } from 'postcss-import';
-import autoprefixer from 'autoprefixer';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
 import { buildStart, transform, buildEnd } from './plugin';
+
+export interface PostcssPlugin {
+  plugins: any[];
+}
 
 export interface PluginConfigOpts {
   enableDebug?: boolean;
@@ -13,9 +15,8 @@ export interface PluginConfigOpts {
   tailwindConf?: TailwindConfig;
   stripComments?: boolean;
   minify?: boolean;
-  atImportConf?: AtImportOptions;
-  autoprefixerOptions?: autoprefixer.Options;
-  postcssConfig?: string;
+  postcss?: string | PostcssPlugin;
+  useAutoPrefixer?: boolean;
 }
 
 export interface PluginConfigOptsDefaults {
