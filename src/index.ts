@@ -2,7 +2,7 @@ import { Plugin } from '@stencil/core/internal';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
-import { transform, postTransformDependencyUpdate } from './plugin';
+import { transform, postTransformDependencyUpdate, buildStart, buildEnd } from './plugin';
 
 export interface PostcssPlugin {
   plugins: any[];
@@ -37,14 +37,18 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
 
   return {
     name: 'tailwind',
-    transform: transform
-  };
+    transform: transform,
+    buildStart,
+    buildEnd
+  } as Plugin;
 }
 
 export function tailwindHMR(): Plugin {
   return {
     pluginType: 'css',
     name: 'tailwind-hmr',
-    transform: postTransformDependencyUpdate
-  };
+    transform: postTransformDependencyUpdate,
+    buildStart,
+    buildEnd
+  } as Plugin;
 }
