@@ -2,7 +2,7 @@ import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
 import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
-import { getAllExternalCssForInjection, storeFinalTransformedCss } from '../store/store';
+import { getAllExternalCssDependencies } from '../store/store';
 
 async function transformStyleStatement(sourceFile: SourceFile, sourceText: string, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
@@ -17,14 +17,13 @@ async function transformStyleStatement(sourceFile: SourceFile, sourceText: strin
   ];
 
   // Grab any css that needs to be injected by functional components that this component imported
-  const injectedCss = getAllExternalCssForInjection(filename);
+  const injectedCss = getAllExternalCssDependencies(filename).css;
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
     const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, sourceText, originalCss);
     const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(filename, tailwindClasses, injectedCss);
 
-    storeFinalTransformedCss(filename, reducedClasses);
     cssNode.text = reducedClasses;
   };
 
