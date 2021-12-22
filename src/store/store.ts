@@ -7,6 +7,16 @@ interface ImportFileReference {
   name: string;
 }
 
+interface CssFileReference {
+  css: string
+  name: string;
+}
+
+interface CssFileMap {
+  [key: string]: CssFileReference;
+}
+
+const cssTransformedFiles: CssFileMap = {};
 const filesWithImportMaps: ImportFileReference[] = [];
 
 function findMatchingFileImport(filename: string): ImportFileReference | undefined {
@@ -42,6 +52,17 @@ function makeImportAndNameMatcher(filenameRef: string) {
   };
 }
 
+function getImportMatchesForCssFile(filenameRef: string) {
+  const shouldUseCss = (imports: string[]) => imports.includes(filenameRef);
+  return filesWithImportMaps.reduce<ImportFileReference[]>((importedIn: ImportFileReference[], file: ImportFileReference) => {
+    if (shouldUseCss(file.imports)) {
+      debug('[STORE]', 'Found file', filenameRef, 'is imported in', file.name, ' - grab css to inject');
+      importedIn.push(file);
+    }
+    return importedIn;
+  }, []);
+}
+
 export function registerCssForInjection(filenameRef: string, css: string): void {
   debug('[STORE]', 'Registering css for', filenameRef, 'against', css);
 
@@ -64,20 +85,40 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
 export function getAllExternalCssForInjection(filenameRef: string): string {
   debug('[STORE]', 'Looking up import of', filenameRef);
 
-  let cssInjection = '';
-
-  const shouldUseCss = (imports: string[]) => imports.includes(filenameRef);
-  filesWithImportMaps.forEach(file => {
-    if (shouldUseCss(file.imports)) {
-      debug('[STORE]', 'Found file', filenameRef, 'is imported in', file.name, ' - grab css to inject');
-      cssInjection += file.css;
-    }
-  });
+  const cssInjection = getImportMatchesForCssFile(filenameRef).reduce((css: string, file: ImportFileReference) => {
+    css += file.css;
+    return css;
+  }, '');
 
   debug('[STORE]', 'Injecting css', cssInjection);
   return cssInjection;
 }
 
+export function storeFinalTransformedCss(filenameRef: string, finalCss: string): void {
+  debug('[STORE]', 'Storing', finalCss, 'against', filenameRef);
+
+  cssTransformedFiles[filenameRef] = {
+    css: finalCss,
+    name: filenameRef
+  };
+}
+
+export function retrieveTransformedCssFor(filenameRef: string): string | undefined {
+  debug('[STORE]', 'Looking for', filenameRef, 'for final css');
+
+  return cssTransformedFiles[filenameRef]?.css;
+}
+
+export function getAllExternalCssDependencies(filenameRef: string): string[] {
+  debug('[STORE]', 'Looking for dependencies of', filenameRef);
+
+  const cssDependencies = getImportMatchesForCssFile(filenameRef).map(f => f.name);
+
+  debug('[STORE]', 'Imported by', cssDependencies);
+
+  return cssDependencies;
+}
+
 // export function dump(): void {
-//   console.dir(_importFileReferences, { depth: null });
+//   console.dir(filesWithImportMaps, { depth: null });
 // }
