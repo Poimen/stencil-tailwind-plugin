@@ -40,8 +40,6 @@ describe('configuration', () => {
     expect(getConfiguration()).toMatchSnapshot();
     expect(isDebugEnabled()).toBe(true);
     expect(result.name).toBe('tailwind');
-    expect(typeof result.buildStart).toBe(typeof Function);
-    expect(typeof result.buildEnd).toBe(typeof Function);
   });
 
   it('given full postcssrc configuration, should set postcssrc path', async () => {
