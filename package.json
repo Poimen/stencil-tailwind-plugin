@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
+    "@stencil/core": "^2.12.0",
     "@types/cssnano": "^4.0.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
