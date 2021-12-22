@@ -1,8 +1,8 @@
-import { Plugin } from 'rollup';
+import { Plugin } from '@stencil/core/internal';
 import { TailwindConfig } from 'tailwindcss/tailwind-config';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
-import { buildStart, transform, buildEnd } from './plugin';
+import { transform, postTransformDependencyUpdate } from './plugin';
 
 export interface PostcssPlugin {
   plugins: any[];
@@ -37,8 +37,14 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
 
   return {
     name: 'tailwind',
-    buildStart: buildStart,
-    transform: transform,
-    buildEnd: buildEnd
+    transform: transform
+  };
+}
+
+export function tailwindHMR(): Plugin {
+  return {
+    pluginType: 'css',
+    name: 'tailwind-hmr',
+    transform: postTransformDependencyUpdate
   };
 }

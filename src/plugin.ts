@@ -1,8 +1,9 @@
-import { TransformResult } from 'rollup';
 import PQueue from 'p-queue';
 import { debug, error } from './debug/logger';
 import { transform as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
+import { PluginTransformResults } from '@stencil/core/internal';
+import { getAllExternalCssDependencies } from './store/store';
 
 export function buildStart(): void {
   debug('Starting build');
@@ -29,16 +30,31 @@ function useTypescriptTransform(filename: string) {
 // transform. Hence queue the requests until we are ready for the next file to be processed
 const queue = new PQueue({ concurrency: 1 });
 
-export async function transform(code: string, id: string): Promise<TransformResult> {
-  let codeResult = code;
-  if (useStyleSheetTransform(id)) {
-    codeResult = await queue.add(() => styleSheetTransform(code, id));
-  } else if (useTypescriptTransform(id)) {
-    codeResult = await queue.add(() => typescriptTransform(code, id));
-  }
+export async function transform(code: string, id: string): Promise<PluginTransformResults> {
+  return await queue.add(async () => {
+    let codeResult = code;
+    if (useStyleSheetTransform(id)) {
+      codeResult = await styleSheetTransform(code, id);
+    } else if (useTypescriptTransform(id)) {
+      codeResult = await typescriptTransform(code, id);
+    }
+    return {
+      code: codeResult,
+      map: null
+    };
+  });
+}
 
-  return {
-    code: codeResult,
-    map: null
-  };
+// export async function postTransformDependencyUpdate(code: string, id: string, context: PluginCtx): Promise<PluginTransformResults> {
+export async function postTransformDependencyUpdate(code: string, id: string): Promise<PluginTransformResults> {
+  return await queue.add(async () => {
+    const deps = getAllExternalCssDependencies(id);
+    const finalCss = deps.css === '' ? code : `${code} ${deps.css}`;
+
+    return {
+      code: finalCss,
+      map: null,
+      dependencies: deps.dependencies
+    };
+  });
 }
