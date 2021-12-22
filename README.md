@@ -39,7 +39,7 @@ export const config: Config = {
 };
 ```
 
-In some configurations, the `reloadStrategy` can be left as `hmr` but on occasions new styles are not applied as expected.
+In some configurations, the `reloadStrategy` can be left as `hmr` but on occasions new styles are not applied as expected. For more on HMR, see below.
 
 There are also a number of options that can be given to the plugin:
 
@@ -127,8 +127,8 @@ npm install -D @fullhuman/postcss-purgecss
 ```
 
 The configuration of the purge plugin needs to be done with tailwind in mind. This `regex` may need to be tweaked for tailwind syntax moving forward:
-```js
-// stencil.config.js
+```ts
+// stencil.config.ts
 import { Config } from '@stencil/core';
 import tailwind from 'stencil-tailwind-plugin';
 import tailwindcss from 'tailwindcss';
@@ -164,10 +164,8 @@ export const config: Config = {
         ]
       }
     })
-  ],
-  devServer: {
-    reloadStrategy: 'pageReload'
-  }
+  ]
+  // ...
 };
 ```
 
@@ -205,6 +203,31 @@ export const config: Config = {
     }),
   ]
 ```
+
+### HMR considerations
+
+Stencil's compiler does support HMR, however, for inline styles produced by tailwind, another plugin is required in order for teh correct dependencies to be mapped to teh file watcher. The HMR plugin can be included by:
+```ts
+// stencil.config.ts
+import { Config } from '@stencil/core';
+import tailwind, { tailwindHMR } from 'stencil-tailwind-plugin';
+
+export const config: Config = {
+  // ...
+  plugins: [
+    sass(),
+    tailwind({
+      tailwindConf,
+      tailwindCssPath: './src/styles/tailwind.css'
+    }),
+    tailwindHMR()
+  ]
+};
+```
+
+The `tailwindHMR` plugin will register all the `tsx` files against the `css` files. This allows Stencil to watch for changes on those `tsx` files and update the `css` accordingly.
+
+Unfortunately, as of `v2.12.0` of the compiler, this cannot be done as a single plugin and two plugins are required.
 
 ## Usage
 
