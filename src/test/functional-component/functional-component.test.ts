@@ -2,7 +2,7 @@ import { transform as transformTypescript } from '../../processors/typescript';
 import { transform as transformStylesheet } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
-import { retrieveTransformedCssFor } from '../../store/store';
+import { getAllExternalCssDependencies } from '../../store/store';
 
 describe('functional-component', () => {
   beforeEach(() => {
@@ -43,7 +43,6 @@ describe('functional-component', () => {
     expect(result).toMatchSnapshot();
   });
 
-
   it('given style component, should store final css against file', async () => {
     // Arrange
     const component = loadTestComponent('functional-component', 'externally-included-functional-component.tsx');
@@ -58,7 +57,10 @@ describe('functional-component', () => {
     await transformTypescript(fcComponents.text, fcComponents.path);
     // Act
     await transformStylesheet(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
+    const result = getAllExternalCssDependencies(`${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     // Assert
-    expect(retrieveTransformedCssFor(`${componentStyles.path}?tag=basic-component&encapsulation=shadow`)).toMatchSnapshot();
+    expect(result.css).toMatchSnapshot();
+    expect(result.dependencies[0]).toContain('externally-included-functional-component.tsx');
+    expect(result.dependencies[1]).toContain('FunctionalComponent.tsx');
   });
 });
