@@ -15,9 +15,10 @@ async function loadPlugins(postcssConf?: string | PostcssPlugin) {
   if (
     typeof postcssConf === 'object' &&
     !Array.isArray(postcssConf) &&
-    postcssConf !== null
+    postcssConf !== null &&
+    Array.isArray(postcssConf.plugins)
   ) {
-    ctx.plugins = postcssConf.plugins;
+    return postcssConf.plugins;
   } else if (typeof postcssConf === 'string' || postcssConf instanceof String) {
     path = postcssConf as string;
   }
@@ -46,7 +47,7 @@ function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string
     }
 
     // eslint-disable-next-line dot-notation
-    if (typeof plugin === 'object' && plugin !== null && plugin['postcssPlugin'] === name) {
+    if (typeof plugin === 'object' && plugin !== null && (plugin['postcssPlugin'] === name || plugin['name'] === name)) {
       return true;
     }
 
