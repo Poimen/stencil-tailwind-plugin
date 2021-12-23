@@ -3,7 +3,6 @@ import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
-import sortMediaQueries from 'postcss-sort-media-queries';
 import discardComments from 'postcss-discard-comments';
 
 import { debug } from '../debug/logger';
@@ -69,7 +68,6 @@ export function stripCommentsPlugin(): AcceptedPlugin {
 
 export function getMinifyPlugins(): AcceptedPlugin[] {
   return [
-    sortMediaQueries(),
     combine(),
     cssnano() as AcceptedPlugin
   ];
