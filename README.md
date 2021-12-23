@@ -46,7 +46,7 @@ There are also a number of options that can be given to the plugin:
 | Property          | Description                                               | Default      |
 | ----------------- | --------------------------------------------------------- | ------------ |
 | `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilities and @components are used. | `undefined`  |
-| `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as teh source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
+| `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as the source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
 | `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
@@ -118,7 +118,7 @@ If the `tailwindcss` plugin is not specified, it is assumed that the plugins sho
 
 ### Purge setup
 
-Previously the plugin would enable purge options for web components. This introduced a number of behaviours that where difficult to resolve under situations. Hence the plugin no longer purges content. In large scale projects, the extra tailwind preflight settings can result in a bloated shadow DOM (for instance, targetting `html` and `body` in teh shadow DOM doesn't do anything).
+Previously the plugin would enable purge options for web components. This introduced a number of behaviours that where difficult to resolve under situations. Hence the plugin no longer purges content. In large scale projects, the extra tailwind preflight settings can result in a bloated shadow DOM (for instance, targetting `html` and `body` in the shadow DOM doesn't do anything).
 
 For purging of unused styles, the postcss plugin `@fullhuman/postcss-purgecss` can be used:
 
@@ -206,7 +206,7 @@ export const config: Config = {
 
 ### HMR considerations
 
-Stencil's compiler does support HMR, however, for inline styles produced by tailwind, another plugin is required in order for teh correct dependencies to be mapped to teh file watcher. The HMR plugin can be included by:
+Stencil's compiler does support HMR, however, for inline styles produced by tailwind, another plugin is required in order for the correct dependencies to be mapped to the file watcher. The HMR plugin can be included by:
 ```ts
 // stencil.config.ts
 import { Config } from '@stencil/core';
