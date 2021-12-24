@@ -35,8 +35,14 @@ export function getConfiguration(): PluginConfigOpts {
   return _configuration ?? PluginConfigDefaults.DEFAULT;
 }
 
-export function makeTailwindConfig(contentFileList: string[]): TailwindConfig {
-  const twConf = Object.assign({}, _configuration.tailwindConf, { content: contentFileList });
+export function makeTailwindConfig(contentFileList: string[], includePreflight: boolean): TailwindConfig {
+  let preflight = includePreflight;
+  if (includePreflight && _configuration.tailwindConf.corePlugins) {
+    // if we are including the preflight, resolve to the user configuration value if available
+    // eslint-disable-next-line dot-notation
+    preflight = _configuration.tailwindConf.corePlugins['preflight'] ?? true;
+  }
+  const twConf = Object.assign({}, _configuration.tailwindConf, { content: contentFileList, corePlugins: { preflight } });
   return twConf;
 }
 

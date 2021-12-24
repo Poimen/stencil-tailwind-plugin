@@ -2,7 +2,7 @@ import path from 'path';
 import ts, { ImportDeclaration, Identifier, Node, SourceFile, StringLiteral, SyntaxKind, VariableDeclaration } from 'typescript';
 import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll, walkTo } from '../helpers/tsFiles';
-import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
+import { processSourceTextForTailwindInlineClasses, processSourceTextForTailwindInlineClassesWithoutPreflight } from '../helpers/tailwindcss';
 import { registerAllImportsForFile, registerCssForInjection } from '../store/store';
 
 interface TransformationResult {
@@ -40,16 +40,24 @@ function hasStyleProperty(sourceFile: SourceFile) {
   return walkTo(sourceFile, binaryExpressionStylePath) !== undefined;
 }
 
-function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
-  // When there is no style url used, then Stencil does not generate a style property to
-  // use for Tailwind style, so add it in
-  const getAccessorPath = [
+function getStylePropertyGetterPath() {
+  return [
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.VariableStatement),
     makeMatcher(SyntaxKind.VariableDeclarationList),
     makeMatcher(SyntaxKind.VariableDeclaration, { initializer: SyntaxKind.ClassExpression })
   ];
+}
 
+function hasStylePropertyGetter(sourceFile: SourceFile) {
+  const getAccessorPath = getStylePropertyGetterPath();
+  return walkTo(sourceFile, getAccessorPath) !== undefined;
+}
+
+function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
+  // When there is no style url used, then Stencil does not generate a style property to
+  // use for Tailwind style, so add it in
+  const getAccessorPath = getStylePropertyGetterPath();
   let className = '';
 
   const returnStatementRewriter = (node: Node) => {
@@ -88,13 +96,11 @@ function registerAllImports(sourceFile: SourceFile, filename: string) {
   registerAllImportsForFile(filename, importedFiles);
 }
 
-function attemptTransformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: string): TransformationResult {
-  // If stencil has created the style accessors, then there is a css file coming, don't transform now, push tailwind styles into
-  // css file rather
-  if (hasStyleGetAccessor(sourceFile) || hasStyleProperty(sourceFile)) {
-    return { transformed: false };
-  }
+function shouldTransformSource(sourceFile: SourceFile) {
+  return !hasStyleGetAccessor(sourceFile) && !hasStyleProperty(sourceFile);
+}
 
+function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: string): TransformationResult {
   // No styles, attempt to add one
   const result = addStylePropertyGetter(sourceFile, css);
 
@@ -117,8 +123,16 @@ function preserveTailwindCssEscaping(css: string) {
 export async function transform(sourceText: string, filename: string): Promise<string> {
   debug('[Typescript]', 'Processing source file:', filename);
 
+  const sourceFile = loadTypescriptCodeFromMemory(sourceText);
+  const shouldTransform = shouldTransformSource(sourceFile);
+
+  // If there is going to be a transformation later, include the necessary preflight definitions
+  const transformFunction = shouldTransform && hasStylePropertyGetter(sourceFile)
+    ? processSourceTextForTailwindInlineClasses
+    : processSourceTextForTailwindInlineClassesWithoutPreflight;
+
   // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-  const tailwindClasses = await processSourceTextForTailwindInlineClasses(filename, sourceText);
+  const tailwindClasses = await transformFunction(filename, sourceText);
 
   if (tailwindClasses.length === 0) {
     // No classes from tailwind to add, just give source back
@@ -127,15 +141,15 @@ export async function transform(sourceText: string, filename: string): Promise<s
 
   const escapedCss = preserveTailwindCssEscaping(tailwindClasses);
 
-  const sourceFile = loadTypescriptCodeFromMemory(sourceText);
   registerAllImports(sourceFile, filename);
 
-  const emitResult = attemptTransformSourceToIncludeNewTailwindStyles(sourceFile, escapedCss);
-  if (!emitResult.transformed) {
-    // No placeholder for the css found - register this css for a later style import
-    registerCssForInjection(filename, tailwindClasses);
-    return sourceText;
+  if (shouldTransform) {
+    const emitResult = transformSourceToIncludeNewTailwindStyles(sourceFile, escapedCss);
+    if (emitResult.transformed) {
+      return emitResult.text;
+    }
   }
-
-  return emitResult.text;
+  // No placeholder for the css found - register this css for a later style import
+  registerCssForInjection(filename, tailwindClasses);
+  return sourceText;
 }

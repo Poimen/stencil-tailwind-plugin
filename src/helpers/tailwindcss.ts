@@ -39,9 +39,9 @@ function applyRawEscaping(css: string, wasMinified: boolean): string {
     .replace(/\t/g, ' ');
 }
 
-async function getPostcssPluginsWithTailwind(filenamePath: string, content: string): Promise<AcceptedPlugin[]> {
+async function getPostcssPluginsWithTailwind(filenamePath: string, content: string, includePreflight: boolean): Promise<AcceptedPlugin[]> {
   const conf = getConfiguration();
-  const twConf = makeTailwindConfig([filenamePath]);
+  const twConf = makeTailwindConfig([filenamePath], includePreflight);
 
   // Get all the user plugins if there are any
   const { before, after, hasAutoPrefixer } = await getPostcssPlugins();
@@ -71,11 +71,11 @@ async function getPostcssPluginsWithTailwind(filenamePath: string, content: stri
   return plugins;
 }
 
-export async function processSourceTextForTailwindInlineClasses(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+async function processTailwindPostcss(includePreflight: boolean, filename: string, sourceTsx: string, sourceCss?: string) {
   const conf = getConfiguration();
   const cssToProcess = `${conf.tailwindCssContents} ${sourceCss ?? ''}`;
 
-  const postcssPlugins = await getPostcssPluginsWithTailwind(filename, sourceTsx);
+  const postcssPlugins = await getPostcssPluginsWithTailwind(filename, sourceTsx, includePreflight);
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: filename });
 
@@ -84,6 +84,14 @@ export async function processSourceTextForTailwindInlineClasses(filename: string
   debug('[TW]', 'Tailwind styles:', css);
 
   return css;
+}
+
+export function processSourceTextForTailwindInlineClassesWithoutPreflight(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+  return processTailwindPostcss(false, filename, sourceTsx, sourceCss);
+}
+
+export function processSourceTextForTailwindInlineClasses(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+  return processTailwindPostcss(true, filename, sourceTsx, sourceCss);
 }
 
 export async function reduceDuplicatedClassesFromFunctionalComponentInjection(filename: string, componentCss: string, injectCss: string): Promise<string> {
