@@ -18,7 +18,7 @@ export function buildEnd(err?: Error): void {
 }
 
 function useStyleSheetTransform(filename: string) {
-  return filename.match(/\.s?css/);
+  return filename.match(/\.s?(a|c)ss/);
 }
 
 function useTypescriptTransform(filename: string) {
