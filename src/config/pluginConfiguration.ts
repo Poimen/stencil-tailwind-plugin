@@ -1,22 +1,19 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { TailwindConfig } from 'tailwindcss/tailwind-config';
+import { Config as TailwindConfig } from 'tailwindcss';
 import { PluginConfigOpts, PluginConfigOptsDefaults } from '../index';
 import { warn } from '../debug/logger';
 
 let _configuration: PluginConfigOpts | undefined;
 
 function makeDefaultTailwindConf(): TailwindConfig {
-  const twConf = {
+  return {
     content: [],
     theme: {
       extend: {}
     },
     plugins: []
   };
-  // HACK! Current tailwind types don't have the 'jit' mode field so make the type
-  // look as if it is meant to be there
-  return (twConf as unknown) as TailwindConfig;
 }
 
 export const PluginConfigDefaults: PluginConfigOptsDefaults = {

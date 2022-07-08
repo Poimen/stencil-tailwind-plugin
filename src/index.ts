@@ -1,5 +1,5 @@
 import { Plugin } from '@stencil/core/internal';
-import { TailwindConfig } from 'tailwindcss/tailwind-config';
+import { Config as TailwindConfig } from 'tailwindcss';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
 import { transform, postTransformDependencyUpdate, buildStart, buildEnd } from './plugin';
