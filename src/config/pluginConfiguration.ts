@@ -34,13 +34,29 @@ export function getConfiguration(): PluginConfigOpts {
 
 export function makeTailwindConfig(contentFileList: string[], includePreflight: boolean): TailwindConfig {
   let preflight = includePreflight;
+
+  if (Array.isArray(_configuration.tailwindConf.corePlugins)) {
+    // user configuration is disabling all core plugins...
+    return {
+      ..._configuration.tailwindConf,
+      content: contentFileList,
+      corePlugins: []
+    };
+  }
+
   if (includePreflight && _configuration.tailwindConf.corePlugins) {
     // if we are including the preflight, resolve to the user configuration value if available
     // eslint-disable-next-line dot-notation
     preflight = _configuration.tailwindConf.corePlugins['preflight'] ?? true;
   }
-  const twConf = Object.assign({}, _configuration.tailwindConf, { content: contentFileList, corePlugins: { preflight } });
-  return twConf;
+  return {
+    ..._configuration.tailwindConf,
+    content: contentFileList,
+    corePlugins: {
+      ..._configuration.tailwindConf.corePlugins,
+      preflight
+    }
+  };
 }
 
 function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
