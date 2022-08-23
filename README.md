@@ -302,7 +302,7 @@ Assuming the component has declared:
 
 In this case, all tailwind styles will be added to both `md` and `ios` style definitions.
 
-## Caveat on Function Components
+## Caveat on Function Components (1)
 
 There are some issues around functional components when they are located in external files to a component. The plugin attempts to insert the Function Component styles into the host component and in so doing, the Stencil HMR does not detect the changes correctly and *will* require a rebuild when this happens.
 
@@ -331,6 +331,10 @@ export const FuncComp: FunctionalComponent<FunctionalCompProps> = ({ name }) => 
 In this example, `component-A` and `component-B` will both contain the style definition for `text-indigo-700` because they both import `FuncComp`.
 
 If `common/UtilsFunctionalComponents.tsx` is updated, neither `component-A.tsx` or `component-B.tsx` will be build by Stencil's HMR, hence the style class change from `FuncComp` will not reflect.
+
+## Caveat on Function Components (2)
+
+Functional components can be composed of other functional components. However, there is a known issue where the subsequent functional component (the component that is being used inside the functional component) will not generate any styles. The styles are only generated for the first level of functional components. This is due to the way the Stencil compiler handles stylesheets and functional component building.
 
 ## Caveat on base reset styles
 
