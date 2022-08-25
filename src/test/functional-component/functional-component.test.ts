@@ -5,28 +5,26 @@ import { configurePluginOptions, PluginConfigDefaults } from '../../config/plugi
 import { getAllExternalCssDependencies } from '../../store/store';
 
 describe('functional-component', () => {
-  beforeEach(() => {
-    configurePluginOptions(PluginConfigDefaults.DEFAULT);
-  });
-
   it('given functional class component in imported file to component, should output tailwind styles from functional import and component', async () => {
     // Arrange
+    const conf = configurePluginOptions(PluginConfigDefaults.DEFAULT);
     const component = loadTestComponent('functional-component', 'externally-included-functional-component.tsx');
     const fcComponents = loadTestComponent('functional-component', 'FunctionalComponent.tsx');
     const componentStyles = loadTestComponent('functional-component', 'basic-component.css');
 
     // Stencil loads components, then FCs, then styles. We add FC styles to final component styles as this is the last usable point to inject them without
     // inspecting imported files for tailwind classes
-    await transformTypescript(component.text, component.path);
-    await transformTypescript(fcComponents.text, fcComponents.path);
+    await transformTypescript(conf)(component.text, component.path);
+    await transformTypescript(conf)(fcComponents.text, fcComponents.path);
     // Act
-    const result = await transformStylesheet(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
+    const result = await transformStylesheet(conf)(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     // Assert
     expect(result).toMatchSnapshot();
   });
 
   it('given functional class component in imported file to component and stripped comment, should remove output comments', async () => {
     // Arrange
+    const conf = configurePluginOptions(PluginConfigDefaults.DEFAULT);
     const component = loadTestComponent('functional-component', 'externally-included-functional-component.tsx');
     const fcComponents = loadTestComponent('functional-component', 'FunctionalComponent.tsx');
     const componentStyles = loadTestComponent('functional-component', 'basic-component.css');
@@ -35,16 +33,17 @@ describe('functional-component', () => {
 
     // Stencil loads components, then FCs, then styles. We add FC styles to final component styles as this is the last usable point to inject them without
     // inspecting imported files for tailwind classes
-    await transformTypescript(component.text, component.path);
-    await transformTypescript(fcComponents.text, fcComponents.path);
+    await transformTypescript(conf)(component.text, component.path);
+    await transformTypescript(conf)(fcComponents.text, fcComponents.path);
     // Act
-    const result = await transformStylesheet(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
+    const result = await transformStylesheet(conf)(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     // Assert
     expect(result).toMatchSnapshot();
   });
 
   it('given style component, should store final css against file', async () => {
     // Arrange
+    const conf = configurePluginOptions(PluginConfigDefaults.DEFAULT);
     const component = loadTestComponent('functional-component', 'externally-included-functional-component.tsx');
     const fcComponents = loadTestComponent('functional-component', 'FunctionalComponent.tsx');
     const componentStyles = loadTestComponent('functional-component', 'basic-component.css');
@@ -53,10 +52,10 @@ describe('functional-component', () => {
 
     // Stencil loads components, then FCs, then styles. We add FC styles to final component styles as this is the last usable point to inject them without
     // inspecting imported files for tailwind classes
-    await transformTypescript(component.text, component.path);
-    await transformTypescript(fcComponents.text, fcComponents.path);
+    await transformTypescript(conf)(component.text, component.path);
+    await transformTypescript(conf)(fcComponents.text, fcComponents.path);
     // Act
-    await transformStylesheet(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
+    await transformStylesheet(conf)(componentStyles.text, `${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     const result = getAllExternalCssDependencies(`${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     // Assert
     expect(result.css).toMatchSnapshot();
