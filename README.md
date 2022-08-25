@@ -409,3 +409,9 @@ A lot of inspiration for this plugin was taken from the similarly named plugin, 
 Inspiration also taken from [proto-stencil-tailwind](https://github.com/eswat2/proto-stencil-tailwind) that moves `stencil-tailwind` forward by *Richard Hess*.
 
 Special thanks to the above.
+
+## Other options
+
+For other ways of integrating Tailwind into your project, [Anthony Giuliano](https://twitter.com/a__giuliano) wrote a blog post:
+
+https://ionicframework.com/blog/how-to-integrate-tailwind-css-into-your-stencil-project/
