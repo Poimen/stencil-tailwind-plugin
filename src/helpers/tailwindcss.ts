@@ -3,9 +3,10 @@ import postcss, { AcceptedPlugin } from 'postcss';
 import autoprefixer from 'autoprefixer';
 import tailwind from 'tailwindcss/lib/processTailwindFeatures'; // yeah, not great but there are mtimeMS detections that fail without reaching into the context directly
 import resolveConfig from 'tailwindcss/lib/public/resolve-config';
-import { getConfiguration, makeTailwindConfig } from '../config/pluginConfiguration';
+import { makeTailwindConfig } from '../config/pluginConfiguration';
 import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
+import { PluginConfigOpts } from '..';
 
 function makeTailwindPlugin(config: any, changedContent: { content: string, extension: string }) {
   const plugin = () => {
@@ -39,12 +40,11 @@ function applyRawEscaping(css: string, wasMinified: boolean): string {
     .replace(/\t/g, ' ');
 }
 
-async function getPostcssPluginsWithTailwind(filenamePath: string, content: string, includePreflight: boolean): Promise<AcceptedPlugin[]> {
-  const conf = getConfiguration();
-  const twConf = makeTailwindConfig([filenamePath], includePreflight);
+async function getPostcssPluginsWithTailwind(conf: PluginConfigOpts, filenamePath: string, content: string, includePreflight: boolean): Promise<AcceptedPlugin[]> {
+  const twConf = makeTailwindConfig(conf, [filenamePath], includePreflight);
 
   // Get all the user plugins if there are any
-  const { before, after, hasAutoPrefixer } = await getPostcssPlugins();
+  const { before, after, hasAutoPrefixer } = await getPostcssPlugins(conf);
 
   const tailwindPlugin = makeTailwindPlugin(twConf, {
     content, extension: 'tsx'
@@ -71,11 +71,10 @@ async function getPostcssPluginsWithTailwind(filenamePath: string, content: stri
   return plugins;
 }
 
-async function processTailwindPostcss(includePreflight: boolean, filename: string, sourceTsx: string, sourceCss?: string) {
-  const conf = getConfiguration();
+async function processTailwindPostcss(conf: PluginConfigOpts, includePreflight: boolean, filename: string, sourceTsx: string, sourceCss?: string) {
   const cssToProcess = `${conf.tailwindCssContents} ${sourceCss ?? ''}`;
 
-  const postcssPlugins = await getPostcssPluginsWithTailwind(filename, sourceTsx, includePreflight);
+  const postcssPlugins = await getPostcssPluginsWithTailwind(conf, filename, sourceTsx, includePreflight);
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: filename });
 
@@ -86,16 +85,16 @@ async function processTailwindPostcss(includePreflight: boolean, filename: strin
   return css;
 }
 
-export function processSourceTextForTailwindInlineClassesWithoutPreflight(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
-  return processTailwindPostcss(false, filename, sourceTsx, sourceCss);
+export function processSourceTextForTailwindInlineClassesWithoutPreflight(opts: PluginConfigOpts, filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+  return processTailwindPostcss(opts, false, filename, sourceTsx, sourceCss);
 }
 
-export function processSourceTextForTailwindInlineClasses(filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
-  return processTailwindPostcss(true, filename, sourceTsx, sourceCss);
+export function processSourceTextForTailwindInlineClasses(opts: PluginConfigOpts, filename: string, sourceTsx: string, sourceCss?: string): Promise<string> {
+  return processTailwindPostcss(opts, true, filename, sourceTsx, sourceCss);
 }
 
-export async function reduceDuplicatedClassesFromFunctionalComponentInjection(filename: string, componentCss: string, injectCss: string): Promise<string> {
-  const { minify, stripComments } = getConfiguration();
+export async function reduceDuplicatedClassesFromFunctionalComponentInjection(opts: PluginConfigOpts, filename: string, componentCss: string, injectCss: string): Promise<string> {
+  const { minify, stripComments } = opts;
   const cssToProcess = componentCss + injectCss;
 
   if (!minify || injectCss.length === 0) {

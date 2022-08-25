@@ -1,4 +1,3 @@
-import { getConfiguration } from '../config/pluginConfiguration';
 import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
@@ -6,7 +5,7 @@ import combine from 'postcss-combine-duplicated-selectors';
 import discardComments from 'postcss-discard-comments';
 
 import { debug } from '../debug/logger';
-import { PostcssPlugin } from '..';
+import { PluginConfigOpts, PostcssPlugin } from '..';
 
 async function loadPlugins(postcssConf?: string | PostcssPlugin) {
   const ctx = { plugins: [] };
@@ -73,8 +72,7 @@ export function getMinifyPlugins(): AcceptedPlugin[] {
   ];
 }
 
-export async function getPostcssPlugins(): Promise<PostcssPlugins> {
-  const conf = getConfiguration();
+export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<PostcssPlugins> {
   const configPlugins = await loadPlugins(conf.postcss);
 
   const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, 'tailwindcss');

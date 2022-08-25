@@ -4,8 +4,6 @@ import { Config as TailwindConfig } from 'tailwindcss';
 import { PluginConfigOpts, PluginConfigOptsDefaults } from '../index';
 import { warn } from '../debug/logger';
 
-let _configuration: PluginConfigOpts | undefined;
-
 function makeDefaultTailwindConf(): TailwindConfig {
   return {
     content: [],
@@ -28,32 +26,28 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
   }
 };
 
-export function getConfiguration(): PluginConfigOpts {
-  return _configuration ?? PluginConfigDefaults.DEFAULT;
-}
-
-export function makeTailwindConfig(contentFileList: string[], includePreflight: boolean): TailwindConfig {
+export function makeTailwindConfig(conf: PluginConfigOpts, contentFileList: string[], includePreflight: boolean): TailwindConfig {
   let preflight = includePreflight;
 
-  if (Array.isArray(_configuration.tailwindConf.corePlugins)) {
+  if (Array.isArray(conf.tailwindConf.corePlugins)) {
     // user configuration is disabling all core plugins...
     return {
-      ..._configuration.tailwindConf,
+      ...conf.tailwindConf,
       content: contentFileList,
       corePlugins: []
     };
   }
 
-  if (includePreflight && _configuration.tailwindConf.corePlugins) {
+  if (includePreflight && conf.tailwindConf.corePlugins) {
     // if we are including the preflight, resolve to the user configuration value if available
     // eslint-disable-next-line dot-notation
-    preflight = _configuration.tailwindConf.corePlugins['preflight'] ?? true;
+    preflight = conf.tailwindConf.corePlugins['preflight'] ?? true;
   }
   return {
-    ..._configuration.tailwindConf,
+    ...conf.tailwindConf,
     content: contentFileList,
     corePlugins: {
-      ..._configuration.tailwindConf.corePlugins,
+      ...conf.tailwindConf.corePlugins,
       preflight
     }
   };
@@ -70,10 +64,12 @@ function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
   return tailwindCssContents;
 }
 
-export function configurePluginOptions(opts: PluginConfigOpts) : void {
-  _configuration = Object.assign({}, opts);
+export function configurePluginOptions(opts: PluginConfigOpts): PluginConfigOpts {
+  const configuration = Object.assign({}, opts);
 
-  if (_configuration.tailwindCssPath) {
-    _configuration.tailwindCssContents = fetchTailwindCssContents(_configuration.tailwindCssPath) ?? _configuration.tailwindCssContents;
+  if (configuration.tailwindCssPath) {
+    configuration.tailwindCssContents = fetchTailwindCssContents(configuration.tailwindCssPath) ?? configuration.tailwindCssContents;
   }
+
+  return configuration;
 }
