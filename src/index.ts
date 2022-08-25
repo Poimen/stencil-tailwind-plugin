@@ -2,7 +2,7 @@ import { Plugin } from '@stencil/core/internal';
 import { Config as TailwindConfig } from 'tailwindcss';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
-import { transform, postTransformDependencyUpdate, buildStart, buildEnd } from './plugin';
+import { configuredTransform, postTransformDependencyUpdate, buildStart, buildEnd, processGlobalStyles } from './plugin';
 
 export interface PostcssPlugin {
   plugins: any[];
@@ -28,16 +28,18 @@ export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDe
 function configureOptions(opts?: PluginConfigOpts) {
   const options = Object.assign({}, PluginOpts.DEFAULT, opts);
 
-  configurePluginOptions(options);
+  const config = configurePluginOptions(options);
   configureLogging(options.enableDebug);
+
+  return config;
 }
 
 export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
-  configureOptions(opts);
+  const config = configureOptions(opts);
 
   return {
     name: 'tailwind',
-    transform: transform,
+    transform: configuredTransform(config),
     buildStart,
     buildEnd
   } as Plugin;
@@ -48,6 +50,18 @@ export function tailwindHMR(): Plugin {
     pluginType: 'css',
     name: 'tailwind-hmr',
     transform: postTransformDependencyUpdate,
+    buildStart,
+    buildEnd
+  } as Plugin;
+}
+
+export function tailwindGlobal(opts?: PluginConfigOpts): Plugin {
+  const config = configureOptions(opts);
+
+  return {
+    pluginType: 'css',
+    name: 'tailwind-global',
+    transform: processGlobalStyles(config),
     buildStart,
     buildEnd
   } as Plugin;

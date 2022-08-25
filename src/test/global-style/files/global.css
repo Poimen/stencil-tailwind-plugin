@@ -1,0 +1,3 @@
+.some-component {
+  @apply flex flex-col;
+}
