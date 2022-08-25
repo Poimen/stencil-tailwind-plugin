@@ -229,6 +229,48 @@ The `tailwindHMR` plugin will register all the `tsx` files against the `css` fil
 
 Unfortunately, as of `v2.12.0` of the compiler, this cannot be done as a single plugin and two plugins are required.
 
+## Global styles with `@apply`
+
+If you use a global style sheet, but want to use Tailwind styles in that sheet, there is another plugin that facilitates this. The global stylesheet plugin takes the same configuration options as the main plugin, but can be tailored with different options as desired. The global plugin can be used as:
+```ts
+import tailwind, { tailwindHMR, tailwindGlobal } from 'stencil-tailwind-plugin';
+
+// ... other config
+export const config: Config = {
+  globalStyle: 'src/styles/global.scss',
+  outputTargets: [
+    // targets
+  ],
+  plugins: [
+    sass(),
+    // This takes the same configuration options as the main plugin. You can use different configurations if you want 
+    tailwindGlobal({
+      tailwindCssPath: './src/styles/tailwind.pcss',
+      tailwindConf: tailwindConfig,
+      postcss: {
+        plugins: [
+          atImport(),
+          tailwindcss(),
+          autoprefixer()
+        ]
+      }
+    }),
+    tailwind({
+      tailwindCssPath: './src/styles/tailwind.pcss',
+      tailwindConf: tailwindConfig,
+      postcss: {
+        plugins: [
+          atImport(),
+          tailwindcss(),
+          autoprefixer()
+        ]
+      }
+    }),
+    tailwindHMR()
+  ]
+};
+```
+
 ## Usage
 
 This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the `css` classes are applied after the component has been transpiled.
