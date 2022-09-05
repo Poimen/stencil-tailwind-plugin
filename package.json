@@ -14,6 +14,7 @@
     "lint": "eslint --fix ./src",
     "test": "jest --ci --runInBand",
     "test:watch": "jest --runInBand --no-cache --watch",
+    "test:update": "jest --runInBand --no-cache --updateSnapshot",
     "prepublishOnly": "npm run build"
   },
   "repository": {
