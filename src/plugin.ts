@@ -87,12 +87,15 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
     }
 
     return await queue.add(async () => {
-      const newGlobalCss = await processSourceTextForTailwindInlineClasses(opts, id, code);
+      // Note: usage of `code` for sourceTsx is more to avoid the TS warning about no utilities found
+      // in the source. Technically should be an empty string, but seeing the css and tsx are the same
+      // there should be no extra classes generated
+      const newGlobalCss = await processSourceTextForTailwindInlineClasses(opts, id, code, code);
 
       return {
         code: newGlobalCss,
         map: null,
-        dependencies: [id]
+        dependencies: [context.config.globalStyle, id]
       };
     });
   };
