@@ -116,61 +116,6 @@ export const config: Config = {
 
 If the `tailwindcss` plugin is not specified, it is assumed that the plugins should be run _before_ the default tailwind options. The `tailwindcss` plugin options will be overwritten by the tailwind configuration provided by the plugin, hence, the postcss `tailwindcss` is used as a marker for where `tailwindcss` should be used in the `postcss` chain of plugins.
 
-### Purge setup
-
-Previously the plugin would enable purge options for web components. This introduced a number of behaviours that where difficult to resolve under situations. Hence the plugin no longer purges content. In large scale projects, the extra tailwind preflight settings can result in a bloated shadow DOM (for instance, targetting `html` and `body` in the shadow DOM doesn't do anything).
-
-For purging of unused styles, the postcss plugin `@fullhuman/postcss-purgecss` can be used:
-
-```bash
-npm install -D @fullhuman/postcss-purgecss
-```
-
-The configuration of the purge plugin needs to be done with tailwind in mind. This `regex` may need to be tweaked for tailwind syntax moving forward:
-```ts
-// stencil.config.ts
-import { Config } from '@stencil/core';
-import tailwind from 'stencil-tailwind-plugin';
-import tailwindcss from 'tailwindcss';
-import { defaultExtractor } from 'tailwindcss/lib/lib/defaultExtractor';
-import purgecss from '@fullhuman/postcss-purgecss';
-import autoprefixer from 'autoprefixer';
-
-export const config: Config = {
-  outputTargets: [
-    // ...
-  ],
-  plugins: [
-    sass(),
-    tailwind({
-      tailwindConf,
-      tailwindCssPath: './src/styles/tailwind.css',
-      postcss: {
-        plugins: [
-          tailwindcss(),  // <-- used as a marker only, do not use for configuration, use tailwindConf
-          autoprefixer(),
-          purgecss({
-            content: ['./**/*.tsx'],
-            safelist: [
-              ':root',
-              ':host',
-              ':shadow',
-              '/deep/',
-              '::part',
-              '::theme'
-            ],
-            defaultExtractor
-          }),
-        ]
-      }
-    })
-  ]
-  // ...
-};
-```
-
-This configuration uses the extractor from the tailwind library. Also, note, that the use of `tailwindcss` in the `postcss` as a marker.
-
 ### Configuration with other plugins
 
 It is important to note that when using `sass` files, that the `sass` Stencil plugin appears before the tailwind plugin. The `sass` plugin needs to process the `sass` files first before the raw `css` is pasted to the tailwind postcss processor. An example configuration could look like:
@@ -243,7 +188,7 @@ export const config: Config = {
   ],
   plugins: [
     sass(),
-    // This takes the same configuration options as the main plugin. You can use different configurations if you want 
+    // This takes the same configuration options as the main plugin. You can use different configurations if you want
     tailwindGlobal({
       tailwindCssPath: './src/styles/tailwind.pcss',
       tailwindConf: tailwindConfig,
