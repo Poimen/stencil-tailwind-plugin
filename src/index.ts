@@ -8,11 +8,14 @@ export interface PostcssPlugin {
   plugins: any[];
 }
 
+export type TailwindPluginFunctionalConfig = ((filename: string, config: TailwindConfig) => TailwindConfig);
+export type TailwindPluginConfig = TailwindConfig | TailwindPluginFunctionalConfig;
+
 export interface PluginConfigOpts {
   enableDebug?: boolean;
   tailwindCssPath?: string;
   tailwindCssContents?: string;
-  tailwindConf?: TailwindConfig;
+  tailwindConf?: TailwindPluginConfig;
   stripComments?: boolean;
   minify?: boolean;
   postcss?: string | PostcssPlugin;
