@@ -91,4 +91,24 @@ describe('configuration', () => {
     // Assert
     expect(conf()).toMatchSnapshot();
   });
+
+  it('given configuration should set options', () => {
+    // Arrange
+    const { conf } = mockTransformModule();
+
+    const opts: PluginConfigOpts = {
+      enableDebug: true,
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      tailwindCssContents: '',
+      tailwindConf: jest.fn(() => ({ content: [] })),
+      stripComments: true,
+      minify: false
+    };
+    // Act
+    const result = plugin(opts);
+    // Assert
+    expect(conf()).toMatchSnapshot();
+    expect(isDebugEnabled()).toBe(true);
+    expect(result.name).toBe('tailwind');
+  });
 });

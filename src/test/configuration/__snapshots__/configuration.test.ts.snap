@@ -38,6 +38,28 @@ Object {
 }
 `;
 
+exports[`configuration given configuration should set options 2`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
 exports[`configuration given default configuration should match default options 1`] = `
 Object {
   "enableDebug": false,
