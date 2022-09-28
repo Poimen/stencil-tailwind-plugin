@@ -5,23 +5,7 @@ Object {
   "enableDebug": true,
   "minify": false,
   "stripComments": true,
-  "tailwindConf": Object {
-    "content": Array [
-      "./src/**/*.html",
-      "./src/**/*.js",
-      "./src/**/*.jsx",
-      "./src/**/*.tsx",
-    ],
-    "darkMode": false,
-    "mode": "jit",
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-    "variants": Object {
-      "extend": Object {},
-    },
-  },
+  "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;
 
 @layer base {
@@ -65,13 +49,7 @@ Object {
   "enableDebug": false,
   "minify": true,
   "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [],
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-  },
+  "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
   "useAutoPrefixer": true,
@@ -88,13 +66,7 @@ Object {
     ],
   },
   "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [],
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-  },
+  "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
   "useAutoPrefixer": true,
@@ -107,13 +79,7 @@ Object {
   "minify": true,
   "postcss": "src/test/configuration/postcss.config.js",
   "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [],
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-  },
+  "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
   "useAutoPrefixer": true,
@@ -125,15 +91,22 @@ Object {
   "enableDebug": false,
   "minify": true,
   "stripComments": false,
-  "tailwindConf": Object {
-    "content": Array [],
-    "plugins": Array [],
-    "theme": Object {
-      "extend": Object {},
-    },
-  },
+  "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
   "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration given no configuration should set default options 2`] = `
+Object {
+  "content": Array [],
+  "corePlugins": Object {
+    "preflight": true,
+  },
+  "plugins": Array [],
+  "theme": Object {
+    "extend": Object {},
+  },
 }
 `;

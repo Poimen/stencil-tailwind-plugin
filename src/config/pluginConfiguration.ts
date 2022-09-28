@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { Config as TailwindConfig } from 'tailwindcss';
-import { PluginConfigOpts, PluginConfigOptsDefaults, TailwindPluginConfig } from '../index';
+import { PluginConfigOpts, PluginConfigOptsDefaults, TailwindPluginConfig, TailwindPluginFunctionalConfig } from '../index';
 import { warn } from '../debug/logger';
 
 function makeDefaultTailwindConf(): TailwindConfig {
@@ -14,41 +14,41 @@ function makeDefaultTailwindConf(): TailwindConfig {
   };
 }
 
-function buildTailwindConfigurationBasedOnUserObject(tailwindConf: TailwindConfig, contentFileList: string[], includePreflight: boolean): TailwindConfig {
-  let preflight = includePreflight;
-
-  if (Array.isArray(tailwindConf.corePlugins)) {
-    // user configuration is disabling all core plugins...
-    return {
-      ...tailwindConf,
-      content: contentFileList,
-      corePlugins: []
-    };
-  }
-
-  if (includePreflight && tailwindConf.corePlugins) {
-    // if we are including the preflight, resolve to the user configuration value if available
+function buildTailwindConfigurationBasedOnUserObject(userConfiguration: TailwindConfig): TailwindPluginFunctionalConfig {
+  return (_: string, config: TailwindConfig): TailwindConfig => {
     // eslint-disable-next-line dot-notation
-    preflight = tailwindConf.corePlugins['preflight'] ?? true;
-  }
-  return {
-    ...tailwindConf,
-    content: contentFileList,
-    corePlugins: {
-      ...tailwindConf.corePlugins,
-      preflight
+    const includePreflight = config.corePlugins['preflight'];
+    let preflight = includePreflight;
+
+    if (Array.isArray(userConfiguration.corePlugins)) {
+      // user configuration is disabling all core plugins...
+      return {
+        ...userConfiguration,
+        ...config,
+        corePlugins: []
+      };
     }
+
+    if (includePreflight && userConfiguration.corePlugins) {
+      // if we are including the preflight, resolve to the user configuration value if available
+      // eslint-disable-next-line dot-notation
+      preflight = userConfiguration.corePlugins['preflight'] ?? true;
+    }
+    return {
+      ...userConfiguration,
+      content: config.content,
+      corePlugins: {
+        ...userConfiguration.corePlugins,
+        preflight
+      }
+    };
   };
 }
 
 export function resolveTailwindConfigurationFromUserSettings(tailwindConf: TailwindPluginConfig, contentFileList: string[], includePreflight: boolean): TailwindConfig {
-  if (typeof tailwindConf !== 'function') {
-    // Tailwind configuration is not coming from a function, so just resort back to the object configuration
-    return buildTailwindConfigurationBasedOnUserObject(tailwindConf as TailwindConfig, contentFileList, includePreflight);
-  }
-
   // Resolve the Tailwind configuration based on the user function
-  return tailwindConf(contentFileList[0], {
+  const tailwindResolver = tailwindConf as TailwindPluginFunctionalConfig;
+  return tailwindResolver(contentFileList[0], {
     content: contentFileList,
     corePlugins: {
       preflight: includePreflight
@@ -84,6 +84,11 @@ export function configurePluginOptions(opts: PluginConfigOpts): PluginConfigOpts
 
   if (configuration.tailwindCssPath) {
     configuration.tailwindCssContents = fetchTailwindCssContents(configuration.tailwindCssPath) ?? configuration.tailwindCssContents;
+  }
+
+  if (typeof configuration.tailwindConf !== 'function') {
+    const userConfiguration = configuration.tailwindConf as TailwindConfig;
+    configuration.tailwindConf = buildTailwindConfigurationBasedOnUserObject(userConfiguration);
   }
 
   return configuration;

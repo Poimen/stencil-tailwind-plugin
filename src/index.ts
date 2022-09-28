@@ -29,7 +29,10 @@ export interface PluginConfigOptsDefaults {
 export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDefaults);
 
 function configureOptions(opts?: PluginConfigOpts) {
-  const options = Object.assign({}, PluginOpts.DEFAULT, opts);
+  const options = {
+    ...PluginOpts.DEFAULT,
+    ...opts
+  };
 
   const config = configurePluginOptions(options);
   configureLogging(options.enableDebug);

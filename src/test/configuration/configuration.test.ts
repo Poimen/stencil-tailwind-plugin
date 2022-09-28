@@ -1,10 +1,12 @@
-import plugin, { PluginConfigOpts, PluginOpts } from '../../index';
+import plugin, { PluginConfigOpts, PluginOpts, TailwindPluginFunctionalConfig } from '../../index';
 import { configuredTransform } from '../../plugin';
 import { isDebugEnabled } from '../../debug/logger';
 
 jest.mock('../../plugin');
 
 describe('configuration', () => {
+  const defaultConfInput = { content: [], corePlugins: { preflight: true } };
+
   let tailwindFrozenConfig: any;
   beforeAll(() => {
     const config = { conf: require('./tailwind.config') };
@@ -28,8 +30,10 @@ describe('configuration', () => {
     const { conf } = mockTransformModule();
 
     plugin();
+    const confResult = conf();
     // Assert
-    expect(conf()).toMatchSnapshot();
+    expect(confResult).toMatchSnapshot();
+    expect((confResult?.tailwindConf as TailwindPluginFunctionalConfig)('', defaultConfInput)).toMatchSnapshot();
     expect(isDebugEnabled()).toBe(false);
   });
 
