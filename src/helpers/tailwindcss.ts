@@ -3,7 +3,7 @@ import postcss, { AcceptedPlugin } from 'postcss';
 import autoprefixer from 'autoprefixer';
 import tailwind from 'tailwindcss/lib/processTailwindFeatures'; // yeah, not great but there are mtimeMS detections that fail without reaching into the context directly
 import resolveConfig from 'tailwindcss/lib/public/resolve-config';
-import { makeTailwindConfig } from '../config/pluginConfiguration';
+import { resolveTailwindConfigurationFromUserSettings } from '../config/pluginConfiguration';
 import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
 import { PluginConfigOpts } from '..';
@@ -41,7 +41,7 @@ function applyRawEscaping(css: string, wasMinified: boolean): string {
 }
 
 async function getPostcssPluginsWithTailwind(conf: PluginConfigOpts, filenamePath: string, content: string, includePreflight: boolean): Promise<AcceptedPlugin[]> {
-  const twConf = makeTailwindConfig(conf, [filenamePath], includePreflight);
+  const twConf = resolveTailwindConfigurationFromUserSettings(conf.tailwindConf, [filenamePath], includePreflight);
 
   // Get all the user plugins if there are any
   const { before, after, hasAutoPrefixer } = await getPostcssPlugins(conf);

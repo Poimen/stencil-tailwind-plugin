@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { Config as TailwindConfig } from 'tailwindcss';
-import { PluginConfigOpts, PluginConfigOptsDefaults } from '../index';
+import { PluginConfigOpts, PluginConfigOptsDefaults, TailwindPluginConfig } from '../index';
 import { warn } from '../debug/logger';
 
 function makeDefaultTailwindConf(): TailwindConfig {
@@ -12,6 +12,48 @@ function makeDefaultTailwindConf(): TailwindConfig {
     },
     plugins: []
   };
+}
+
+function buildTailwindConfigurationBasedOnUserObject(tailwindConf: TailwindConfig, contentFileList: string[], includePreflight: boolean): TailwindConfig {
+  let preflight = includePreflight;
+
+  if (Array.isArray(tailwindConf.corePlugins)) {
+    // user configuration is disabling all core plugins...
+    return {
+      ...tailwindConf,
+      content: contentFileList,
+      corePlugins: []
+    };
+  }
+
+  if (includePreflight && tailwindConf.corePlugins) {
+    // if we are including the preflight, resolve to the user configuration value if available
+    // eslint-disable-next-line dot-notation
+    preflight = tailwindConf.corePlugins['preflight'] ?? true;
+  }
+  return {
+    ...tailwindConf,
+    content: contentFileList,
+    corePlugins: {
+      ...tailwindConf.corePlugins,
+      preflight
+    }
+  };
+}
+
+export function resolveTailwindConfigurationFromUserSettings(tailwindConf: TailwindPluginConfig, contentFileList: string[], includePreflight: boolean): TailwindConfig {
+  if (typeof tailwindConf !== 'function') {
+    // Tailwind configuration is not coming from a function, so just resort back to the object configuration
+    return buildTailwindConfigurationBasedOnUserObject(tailwindConf as TailwindConfig, contentFileList, includePreflight);
+  }
+
+  // Resolve the Tailwind configuration based on the user function
+  return tailwindConf(contentFileList[0], {
+    content: contentFileList,
+    corePlugins: {
+      preflight: includePreflight
+    }
+  });
 }
 
 export const PluginConfigDefaults: PluginConfigOptsDefaults = {
@@ -25,33 +67,6 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
     useAutoPrefixer: true
   }
 };
-
-export function makeTailwindConfig(conf: PluginConfigOpts, contentFileList: string[], includePreflight: boolean): TailwindConfig {
-  let preflight = includePreflight;
-
-  if (Array.isArray(conf.tailwindConf.corePlugins)) {
-    // user configuration is disabling all core plugins...
-    return {
-      ...conf.tailwindConf,
-      content: contentFileList,
-      corePlugins: []
-    };
-  }
-
-  if (includePreflight && conf.tailwindConf.corePlugins) {
-    // if we are including the preflight, resolve to the user configuration value if available
-    // eslint-disable-next-line dot-notation
-    preflight = conf.tailwindConf.corePlugins['preflight'] ?? true;
-  }
-  return {
-    ...conf.tailwindConf,
-    content: contentFileList,
-    corePlugins: {
-      ...conf.tailwindConf.corePlugins,
-      preflight
-    }
-  };
-}
 
 function fetchTailwindCssContents(tailwindCssPath?: string): string | null {
   const tailwindCssContents = fs.readFileSync(path.resolve(tailwindCssPath)).toString();
