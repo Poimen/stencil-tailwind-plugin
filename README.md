@@ -47,7 +47,7 @@ There are also a number of options that can be given to the plugin:
 | ----------------- | --------------------------------------------------------- | ------------ |
 | `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilities and @components are used. | `undefined`  |
 | `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as the source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
-| `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options with `jit` enabled   |
+| `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options or configuration function   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
 | `useAutoPrefixer` | Indicate if the auto-prefixer should be used used `autoprefixer` | `true`   |
@@ -58,7 +58,11 @@ The default options can be referenced from the plugin as well:
 // stencil.config.ts
 import tailwind, { PluginOpts } from 'stencil-tailwind-plugin';
 
-const opts = Object.assign({}, PluginOpts.DEFAULT, { debug: false, stripComments: true });
+const opts = {
+  ...PluginOpts.DEFAULT,
+  debug: false,
+  stripComments: true
+};
 
 export const config: Config = {
   // ...
@@ -68,6 +72,92 @@ export const config: Config = {
   // ...
 };
 ```
+
+### Configuration per file
+
+There can be situations whereby a Tailwind configuration needs to be applied to a specific file/component. This can be accomplished by providing a configuration function rather than a configuration object. In the examples above and object is used, but in this scenario we will configure the plugin with a function:
+```ts
+// stencil.config.ts
+import tailwind, { TailwindConfig } from 'stencil-tailwind-plugin';
+
+const twConfigurationFn = (filename: string, config: TailwindConfig): TailwindConfig => {
+  if (filename.includes('the-chosen-one.tsx')) {
+    return {
+      ...config,
+      safelist: [
+        'bg-red-500',
+        'text-3xl',
+        'lg:text-4xl'
+      ]
+    };
+  }
+  return config;
+};
+
+const opts = {
+  ...PluginOpts.DEFAULT,
+  tailwindConf: twConfigurationFn
+};
+
+export const config: Config = {
+  // ...
+  plugins: [
+    tailwind(opts)
+  ],
+  // ...
+};
+```
+
+In the above code `tailwindConf` is given a callback function to be able to modify the Tailwind configuration that'll be used for the file.
+
+The argument `filename` is the full path to the component that will be processed by Tailwind processor, and the `config` is the plugin's configuration that has been determined by the plugin. This configuration can then be updated accordingly and this will be the final configuration applied to the component.
+
+#### Important considerations for function based configuration
+
+It is important to note that updating the `content` file array to remove/change the file being processed can have interesting effects. Care must be taken to ensure that the file list is properly preserved. Because the configuration is incomplete at the point of calling this function, the `config` parameter might not be appropriate for direct returning. This is because the configuration represents the default configuration. If there are "basic" level configurations that need to be applied, then they need to be applied to the configuration before returning.
+
+For instance, if there is an external configuration:
+```js
+// tailwind.config.js
+module.exports = {
+  plugins: [require('@tailwindcss/forms')]
+};
+```
+
+which them would need to be applied by default:
+```ts
+// stencil.config.ts
+import cfg from './tailwind.config';
+
+const twConfigurationFn = (filename: string, config: TailwindConfig): TailwindConfig => {
+  if (filename.includes('the-chosen-one.tsx')) {
+    return {
+      ...config,
+      ...cfg,
+      safelist: [
+        'bg-red-500',
+        'text-3xl',
+        'lg:text-4xl'
+      ]
+    };
+  }
+  return {
+    ...config,
+    ...cfg
+  };
+};
+```
+
+Here `cfg` is applied to both paths.
+
+The other consideration is that the file being processed will be the raw file for StencilJS compiler. This means the `filename` will contain query parameters as well:
+```
+some-component.scss?tag=some-component
+```
+
+The example about merely checks the `includes` option as this negates the use of tags by StencilJS.
+
+If there are multiple distributions enabled in the StencilJS configuration, then the configuration function will be called multiple times. StencilJS handles each distribution output separately so each time a file is processed per distribution the configuration is required for that distribution. Presently there is no indication of which distribution Stencil is processing so configuration per file per distribution output is not possible.
 
 ### Postcss custom configuration
 
