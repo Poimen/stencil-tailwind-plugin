@@ -35,13 +35,30 @@ async function transformStyleStatement(opts: PluginConfigOpts, sourceFile: Sourc
   return printer.printFile(sourceFile);
 }
 
-export function transform(opts: PluginConfigOpts) {
+// This function processes css that is contained as a string in a typescript file
+// This transform is used when stencil passes a typescript encoded css blob rather than
+// the raw file
+export function transformCssFromTsxFileFormat(opts: PluginConfigOpts) {
   return async (sourceText: string, filename: string): Promise<string> => {
-    debug('[Stylesheets]', 'Processing source file:', filename);
+    debug('[Stylesheets]', 'Processing css from tsx source file:', filename);
 
     const sourceFile = loadTypescriptCodeFromMemory(sourceText);
     const transformed = await transformStyleStatement(opts, sourceFile, sourceText, filename);
 
     return transformed;
+  };
+}
+
+// This function processes a pure css file - i.e. a file with the contents of a css file
+// This transform is used during HMR where css files are passed around
+export function transformCssFileFormat(opts: PluginConfigOpts) {
+  return async (sourceCss: string, filename: string): Promise<string> => {
+    debug('[Stylesheets]', 'Processing css source file:', filename);
+
+    const injectedCss = getAllExternalCssDependencies(filename).css;
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceCss, sourceCss);
+    const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(opts, filename, tailwindClasses, injectedCss);
+
+    return reducedClasses;
   };
 }

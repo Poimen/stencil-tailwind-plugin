@@ -1,7 +1,7 @@
 import path from 'path';
 import PQueue from 'p-queue';
 import { debug, error } from './debug/logger';
-import { transform as styleSheetTransform } from './processors/stylesheets';
+import { transformCssFileFormat, transformCssFromTsxFileFormat as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
 import { PluginCtx, PluginTransformResults } from '@stencil/core/internal';
 import { getAllExternalCssDependencies } from './store/store';
@@ -54,17 +54,21 @@ export function configuredTransform(opts: PluginConfigOpts): (code: string, id: 
   };
 }
 
-export async function postTransformDependencyUpdate(code: string, id: string): Promise<PluginTransformResults> {
-  return await queue.add(async () => {
-    const deps = getAllExternalCssDependencies(id);
-    const finalCss = deps.css === '' ? code : `${code} ${deps.css}`;
+export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: string, id: string) => Promise<PluginTransformResults> {
+  const cssTransformer = transformCssFileFormat(opts);
 
-    return {
-      code: finalCss,
-      map: null,
-      dependencies: deps.dependencies
-    };
-  });
+  return async (code: string, id: string): Promise<PluginTransformResults> => {
+    return await queue.add(async () => {
+      const deps = getAllExternalCssDependencies(id);
+      const finalCss = await cssTransformer(code, id);
+
+      return {
+        code: finalCss,
+        map: null,
+        dependencies: deps.dependencies
+      };
+    });
+  };
 }
 
 export function processGlobalStyles(opts: PluginConfigOpts) {

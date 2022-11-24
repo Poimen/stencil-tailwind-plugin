@@ -52,11 +52,13 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
   } as Plugin;
 }
 
-export function tailwindHMR(): Plugin {
+export function tailwindHMR(opts?: PluginConfigOpts): Plugin {
+  const config = configureOptions(opts);
+
   return {
     pluginType: 'css',
     name: 'tailwind-hmr',
-    transform: postTransformDependencyUpdate,
+    transform: postTransformDependencyUpdate(config),
     buildStart,
     buildEnd
   } as Plugin;
