@@ -1,5 +1,3 @@
-import path from 'path';
-import fs from 'fs-extra';
 import { tailwindGlobal } from '../../index';
 import { loadTestComponent } from '../utils';
 import { PluginConfigDefaults } from '../../config/pluginConfiguration';

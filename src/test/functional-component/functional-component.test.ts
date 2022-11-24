@@ -1,5 +1,5 @@
 import { transform as transformTypescript } from '../../processors/typescript';
-import { transform as transformStylesheet } from '../../processors/stylesheets';
+import { transformCssFromTsxFileFormat as transformStylesheet } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 import { getAllExternalCssDependencies } from '../../store/store';

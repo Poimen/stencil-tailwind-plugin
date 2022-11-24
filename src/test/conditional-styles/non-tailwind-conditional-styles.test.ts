@@ -1,6 +1,6 @@
 import { Config as TailwindConfig } from 'tailwindcss';
 import { transform as transformTsx } from '../../processors/typescript';
-import { transform as transformStyle } from '../../processors/stylesheets';
+import { transformCssFromTsxFileFormat as transformStyle } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 

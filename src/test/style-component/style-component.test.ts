@@ -1,5 +1,5 @@
 import { Config as TailwindConfig } from 'tailwindcss';
-import { transform } from '../../processors/stylesheets';
+import { transformCssFromTsxFileFormat as transform } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 import { PluginConfigOpts } from '../..';
