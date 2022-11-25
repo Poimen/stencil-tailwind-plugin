@@ -1,8 +1,7 @@
-import { Config as TailwindConfig } from 'tailwindcss';
 import { transform } from '../../processors/typescript';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
-import { PluginConfigOpts, TailwindPluginFunctionalConfig } from '../..';
+import { PluginConfigOpts } from '../..';
 
 describe('basic-component', () => {
   it('given basic component with no tailwindcss styles, should output no styles', async () => {
