@@ -73,6 +73,64 @@ export const config: Config = {
 };
 ```
 
+### Default configuration
+
+All the plugins can be configured (as detailed) below. Given that there are 3 potential use cases, each plugin _should_ have the same configuration. Hence repeating the configuration could cause bloat if a single configuration intended to be used. Hence, there is a support function that can update the configuration used when using subsequent plugins - `setPluginConfigurationDefaults`.
+
+The configuration of the options can be done as such:
+```ts
+// stencil.config.ts
+import tailwind, { setPluginConfigurationDefaults, tailwindGlobal, tailwindHMR } from 'stencil-tailwind-plugin';
+
+const opts = {
+  debug: false,
+  stripComments: true
+};
+
+setPluginConfigurationDefaults(opts);
+
+export const config: Config = {
+  // ...
+  plugins: [
+    tailwindGlobal(),
+    tailwind(),
+    tailwindHMR()
+  ],
+  // ...
+};
+```
+
+Here the `PluginOpts.DEFAULT` will be automatically applied and only the delta options need to be set.
+
+All the plugins that are not provided configuration will receive the configuration from `setPluginConfigurationDefaults`. This does not preclude setting different options per plugin:
+```ts
+// stencil.config.ts
+import tailwind, { setPluginConfigurationDefaults, tailwindGlobal, tailwindHMR } from 'stencil-tailwind-plugin';
+
+const opts = {
+  debug: false,
+  stripComments: true,
+  minify: true
+};
+
+setPluginConfigurationDefaults(opts);
+
+export const config: Config = {
+  // ...
+  plugins: [
+    tailwindGlobal(),
+    tailwind(),
+    tailwindHMR({
+      ...opts,
+      minify: false
+    })
+  ],
+  // ...
+};
+```
+
+In the above, the `tailwindHMR` plugin will not minify the source, but the other will.
+
 ### Configuration per file
 
 There can be situations whereby a Tailwind configuration needs to be applied to a specific file/component. This can be accomplished by providing a configuration function rather than a configuration object. In the examples above and object is used, but in this scenario we will configure the plugin with a function:
@@ -95,7 +153,6 @@ const twConfigurationFn = (filename: string, config: TailwindConfig): TailwindCo
 };
 
 const opts = {
-  ...PluginOpts.DEFAULT,
   tailwindConf: twConfigurationFn
 };
 
