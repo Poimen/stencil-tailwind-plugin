@@ -246,13 +246,14 @@ Stencil's compiler does support HMR, however, for inline styles produced by tail
 // stencil.config.ts
 import { Config } from '@stencil/core';
 import tailwind, { tailwindHMR } from 'stencil-tailwind-plugin';
+import tailwindConfig from './tailwind.config';
 
 export const config: Config = {
   // ...
   plugins: [
     sass(),
     tailwind({
-      tailwindConf,
+      tailwindConf: tailwindConfig,
       tailwindCssPath: './src/styles/tailwind.css'
     }),
     tailwindHMR()
@@ -261,6 +262,28 @@ export const config: Config = {
 ```
 
 The `tailwindHMR` plugin will register all the `tsx` files against the `css` files. This allows Stencil to watch for changes on those `tsx` files and update the `css` accordingly.
+
+The `tailwindHMR` function takes an optional configuration parameter. If the stylesheets use the `@apply` syntax, then the configuration maybe required to transform the styles correctly compared to the standard configuration used with the main `tailwind` plugin. The configuration usage:
+```ts
+// stencil.config.ts
+import { Config } from '@stencil/core';
+import tailwind, { tailwindHMR } from 'stencil-tailwind-plugin';
+import tailwindConfig from './tailwind.config';
+
+export const config: Config = {
+  // ...
+  plugins: [
+    sass(),
+    tailwind({
+      tailwindConf: tailwindConfig,
+      tailwindCssPath: './src/styles/tailwind.css'
+    }),
+    tailwindHMR({
+      tailwindConf: tailwindConfig
+    })
+  ]
+};
+```
 
 Unfortunately, as of `v2.12.0` of the compiler, this cannot be done as a single plugin and two plugins are required.
 
