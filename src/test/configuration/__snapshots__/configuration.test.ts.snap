@@ -1,5 +1,149 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`configuration changing the default configuration plugins should be able to set own config 1`] = `
+Object {
+  "enableDebug": false,
+  "minify": true,
+  "stripComments": false,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration plugins should be able to set own config 2`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration plugins should be able to set own config 3`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration should apply the configuration to all plugins 1`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration should apply the configuration to all plugins 2`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration should apply the configuration to all plugins 3`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "@tailwind base;
+
+@layer base {
+  .autoplacement-example {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-gap: 20px;
+  }
+}
+",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
+exports[`configuration changing the default configuration should not change the provided defaults 1`] = `
+Object {
+  "enableDebug": true,
+  "minify": false,
+  "stripComments": true,
+  "tailwindConf": [MockFunction],
+  "tailwindCssContents": "",
+  "tailwindCssPath": "src/test/configuration/tailwind.css",
+  "useAutoPrefixer": true,
+}
+`;
+
 exports[`configuration given configuration should set options 1`] = `
 Object {
   "enableDebug": true,

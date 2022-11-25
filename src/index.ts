@@ -29,9 +29,11 @@ export interface PluginConfigOptsDefaults {
 
 export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDefaults);
 
+let pluginAppliedConfiguration: PluginConfigOpts = PluginOpts.DEFAULT;
+
 function configureOptions(opts?: PluginConfigOpts) {
   const options = {
-    ...PluginOpts.DEFAULT,
+    ...pluginAppliedConfiguration,
     ...opts
   };
 
@@ -50,6 +52,15 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
     buildStart,
     buildEnd
   } as Plugin;
+}
+
+export function setPluginConfigurationDefaults(opts: PluginConfigOpts): PluginConfigOpts {
+  pluginAppliedConfiguration = {
+    ...pluginAppliedConfiguration,
+    ...opts
+  };
+
+  return pluginAppliedConfiguration;
 }
 
 export function tailwindHMR(opts?: PluginConfigOpts): Plugin {

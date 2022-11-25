@@ -1,5 +1,5 @@
-import plugin, { PluginConfigOpts, PluginOpts, TailwindPluginFunctionalConfig } from '../../index';
-import { configuredTransform } from '../../plugin';
+import plugin, { PluginConfigOpts, PluginOpts, setPluginConfigurationDefaults, TailwindPluginFunctionalConfig, tailwindHMR, tailwindGlobal } from '../../index';
+import { configuredTransform, postTransformDependencyUpdate, processGlobalStyles } from '../../plugin';
 import { isDebugEnabled } from '../../debug/logger';
 
 jest.mock('../../plugin');
@@ -15,13 +15,25 @@ describe('configuration', () => {
 
   const mockTransformModule = () => {
     let confSet: PluginConfigOpts | null = null;
+    let postTransformConfSet: PluginConfigOpts | null = null;
+    let globalStylesConfSet: PluginConfigOpts | null = null;
 
     configuredTransform.mockImplementation((opts: PluginConfigOpts) => {
       confSet = opts;
     });
 
+    postTransformDependencyUpdate.mockImplementation((opts: PluginConfigOpts) => {
+      postTransformConfSet = opts;
+    });
+
+    processGlobalStyles.mockImplementation((opts: PluginConfigOpts) => {
+      globalStylesConfSet = opts;
+    });
+
     return {
-      conf: () => confSet
+      conf: () => confSet,
+      postTransformConf: () => postTransformConfSet,
+      globalStylesConf: () => globalStylesConfSet
     };
   };
 
@@ -114,5 +126,93 @@ describe('configuration', () => {
     expect(conf()).toMatchSnapshot();
     expect(isDebugEnabled()).toBe(true);
     expect(result.name).toBe('tailwind');
+  });
+
+  it('changing the default configuration should not change the provided defaults', () => {
+    // Arrange
+    const preOpts = JSON.parse(JSON.stringify(PluginOpts));
+    const opts: PluginConfigOpts = {
+      enableDebug: true,
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      tailwindCssContents: '',
+      tailwindConf: jest.fn(() => ({ content: [] })),
+      stripComments: true,
+      minify: false
+    };
+    // Act
+    const result = setPluginConfigurationDefaults(opts);
+    // Assert
+    expect(PluginOpts).toEqual(preOpts);
+    expect(result).not.toEqual(preOpts);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('changing the default configuration should apply the configuration to all plugins', () => {
+    // Arrange
+    const { conf, globalStylesConf, postTransformConf } = mockTransformModule();
+
+    const opts: PluginConfigOpts = {
+      enableDebug: true,
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      tailwindCssContents: '',
+      tailwindConf: jest.fn(() => ({ content: [] })),
+      stripComments: true,
+      minify: false
+    };
+    // Act
+    setPluginConfigurationDefaults(opts);
+
+    const result = plugin();
+    const resultGlobal = tailwindGlobal();
+    const resultHMR = tailwindHMR();
+    // Assert
+    expect(conf()).toMatchSnapshot();
+    expect(globalStylesConf()).toMatchSnapshot();
+    expect(postTransformConf()).toMatchSnapshot();
+
+    expect(conf()).toEqual(globalStylesConf());
+    expect(postTransformConf()).toEqual(conf());
+    expect(globalStylesConf()).toEqual(postTransformConf());
+
+    expect(result.name).toBe('tailwind');
+    expect(resultGlobal.name).toBe('tailwind-global');
+    expect(resultHMR.name).toBe('tailwind-hmr');
+  });
+
+  it('changing the default configuration plugins should be able to set own config', () => {
+    // Arrange
+    const { conf, globalStylesConf, postTransformConf } = mockTransformModule();
+
+    const optsDefault: PluginConfigOpts = {
+      enableDebug: true,
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      tailwindCssContents: '',
+      tailwindConf: jest.fn(() => ({ content: [] })),
+      stripComments: true,
+      minify: false
+    };
+
+    const optsSingular: PluginConfigOpts = {
+      enableDebug: false,
+      tailwindCssPath: 'src/test/configuration/tailwind.css',
+      tailwindCssContents: '',
+      tailwindConf: jest.fn(() => ({ content: [] })),
+      stripComments: false,
+      minify: true
+    };
+    // Act
+    setPluginConfigurationDefaults(optsDefault);
+
+    plugin(optsSingular);
+    tailwindGlobal();
+    tailwindHMR();
+    // Assert
+    expect(conf()).toMatchSnapshot();
+    expect(globalStylesConf()).toMatchSnapshot();
+    expect(postTransformConf()).toMatchSnapshot();
+
+    expect(conf()).not.toEqual(globalStylesConf());
+    expect(postTransformConf()).not.toEqual(conf());
+    expect(globalStylesConf()).toEqual(postTransformConf());
   });
 });
