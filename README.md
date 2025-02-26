@@ -18,7 +18,7 @@ This guide assumes that a Stencil project has already been initialized and confi
 
 Install the necessary dependencies:
 ```bash
-npm install -D stencil-tailwind-plugin tailwindcss
+npm install -D stencil-tailwind-plugin tailwindcss@3
 ```
 
 ### Configuration
