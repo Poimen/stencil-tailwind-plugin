@@ -1,14 +1,9 @@
 import { Plugin } from '@stencil/core/internal';
-import { Config } from 'tailwindcss';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
 import { configuredTransform, postTransformDependencyUpdate, buildStart, buildEnd, processGlobalStyles } from './plugin';
 
-export interface PostcssPlugin {
-  plugins: any[];
-}
-
-export type TailwindConfig = Config;
+export type TailwindConfig = object;
 export type TailwindPluginFunctionalConfig = ((filename: string, config: TailwindConfig) => TailwindConfig);
 export type TailwindPluginConfig = TailwindConfig | TailwindPluginFunctionalConfig;
 
@@ -19,8 +14,7 @@ export interface PluginConfigOpts {
   tailwindConf?: TailwindPluginConfig;
   stripComments?: boolean;
   minify?: boolean;
-  postcss?: string | PostcssPlugin;
-  useAutoPrefixer?: boolean;
+  postcss?: string;
 }
 
 export interface PluginConfigOptsDefaults {

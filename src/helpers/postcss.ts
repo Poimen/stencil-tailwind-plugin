@@ -55,7 +55,6 @@ function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string
 interface PostcssPlugins {
   before: postcssrc.ResultPlugin[];
   after: postcssrc.ResultPlugin[];
-  hasAutoPrefixer: boolean;
 }
 
 export function stripCommentsPlugin(): AcceptedPlugin {
@@ -75,7 +74,6 @@ export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<Postcss
   const configPlugins = await loadPlugins(conf.postcss);
 
   const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, 'tailwindcss');
-  const hasAutoPrefixer = findIndexOfPlugin(configPlugins, 'autoprefixer') !== -1;
 
   const beforeTailwind = configPluginTailwindIdx === -1 ? [] : configPlugins.slice(0, configPluginTailwindIdx);
   const afterTailwind = configPluginTailwindIdx === -1 ? configPlugins : configPlugins.slice(configPluginTailwindIdx + 1);
@@ -83,6 +81,5 @@ export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<Postcss
   return {
     before: beforeTailwind,
     after: afterTailwind,
-    hasAutoPrefixer,
   };
 }

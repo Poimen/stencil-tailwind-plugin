@@ -50,7 +50,6 @@ There are also a number of options that can be given to the plugin:
 | `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options or configuration function   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
-| `useAutoPrefixer` | Indicate if the auto-prefixer should be used used `autoprefixer` | `true`   |
 | `postcss` | Path to postcss configuration object or an object that contains the postcss configuration. If a `postcss` configuration is found in the default paths, it will be used. | `process.cwd()` |
 
 The default options can be referenced from the plugin as well:
@@ -231,7 +230,6 @@ module.exports = {
   plugins: [
     require('postcss-import'),
     require('tailwindcss'),
-    require('autoprefixer'),
     require('postcss-sort-media-queries'),
     require('postcss-combine-duplicated-selectors'),
     require('cssnano')
@@ -252,7 +250,6 @@ export const config: Config = {
         plugins: [
           require('postcss-import'),
           require('tailwindcss'),
-          require('autoprefixer'),
         ]
       }
     })
@@ -270,7 +267,6 @@ It is important to note that when using `sass` files, that the `sass` Stencil pl
 // stencil.config.ts
 import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
-import autoprefixer from 'autoprefixer';
 import tailwind from 'stencil-tailwind-plugin';
 import { inlineSvg } from 'stencil-inline-svg';
 import tailwindConfig from './tailwind.config';
@@ -287,11 +283,6 @@ export const config: Config = {
     tailwind({
       tailwindCssPath: './src/styles/tailwind.pcss',
       tailwindConf: tailwindConfig,
-      postcss: {
-        plugins: [
-          autoprefixer()
-        ]
-      }
     }),
   ]
 ```
@@ -366,7 +357,6 @@ export const config: Config = {
         plugins: [
           atImport(),
           tailwindcss(),
-          autoprefixer()
         ]
       }
     }),
@@ -377,7 +367,6 @@ export const config: Config = {
         plugins: [
           atImport(),
           tailwindcss(),
-          autoprefixer()
         ]
       }
     }),

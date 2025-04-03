@@ -18,7 +18,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -40,7 +39,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -62,7 +60,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -84,7 +81,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -106,7 +102,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -128,7 +123,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -140,7 +134,6 @@ Object {
   "tailwindConf": [MockFunction],
   "tailwindCssContents": "",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -162,7 +155,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -184,7 +176,6 @@ Object {
 }
 ",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -196,24 +187,6 @@ Object {
   "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
-}
-`;
-
-exports[`configuration given full postcss object configuration, should set postcss object 1`] = `
-Object {
-  "enableDebug": false,
-  "minify": true,
-  "postcss": Object {
-    "plugins": Array [
-      [Function],
-    ],
-  },
-  "stripComments": false,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -226,7 +199,6 @@ Object {
   "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 
@@ -238,7 +210,6 @@ Object {
   "tailwindConf": [Function],
   "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
   "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 

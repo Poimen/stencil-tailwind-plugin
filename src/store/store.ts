@@ -42,7 +42,7 @@ function makeFileImportSpec(filename: string) {
 function makeImportAndNameMatcher(filename: string) {
   const importMatch = makeFileImportSpec(filename);
 
-  return function (file: ImportFileReference) {
+  return function(file: ImportFileReference) {
     return file.imports.indexOf(importMatch) !== -1 || file.name === filename;
   };
 }
@@ -96,7 +96,7 @@ export function getAllExternalCssDependencies(filenameRef: string): CssDependenc
   debug('[STORE]', 'Looking up import of', filename);
 
   const cssInjection = getImportMatchesForCssFile(filename).reduce<CssDependencies>((deps: CssDependencies, file: ImportFileReference) => {
-    deps.css += Object.entries(file.cssFiles).reduce((css: string, [_, v]) => {
+    deps.css += Object.entries(file.cssFiles).reduce((css: string, [, v]) => {
       css += v.css;
       deps.dependencies.push(v.name);
       return css;

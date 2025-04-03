@@ -36,6 +36,7 @@ export default defineConfig([
       '@stylistic/no-multi-spaces': ['error', { ignoreEOLComments: true }],
       '@stylistic/brace-style': ['error', '1tbs'],
       '@stylistic/operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before' } }],
+      '@stylistic/space-before-function-paren': 'off',
     },
   },
 ]);

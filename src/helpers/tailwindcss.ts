@@ -1,8 +1,7 @@
 import path from 'path';
 import postcss, { AcceptedPlugin } from 'postcss';
-import autoprefixer from 'autoprefixer';
-import tailwind from 'tailwindcss/lib/processTailwindFeatures'; // yeah, not great but there are mtimeMS detections that fail without reaching into the context directly
-import resolveConfig from 'tailwindcss/lib/public/resolve-config';
+// import tailwind from 'tailwindcss/lib/processTailwindFeatures'; // yeah, not great but there are mtimeMS detections that fail without reaching into the context directly
+// import resolveConfig from 'tailwindcss/lib/public/resolve-config';
 import { resolveTailwindConfigurationFromUserSettings } from '../config/pluginConfiguration';
 import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
@@ -15,7 +14,7 @@ function makeTailwindPlugin(config: any, changedContent: { content: string; exte
       Once(root, { result }) {
         tailwind(({ createContext }) => {
           return () => {
-            return createContext(resolveConfig(config), [changedContent]);
+            // return createContext(resolveConfig(config), [changedContent]);
           };
         })(root, result);
       },
@@ -44,21 +43,17 @@ async function getPostcssPluginsWithTailwind(conf: PluginConfigOpts, filenamePat
   const twConf = resolveTailwindConfigurationFromUserSettings(conf.tailwindConf, [filenamePath], includePreflight);
 
   // Get all the user plugins if there are any
-  const { before, after, hasAutoPrefixer } = await getPostcssPlugins(conf);
+  const { before, after } = await getPostcssPlugins(conf);
 
   const tailwindPlugin = makeTailwindPlugin(twConf, {
     content, extension: 'tsx',
   });
 
-  const plugins: any = [
+  const plugins: AcceptedPlugin[] = [
     ...before,
     tailwindPlugin,
     ...after,
   ];
-
-  if (conf.useAutoPrefixer && !hasAutoPrefixer) {
-    plugins.push(autoprefixer());
-  }
 
   if (conf.minify) {
     plugins.push(...getMinifyPlugins());

@@ -1,15 +1,16 @@
 import plugin, { PluginConfigOpts, PluginOpts, setPluginConfigurationDefaults, TailwindPluginFunctionalConfig, tailwindHMR, tailwindGlobal } from '../../index';
 import { configuredTransform, postTransformDependencyUpdate, processGlobalStyles } from '../../plugin';
 import { isDebugEnabled } from '../../debug/logger';
+import tailwindJsonConfiguration from './tailwind.config';
 
 jest.mock('../../plugin');
 
 describe('configuration', () => {
   const defaultConfInput = { content: [], corePlugins: { preflight: true } };
 
-  let tailwindFrozenConfig: any;
+  let tailwindFrozenConfig: object;
   beforeAll(() => {
-    const config = { conf: require('./tailwind.config') };
+    const config = { conf: Object.freeze(tailwindJsonConfiguration) };
     tailwindFrozenConfig = Object.freeze(config.conf);
   });
 
@@ -84,23 +85,6 @@ describe('configuration', () => {
 
     const opts: PluginConfigOpts = {
       postcss: 'src/test/configuration/postcss.config.js',
-    };
-    // Act
-    plugin(opts);
-    // Assert
-    expect(conf()).toMatchSnapshot();
-  });
-
-  it('given full postcss object configuration, should set postcss object', async () => {
-    // Arrange
-    const { conf } = mockTransformModule();
-
-    const opts: PluginConfigOpts = {
-      postcss: {
-        plugins: [
-          require('autoprefixer'),
-        ],
-      },
     };
     // Act
     plugin(opts);
