@@ -2,21 +2,19 @@
   "name": "stencil-tailwind-plugin",
   "version": "2.0.0",
   "description": "This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss in [JIT](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode) mode and the Stencil build.",
-  "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "files": [
     "dist/*"
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "prebuild": "npm run clean",
-    "build": "rollup -c",
-    "lint": "eslint ./src eslint.config.mjs",
-    "lint:fix": "eslint --fix ./src",
+    "prebuild": "pnpm clean",
+    "build": "rolldown -c rolldown.config.ts",
+    "lint": "eslint --fix ./src eslint.config.mjs rolldown.config.ts jest.config.js",
     "test": "jest --ci --runInBand",
     "test:watch": "jest --runInBand --no-cache --watch",
     "test:update": "jest --runInBand --no-cache --updateSnapshot",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm build"
   },
   "repository": {
     "type": "git",
