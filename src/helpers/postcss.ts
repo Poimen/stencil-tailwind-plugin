@@ -27,7 +27,7 @@ async function loadPlugins(postcssConf?: string | PostcssPlugin) {
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
       throw new Error(
-        `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`
+        `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
       );
     }
     // No config file found, fallthrough to manually configuring postcss
@@ -39,12 +39,11 @@ async function loadPlugins(postcssConf?: string | PostcssPlugin) {
 }
 
 function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string) {
-  return configPlugins.findIndex(plugin => {
+  return configPlugins.findIndex((plugin) => {
     if (typeof plugin === 'function' && plugin.name === name) {
       return true;
     }
 
-    // eslint-disable-next-line dot-notation
     if (typeof plugin === 'object' && plugin !== null && (plugin['postcssPlugin'] === name || plugin['name'] === name)) {
       return true;
     }
@@ -61,14 +60,14 @@ interface PostcssPlugins {
 
 export function stripCommentsPlugin(): AcceptedPlugin {
   return discardComments({
-    removeAll: true
+    removeAll: true,
   });
 }
 
 export function getMinifyPlugins(): AcceptedPlugin[] {
   return [
     combine(),
-    cssnano() as AcceptedPlugin
+    cssnano() as AcceptedPlugin,
   ];
 }
 
@@ -84,6 +83,6 @@ export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<Postcss
   return {
     before: beforeTailwind,
     after: afterTailwind,
-    hasAutoPrefixer
+    hasAutoPrefixer,
   };
 }

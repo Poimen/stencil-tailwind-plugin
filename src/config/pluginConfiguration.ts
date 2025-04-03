@@ -8,15 +8,14 @@ function makeDefaultTailwindConf(): TailwindConfig {
   return {
     content: [],
     theme: {
-      extend: {}
+      extend: {},
     },
-    plugins: []
+    plugins: [],
   };
 }
 
 function buildTailwindConfigurationBasedOnUserObject(userConfiguration: TailwindConfig): TailwindPluginFunctionalConfig {
   return (_: string, config: TailwindConfig): TailwindConfig => {
-    // eslint-disable-next-line dot-notation
     const includePreflight = config.corePlugins['preflight'];
     let preflight = includePreflight;
 
@@ -25,13 +24,13 @@ function buildTailwindConfigurationBasedOnUserObject(userConfiguration: Tailwind
       return {
         ...userConfiguration,
         ...config,
-        corePlugins: []
+        corePlugins: [],
       };
     }
 
     if (includePreflight && userConfiguration.corePlugins) {
       // if we are including the preflight, resolve to the user configuration value if available
-      // eslint-disable-next-line dot-notation
+
       preflight = userConfiguration.corePlugins['preflight'] ?? true;
     }
     return {
@@ -39,8 +38,8 @@ function buildTailwindConfigurationBasedOnUserObject(userConfiguration: Tailwind
       content: config.content,
       corePlugins: {
         ...userConfiguration.corePlugins,
-        preflight
-      }
+        preflight,
+      },
     };
   };
 }
@@ -51,8 +50,8 @@ export function resolveTailwindConfigurationFromUserSettings(tailwindConf: Tailw
   return tailwindResolver(contentFileList[0], {
     content: contentFileList,
     corePlugins: {
-      preflight: includePreflight
-    }
+      preflight: includePreflight,
+    },
   });
 }
 
@@ -64,8 +63,8 @@ export const PluginConfigDefaults: PluginConfigOptsDefaults = {
     tailwindConf: makeDefaultTailwindConf(),
     stripComments: false,
     minify: true,
-    useAutoPrefixer: true
-  }
+    useAutoPrefixer: true,
+  },
 };
 
 function fetchTailwindCssContents(tailwindCssPath?: string): string | null {

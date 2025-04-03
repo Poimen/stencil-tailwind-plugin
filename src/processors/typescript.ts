@@ -23,7 +23,7 @@ function hasStyleGetAccessor(sourceFile: SourceFile) {
     makeMatcher(SyntaxKind.ClassExpression),
     makeMatcher(SyntaxKind.GetAccessor, { name: 'style', modifier: SyntaxKind.StaticKeyword }),
     makeMatcher(SyntaxKind.Block),
-    makeMatcher(SyntaxKind.ReturnStatement)
+    makeMatcher(SyntaxKind.ReturnStatement),
   ];
 
   return walkTo(sourceFile, getAccessorPath) !== undefined;
@@ -35,7 +35,7 @@ function hasStyleProperty(sourceFile: SourceFile) {
   const binaryExpressionStylePath = [
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.ExpressionStatement),
-    makeMatcher(SyntaxKind.BinaryExpression)
+    makeMatcher(SyntaxKind.BinaryExpression),
   ];
 
   return walkTo(sourceFile, binaryExpressionStylePath) !== undefined;
@@ -46,7 +46,7 @@ function getStylePropertyGetterPath() {
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.VariableStatement),
     makeMatcher(SyntaxKind.VariableDeclarationList),
-    makeMatcher(SyntaxKind.VariableDeclaration, { initializer: SyntaxKind.ClassExpression })
+    makeMatcher(SyntaxKind.VariableDeclaration, { initializer: SyntaxKind.ClassExpression }),
   ];
 }
 
@@ -107,7 +107,7 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
 
   return {
     text: result.fullText,
-    transformed: result.found
+    transformed: result.found,
   };
 }
 

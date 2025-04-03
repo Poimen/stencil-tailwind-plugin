@@ -27,14 +27,15 @@ export default defineConfig([
       '@stylistic': stylistic,
     },
     rules: {
-      '@stylistic/comma-dangle': ['error', 'always'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
       'space-before-function-paren': ['error', {
-        'anonymous': 'never',
-        'named': 'never',
-        'asyncArrow': 'always'
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always',
       }],
       '@stylistic/no-multi-spaces': ['error', { ignoreEOLComments: true }],
-      '@stylistic/brace-style': ['error', '1tbs']
-    }
+      '@stylistic/brace-style': ['error', '1tbs'],
+      '@stylistic/operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before' } }],
+    },
   },
 ]);

@@ -8,7 +8,7 @@ import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
 import { PluginConfigOpts } from '..';
 
-function makeTailwindPlugin(config: any, changedContent: { content: string, extension: string }) {
+function makeTailwindPlugin(config: any, changedContent: { content: string; extension: string }) {
   const plugin = () => {
     return {
       postcssPlugin: 'tailwindcss',
@@ -18,7 +18,7 @@ function makeTailwindPlugin(config: any, changedContent: { content: string, exte
             return createContext(resolveConfig(config), [changedContent]);
           };
         })(root, result);
-      }
+      },
     };
   };
 
@@ -47,13 +47,13 @@ async function getPostcssPluginsWithTailwind(conf: PluginConfigOpts, filenamePat
   const { before, after, hasAutoPrefixer } = await getPostcssPlugins(conf);
 
   const tailwindPlugin = makeTailwindPlugin(twConf, {
-    content, extension: 'tsx'
+    content, extension: 'tsx',
   });
 
   const plugins: any = [
     ...before,
     tailwindPlugin,
-    ...after
+    ...after,
   ];
 
   if (conf.useAutoPrefixer && !hasAutoPrefixer) {

@@ -48,7 +48,7 @@ export function configuredTransform(opts: PluginConfigOpts): (code: string, id: 
 
       return {
         code: codeResult,
-        map: null
+        map: null,
       };
     });
   };
@@ -65,7 +65,7 @@ export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: st
       return {
         code: finalCss,
         map: null,
-        dependencies: deps.dependencies
+        dependencies: deps.dependencies,
       };
     });
   };
@@ -75,7 +75,7 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
   return async (code: string, id: string, context: PluginCtx): Promise<PluginTransformResults> => {
     if (!context.config.globalStyle) {
       return {
-        code, map: null
+        code, map: null,
       };
     }
 
@@ -86,7 +86,7 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
     const regex = new RegExp(`${file.dir}.${file.name}.s?(a|c)ss`);
     if (!id.match(regex)) {
       return {
-        code, map: null
+        code, map: null,
       };
     }
 
@@ -99,7 +99,7 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
       return {
         code: newGlobalCss,
         map: null,
-        dependencies: [context.config.globalStyle, id]
+        dependencies: [context.config.globalStyle, id],
       };
     });
   };

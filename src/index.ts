@@ -24,7 +24,7 @@ export interface PluginConfigOpts {
 }
 
 export interface PluginConfigOptsDefaults {
-  DEFAULT: PluginConfigOpts
+  DEFAULT: PluginConfigOpts;
 }
 
 export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDefaults);
@@ -34,7 +34,7 @@ let pluginAppliedConfiguration: PluginConfigOpts = PluginOpts.DEFAULT;
 function configureOptions(opts?: PluginConfigOpts) {
   const options = {
     ...pluginAppliedConfiguration,
-    ...opts
+    ...opts,
   };
 
   const config = configurePluginOptions(options);
@@ -50,14 +50,14 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
     name: 'tailwind',
     transform: configuredTransform(config),
     buildStart,
-    buildEnd
+    buildEnd,
   } as Plugin;
 }
 
 export function setPluginConfigurationDefaults(opts: PluginConfigOpts): PluginConfigOpts {
   pluginAppliedConfiguration = {
     ...pluginAppliedConfiguration,
-    ...opts
+    ...opts,
   };
 
   return pluginAppliedConfiguration;
@@ -71,7 +71,7 @@ export function tailwindHMR(opts?: PluginConfigOpts): Plugin {
     name: 'tailwind-hmr',
     transform: postTransformDependencyUpdate(config),
     buildStart,
-    buildEnd
+    buildEnd,
   } as Plugin;
 }
 
@@ -83,6 +83,6 @@ export function tailwindGlobal(opts?: PluginConfigOpts): Plugin {
     name: 'tailwind-global',
     transform: processGlobalStyles(config),
     buildStart,
-    buildEnd
+    buildEnd,
   } as Plugin;
 }

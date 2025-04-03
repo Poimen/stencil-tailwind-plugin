@@ -33,7 +33,7 @@ describe('configuration', () => {
     return {
       conf: () => confSet,
       postTransformConf: () => postTransformConfSet,
-      globalStylesConf: () => globalStylesConfSet
+      globalStylesConf: () => globalStylesConfSet,
     };
   };
 
@@ -68,7 +68,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: tailwindFrozenConfig,
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     const result = plugin(opts);
@@ -83,7 +83,7 @@ describe('configuration', () => {
     const { conf } = mockTransformModule();
 
     const opts: PluginConfigOpts = {
-      postcss: 'src/test/configuration/postcss.config.js'
+      postcss: 'src/test/configuration/postcss.config.js',
     };
     // Act
     plugin(opts);
@@ -98,9 +98,9 @@ describe('configuration', () => {
     const opts: PluginConfigOpts = {
       postcss: {
         plugins: [
-          require('autoprefixer')
-        ]
-      }
+          require('autoprefixer'),
+        ],
+      },
     };
     // Act
     plugin(opts);
@@ -118,7 +118,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: jest.fn(() => ({ content: [] })),
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     const result = plugin(opts);
@@ -137,7 +137,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: jest.fn(() => ({ content: [] })),
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     const result = setPluginConfigurationDefaults(opts);
@@ -157,7 +157,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: jest.fn(() => ({ content: [] })),
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     setPluginConfigurationDefaults(opts);
@@ -189,7 +189,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: jest.fn(() => ({ content: [] })),
       stripComments: true,
-      minify: false
+      minify: false,
     };
 
     const optsSingular: PluginConfigOpts = {
@@ -198,7 +198,7 @@ describe('configuration', () => {
       tailwindCssContents: '',
       tailwindConf: jest.fn(() => ({ content: [] })),
       stripComments: false,
-      minify: true
+      minify: true,
     };
     // Act
     setPluginConfigurationDefaults(optsDefault);

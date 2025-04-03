@@ -2,7 +2,7 @@ import path from 'path';
 import { debug } from '../debug/logger';
 
 interface CssFileReference {
-  css: string
+  css: string;
   name: string;
 }
 interface CssFileMap {
@@ -17,7 +17,7 @@ interface ImportFileReference {
 
 export interface CssDependencies {
   css: string;
-  dependencies: string[]
+  dependencies: string[];
 }
 
 const filesWithImportMaps: ImportFileReference[] = [];
@@ -42,7 +42,7 @@ function makeFileImportSpec(filename: string) {
 function makeImportAndNameMatcher(filename: string) {
   const importMatch = makeFileImportSpec(filename);
 
-  return function(file: ImportFileReference) {
+  return function (file: ImportFileReference) {
     return file.imports.indexOf(importMatch) !== -1 || file.name === filename;
   };
 }
@@ -79,13 +79,13 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   // Create a import spec of the file name to match import paths
   const shouldStoreCss = makeImportAndNameMatcher(filename);
 
-  filesWithImportMaps.forEach(file => {
+  filesWithImportMaps.forEach((file) => {
     if (shouldStoreCss(file)) {
       // This file is imported by another module, or this is the master file - store the css against this match
       debug('[STORE]', 'Found cross reference for imported file', file.name, 'to store css against');
       file.cssFiles[filename] = {
         name: filename,
-        css
+        css,
       };
     }
   });
@@ -104,7 +104,7 @@ export function getAllExternalCssDependencies(filenameRef: string): CssDependenc
     return deps;
   }, {
     css: '',
-    dependencies: []
+    dependencies: [],
   });
 
   debug('[STORE]', 'Injecting css', cssInjection);

@@ -14,7 +14,7 @@ async function transformStyleStatement(opts: PluginConfigOpts, sourceFile: Sourc
     makeMatcher(SyntaxKind.FirstStatement),
     makeMatcher(SyntaxKind.VariableDeclarationList),
     makeMatcher(SyntaxKind.VariableDeclaration),
-    makeMatcher(SyntaxKind.StringLiteral)
+    makeMatcher(SyntaxKind.StringLiteral),
   ];
 
   // Grab any css that needs to be injected by functional components that this component imported

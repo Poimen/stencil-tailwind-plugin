@@ -43,7 +43,6 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
       }
 
       if (pathNode.initializerKind) {
-        // eslint-disable-next-line dot-notation
         return node['initializer'] && node['initializer'].kind === pathNode.initializerKind;
       }
 
@@ -83,7 +82,7 @@ export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCa
   return walkChildNodeTree(file);
 }
 
-export function makeMatcher(kind: SyntaxKind, { name, modifier, initializer }: { name?: string, modifier?: ModifierSyntaxKind, initializer?: SyntaxKind } = {}): ASTMatcher {
+export function makeMatcher(kind: SyntaxKind, { name, modifier, initializer }: { name?: string; modifier?: ModifierSyntaxKind; initializer?: SyntaxKind } = {}): ASTMatcher {
   return { nodeKind: kind, name, has: modifier, initializerKind: initializer };
 }
 
@@ -132,6 +131,6 @@ export function transformNodeWith(sourceFile: SourceFile, walkPath: ASTMatcher[]
   const printer = ts.createPrinter();
   return {
     found: foundNodeInTree,
-    fullText: printer.printFile(transformed as SourceFile)
+    fullText: printer.printFile(transformed as SourceFile),
   };
 }

@@ -30,13 +30,13 @@ describe('style-component', () => {
       safelist: [
         'bg-red-500',
         'text-3xl',
-        'lg:text-4xl'
-      ]
+        'lg:text-4xl',
+      ],
     }));
 
     const pluginConf = {
       ...PluginConfigDefaults.DEFAULT,
-      tailwindConf: twConfigurationFn
+      tailwindConf: twConfigurationFn,
     } as PluginConfigOpts;
 
     const loadedFile = loadTestComponent('style-component', 'style-component-tailwind.tsx');

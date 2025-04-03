@@ -27,7 +27,7 @@ describe('basic-component', () => {
     const twConfigurationFn = jest.fn(() => PluginConfigDefaults.DEFAULT.tailwindConf);
     const pluginConf = {
       ...PluginConfigDefaults.DEFAULT,
-      tailwindConf: twConfigurationFn
+      tailwindConf: twConfigurationFn,
     } as PluginConfigOpts;
     const loadedFile = loadTestComponent('basic-component', 'basic-component-tailwind.tsx');
     // Act
