@@ -41,7 +41,7 @@
     "chalk": "^4.1.2",
     "cssnano": "^7.0.6",
     "fs-extra": "^11.3.0",
-    "p-queue": "^8.1.0",
+    "p-queue": "^6.6.2",
     "postcss": "^8.5.3",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-discard-comments": "^7.0.3",
