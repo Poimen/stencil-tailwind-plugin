@@ -1,10 +1,12 @@
 import path from 'path';
+import { twMerge } from 'tailwind-merge';
 import { debug } from '../debug/logger';
 
 interface CssFileReference {
   css: string;
   name: string;
 }
+
 interface CssFileMap {
   [key: string]: CssFileReference;
 }
@@ -26,7 +28,7 @@ function sanitiseJSImportPath(importPath: string) {
   return importPath.replace(/\\/g, '/');
 }
 
-function findMatchingFileImport(filename: string): ImportFileReference | undefined {
+function findMatchingFileImport(filename: string) {
   return filesWithImportMaps.find(x => x.name === filename);
 }
 
@@ -42,9 +44,7 @@ function makeFileImportSpec(filename: string) {
 function makeImportAndNameMatcher(filename: string) {
   const importMatch = makeFileImportSpec(filename);
 
-  return function(file: ImportFileReference) {
-    return file.imports.indexOf(importMatch) !== -1 || file.name === filename;
-  };
+  return (file: ImportFileReference) => file.imports.indexOf(importMatch) !== -1 || file.name === filename;
 }
 
 function getImportMatchesForCssFile(filename: string) {
@@ -54,11 +54,12 @@ function getImportMatchesForCssFile(filename: string) {
   return filesWithImportMaps.filter(shouldUseCss);
 }
 
-export function registerAllImportsForFile(filenameRef: string, importedFilenames: string[]): void {
+export function registerAllImportsForFile(filenameRef: string, importedFilenames: string[]) {
   const filename = sanitiseJSImportPath(filenameRef);
   const imports = importedFilenames.map(makeFileImportSpec);
   const file = findMatchingFileImport(filename);
-  if (file === undefined) {
+
+  if (!file) {
     debug('[STORE]', 'Registered', imports, 'with', filename);
     filesWithImportMaps.push(makeFileReference(filename, imports));
     return;
@@ -68,7 +69,7 @@ export function registerAllImportsForFile(filenameRef: string, importedFilenames
   file.imports.push(...imports);
 }
 
-export function registerCssForInjection(filenameRef: string, css: string): void {
+export function registerCssForInjection(filenameRef: string, css: string) {
   const filename = sanitiseJSImportPath(filenameRef);
   debug('[STORE]', 'Registering css for', filename, 'against', css);
 
@@ -91,24 +92,28 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   });
 }
 
-export function getAllExternalCssDependencies(filenameRef: string): CssDependencies {
+export function getAllExternalCssDependencies(filenameRef: string) {
   const filename = sanitiseJSImportPath(filenameRef);
   debug('[STORE]', 'Looking up import of', filename);
 
-  const cssInjection = getImportMatchesForCssFile(filename).reduce<CssDependencies>((deps: CssDependencies, file: ImportFileReference) => {
-    deps.css += Object.entries(file.cssFiles).reduce((css: string, [, v]) => {
-      css += v.css;
-      deps.dependencies.push(v.name);
-      return css;
-    }, '');
-    return deps;
-  }, {
-    css: '',
-    dependencies: [],
-  });
+  const cssInjection = getImportMatchesForCssFile(filename)
+    .reduce<{ css: string[]; dependencies: string[] }>((deps, file: ImportFileReference) => {
+      Object.entries(file.cssFiles).forEach(([, value]) => {
+        deps.css.push(value.css);
+        deps.dependencies.push(value.name);
+      });
+
+      return deps;
+    }, {
+      css: [],
+      dependencies: [],
+    });
 
   debug('[STORE]', 'Injecting css', cssInjection);
-  return cssInjection;
+  return {
+    css: twMerge(cssInjection.css),
+    dependencies: cssInjection.dependencies,
+  };
 }
 
 // export function dump(): void {

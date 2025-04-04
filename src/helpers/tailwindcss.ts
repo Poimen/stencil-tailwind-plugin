@@ -1,17 +1,12 @@
 import path from 'path';
 import postcss, { AcceptedPlugin } from 'postcss';
 import tailwindPostcss from '@tailwindcss/postcss';
+import { twMerge } from 'tailwind-merge';
 import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
 import { PluginConfigurationOptions } from '..';
 
-function applyRawEscaping(css: string, wasMinified: boolean) {
-  if (wasMinified) {
-    // cssnano would have escaped most things...
-    return css;
-  }
-
-  // cssnano was not run, do some basic escaping
+function applyRawEscaping(css: string) {
   return css
     .replace(/\n/g, '')
     .replace(/'/g, '"')
@@ -66,7 +61,7 @@ async function processTailwindPostcss(configuration: PluginConfigurationOptions,
 
   const result = await postcss(postcssPlugins).process(cssToProcess, { from: filename });
 
-  const css = applyRawEscaping(result.css, configuration.minify);
+  const css = applyRawEscaping(result.css);
 
   debug('[TW]', 'Tailwind styles:', css);
 
@@ -78,7 +73,7 @@ export function processSourceTextForTailwindInlineClasses(opts: PluginConfigurat
 }
 
 export async function reduceDuplicatedClassesFromFunctionalComponentInjection(opts: PluginConfigurationOptions, filename: string, componentCss: string, injectCss: string) {
-  const cssToProcess = componentCss + injectCss;
+  const cssToProcess = twMerge(injectCss, componentCss);
 
   const relativePath = path.join('.', path.relative(process.cwd(), filename));
 
