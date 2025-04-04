@@ -4,9 +4,14 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/poimen/stencil-tailwind-plugin/main-build)
 ![npm](https://img.shields.io/npm/v/stencil-tailwind-plugin)
 
-This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). This plugin for Stencil is specifically focused on the integration between tailwindcss v3.x and the Stencil build. While tailwindcss can be integrated into a Stencil build, this plugin aims to ease the integration, while providing an optimised inclusion of styles across the shadow DOM. For tailwind v2 support, please see the v0.6+ versions and branch.
+This package is used to integrate [tailwindcss](https://tailwindcss.com/) and [StencilJS](https://stenciljs.com/). The versions this package supports:
+| Tailwind CSS Version | Package Version |
+| -------------------- | --------------- |
+| v4                   |   v2.x (main)   |
+| v3                   |   v1.x          |
+| v2                   |   v0.x          |
 
-This plugin also aims to allow users to make use of all the tailwindcss classes and postcss plugins like [@apply](https://tailwindcss.com/docs/functions-and-directives#apply). In such both styles of tailwindcss usage can be used in a single component. This plugin also aims to allow the use of object initialisers to conditionally set styles.
+This plugin is aimed at using the CSS-based tailwind configuration. The setup of the plugin assumes the CSS configuration system is being used. Please refer to the Tailwind documentation on configuration options of Tailwind from CSS. See the [upgrade guide for details](#upgrade-guide-from-v1-to-v2).
 
 For an example of a basic Stencil integration, see the [example](https://github.com/Poimen/stencil-tailwind-plugin-example).
 
@@ -18,7 +23,7 @@ This guide assumes that a Stencil project has already been initialized and confi
 
 Install the necessary dependencies:
 ```bash
-npm install -D stencil-tailwind-plugin tailwindcss
+npm install -D stencil-tailwind-plugin tailwindcss @tailwindcss/postcss
 ```
 
 ### Configuration
@@ -45,48 +50,54 @@ There are also a number of options that can be given to the plugin:
 
 | Property          | Description                                               | Default      |
 | ----------------- | --------------------------------------------------------- | ------------ |
-| `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default layers of @base, @utilities and @components are used. | `undefined`  |
-| `tailwindCssContents` | Instead of providing the file path, the plugin accepts string details. If both are supplied, the file contents will be taken as the source of truth ignoring this configuration | `@tailwind base;@tailwind utilities;@tailwind components;`  |
-| `tailwindConf` | Configuration object to be used for tailwind processing | The default set of tailwind options or configuration function   |
+| enableDebug       | Enables debugging                                         | `false`        |
+| `tailwindCssPath` | Path to a css file to read for tailwind css configuration. When not specified a default `@import "tailwindcss";` is used | `undefined`  |
+| `injectTailwindConfiguration` | Configuration object to be used for tailwind processing | `undefined`   |
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
-| `minify` | Indicate if the css should be minified by using `cssnano` | `true`   |
-| `postcss` | Path to postcss configuration object or an object that contains the postcss configuration. If a `postcss` configuration is found in the default paths, it will be used. | `process.cwd()` |
+| `minify` | Indicate if the css should be minified by Tailwind | `true`   |
+| `optimise` | Indicate if the css should be optimised by Tailwind (css is not minified) *Note* if `optimise` and `minify` are set, configuration defaults to `minify` | `false`   |
+| `postcssPath` | Path to postcss configuration object or an object that contains the postcss configuration. | `undefined` |
 
 The default options can be referenced from the plugin as well:
 ```ts
 // stencil.config.ts
-import tailwind, { PluginOpts } from 'stencil-tailwind-plugin';
+import tailwind, { PluginOptions } from 'stencil-tailwind-plugin';
 
-const opts = {
-  ...PluginOpts.DEFAULT,
-  debug: false,
+const options = {
+  ...PluginOptions.DEFAULT,
   stripComments: true
 };
 
 export const config: Config = {
   // ...
   plugins: [
-    tailwind(opts)
+    tailwind(options)
   ],
   // ...
 };
 ```
 
+### Available Plugins
+
+There are 3 plugin's available:
+ - `tailwind` - the base tailwind style processor
+ - `tailwindHMR` - the tailwind Hot Module Reloader
+ - `tailwindGlobal` - handling global tailwind styles
+
 ### Default configuration
 
-All the plugins can be configured (as detailed) below. Given that there are 3 potential use cases, each plugin _should_ have the same configuration. Hence repeating the configuration could cause bloat if a single configuration intended to be used. Hence, there is a support function that can update the configuration used when using subsequent plugins - `setPluginConfigurationDefaults`.
+The plugin has a global option setter, which means configuration can be set globally instead of locally for each plugin type.
 
 The configuration of the options can be done as such:
 ```ts
 // stencil.config.ts
 import tailwind, { setPluginConfigurationDefaults, tailwindGlobal, tailwindHMR } from 'stencil-tailwind-plugin';
 
-const opts = {
-  debug: false,
+const options = {
   stripComments: true
 };
 
-setPluginConfigurationDefaults(opts);
+setPluginConfigurationDefaults(options);
 
 export const config: Config = {
   // ...
@@ -99,15 +110,12 @@ export const config: Config = {
 };
 ```
 
-Here the `PluginOpts.DEFAULT` will be automatically applied and only the delta options need to be set.
-
 All the plugins that are not provided configuration will receive the configuration from `setPluginConfigurationDefaults`. This does not preclude setting different options per plugin:
 ```ts
 // stencil.config.ts
 import tailwind, { setPluginConfigurationDefaults, tailwindGlobal, tailwindHMR } from 'stencil-tailwind-plugin';
 
 const opts = {
-  debug: false,
   stripComments: true,
   minify: true
 };
@@ -128,8 +136,6 @@ export const config: Config = {
 };
 ```
 
-In the above, the `tailwindHMR` plugin will not minify the source, but the other will.
-
 ### Configuration per file
 
 There can be situations whereby a Tailwind configuration needs to be applied to a specific file/component. This can be accomplished by providing a configuration function rather than a configuration object. In the examples above and object is used, but in this scenario we will configure the plugin with a function:
@@ -137,22 +143,15 @@ There can be situations whereby a Tailwind configuration needs to be applied to 
 // stencil.config.ts
 import tailwind, { TailwindConfig } from 'stencil-tailwind-plugin';
 
-const twConfigurationFn = (filename: string, config: TailwindConfig): TailwindConfig => {
+const twConfigurationFn = (filename: string) => {
   if (filename.includes('the-chosen-one.tsx')) {
-    return {
-      ...config,
-      safelist: [
-        'bg-red-500',
-        'text-3xl',
-        'lg:text-4xl'
-      ]
-    };
+    return '@import "friendly-font-face"; @import "taiwindcss";';
   }
-  return config;
+  return '@import "tailwindcss"';
 };
 
 const opts = {
-  tailwindConf: twConfigurationFn
+  injectTailwindConfiguration: twConfigurationFn
 };
 
 export const config: Config = {
@@ -164,49 +163,11 @@ export const config: Config = {
 };
 ```
 
-In the above code `tailwindConf` is given a callback function to be able to modify the Tailwind configuration that'll be used for the file.
+In the above code `injectTailwindConfiguration` is given a callback function to be able to return the Tailwind configuration CSS that'll be used for the file. The argument `filename` is the full path to the component that will be processed by Tailwind processor.
 
-The argument `filename` is the full path to the component that will be processed by Tailwind processor, and the `config` is the plugin's configuration that has been determined by the plugin. This configuration can then be updated accordingly and this will be the final configuration applied to the component.
+### Note on callback from plugin
 
-#### Important considerations for function based configuration
-
-It is important to note that updating the `content` file array to remove/change the file being processed can have interesting effects. Care must be taken to ensure that the file list is properly preserved. Because the configuration is incomplete at the point of calling this function, the `config` parameter might not be appropriate for direct returning. This is because the configuration represents the default configuration. If there are "basic" level configurations that need to be applied, then they need to be applied to the configuration before returning.
-
-For instance, if there is an external configuration:
-```js
-// tailwind.config.js
-module.exports = {
-  plugins: [require('@tailwindcss/forms')]
-};
-```
-
-which them would need to be applied by default:
-```ts
-// stencil.config.ts
-import cfg from './tailwind.config';
-
-const twConfigurationFn = (filename: string, config: TailwindConfig): TailwindConfig => {
-  if (filename.includes('the-chosen-one.tsx')) {
-    return {
-      ...config,
-      ...cfg,
-      safelist: [
-        'bg-red-500',
-        'text-3xl',
-        'lg:text-4xl'
-      ]
-    };
-  }
-  return {
-    ...config,
-    ...cfg
-  };
-};
-```
-
-Here `cfg` is applied to both paths.
-
-The other consideration is that the file being processed will be the raw file for StencilJS compiler. This means the `filename` will contain query parameters as well:
+The file being processed will be the raw file for StencilJS compiler. This means the `filename` will contain query parameters as well:
 ```
 some-component.scss?tag=some-component
 ```
@@ -219,9 +180,9 @@ If there are multiple distributions enabled in the StencilJS configuration, then
 
 There are a number of `postcss` plugins that might be wanted when processing the tailwind output specifically. The nature of the stencil build makes it difficult to pass the custom css directly back into the css pipeline building. Hence, the `postcss` configuration can be completely overridden by specifying the `postcss` configuration path, or by creating a `postcss` configuration file.
 
-The plugin uses the default `postcss-load-config` [package](https://github.com/postcss/postcss-load-config). Hence, any the configuration options can be used as a file. If a `postcss` configuration file exists in the `process.cwd()`, then that `postcss` configuration will be used over the built-in `postcss` configuration.
+The plugin uses the default `postcss-load-config` [package](https://github.com/postcss/postcss-load-config). Hence, any the configuration options can be used as a file.
 
-The `postcss` config option can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
+The `postcssPath` config option can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
 
 As an example of a `postcss` configuration that could be used:
 ```js
@@ -237,27 +198,6 @@ module.exports = {
 };
 ```
 
-or as a Stencil configuration:
-```ts
-// stencil.config.ts
-import tailwind from 'stencil-tailwind-plugin';
-
-export const config: Config = {
-  // ...
-  plugins: [
-    tailwind({
-      postcss: {
-        plugins: [
-          require('postcss-import'),
-          require('tailwindcss'),
-        ]
-      }
-    })
-  ],
-  // ...
-};
-```
-
 If the `tailwindcss` plugin is not specified, it is assumed that the plugins should be run _before_ the default tailwind options. The `tailwindcss` plugin options will be overwritten by the tailwind configuration provided by the plugin, hence, the postcss `tailwindcss` is used as a marker for where `tailwindcss` should be used in the `postcss` chain of plugins.
 
 ### Configuration with other plugins
@@ -269,7 +209,6 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 import tailwind from 'stencil-tailwind-plugin';
 import { inlineSvg } from 'stencil-inline-svg';
-import tailwindConfig from './tailwind.config';
 
 export const config: Config = {
   outputTargets: [ /* ... */],
@@ -280,10 +219,7 @@ export const config: Config = {
         /* ... */
       ]
     }),
-    tailwind({
-      tailwindCssPath: './src/styles/tailwind.pcss',
-      tailwindConf: tailwindConfig,
-    }),
+    tailwind(),
   ]
 ```
 
@@ -300,153 +236,21 @@ export const config: Config = {
   // ...
   plugins: [
     sass(),
-    tailwind({
-      tailwindConf: tailwindConfig,
-      tailwindCssPath: './src/styles/tailwind.css'
-    }),
-    tailwindHMR()
-  ]
+    tailwind(),
+    tailwindHMR(),
+  ],
 };
 ```
 
 The `tailwindHMR` plugin will register all the `tsx` files against the `css` files. This allows Stencil to watch for changes on those `tsx` files and update the `css` accordingly.
 
-The `tailwindHMR` function takes an optional configuration parameter. If the stylesheets use the `@apply` syntax, then the configuration maybe required to transform the styles correctly compared to the standard configuration used with the main `tailwind` plugin. The configuration usage:
-```ts
-// stencil.config.ts
-import { Config } from '@stencil/core';
-import tailwind, { tailwindHMR } from 'stencil-tailwind-plugin';
-import tailwindConfig from './tailwind.config';
+The HMR ability of Stencil and Web Components makes changes difficult, and generally a page reload is required.
 
-export const config: Config = {
-  // ...
-  plugins: [
-    sass(),
-    tailwind({
-      tailwindConf: tailwindConfig,
-      tailwindCssPath: './src/styles/tailwind.css'
-    }),
-    tailwindHMR({
-      tailwindConf: tailwindConfig
-    })
-  ]
-};
-```
-
-Unfortunately, as of `v2.12.0` of the compiler, this cannot be done as a single plugin and two plugins are required.
+Unfortunately, as of `v2.12.0` of the Stencil compiler, this cannot be done as a single plugin and two plugins are required.
 
 ## Global styles with `@apply`
 
-If you use a global style sheet, but want to use Tailwind styles in that sheet, there is another plugin that facilitates this. The global stylesheet plugin takes the same configuration options as the main plugin, but can be tailored with different options as desired. The global plugin can be used as:
-```ts
-import tailwind, { tailwindHMR, tailwindGlobal } from 'stencil-tailwind-plugin';
-
-// ... other config
-export const config: Config = {
-  globalStyle: 'src/styles/global.scss',
-  outputTargets: [
-    // targets
-  ],
-  plugins: [
-    sass(),
-    // This takes the same configuration options as the main plugin. You can use different configurations if you want
-    tailwindGlobal({
-      tailwindCssPath: './src/styles/tailwind.pcss',
-      tailwindConf: tailwindConfig,
-      postcss: {
-        plugins: [
-          atImport(),
-          tailwindcss(),
-        ]
-      }
-    }),
-    tailwind({
-      tailwindCssPath: './src/styles/tailwind.pcss',
-      tailwindConf: tailwindConfig,
-      postcss: {
-        plugins: [
-          atImport(),
-          tailwindcss(),
-        ]
-      }
-    }),
-    tailwindHMR()
-  ]
-};
-```
-
-## Usage
-
-This plugin hooks into the build process for Stencil. The tailwind JIT process run as a secondary build set and as such the `css` classes are applied after the component has been transpiled.
-
-For an example of a basic Stencil integration, see the [example](https://github.com/Poimen/stencil-tailwind-plugin-example).
-
-### Using @apply is `css`/`sass` files
-
-The tailwind `@apply` directive can be used in any css/sass file as per tailwind spec:
-```css
-.apply-styles {
-  @apply text-red-100;
-}
-```
-
-The `@apply` directive will be applied as expected:
-```css
-.apply-styles {
-  --tw-text-opacity: 1;
-  color: rgba(254, 226, 226, var(--tw-text-opacity));
-}
-```
-
-### Using inline classes
-
-Assuming a component declares a `render` function of:
-```tsx
-render() {
-  return (
-    <div class="text-red-100">
-      This is a test
-    </div>
-  );
-}
-```
-
-Inline classes will be added to the component style definition.
-
-### Using conditional styles
-
-Assuming a component declares a `render` function of:
-```tsx
-render() {
-  const styles = {
-    'text-red-100': true,
-    'text-red-200': this.someCondition
-  };
-  return (
-    <div class={styles}>
-      This is a test
-    </div>
-  );
-}
-```
-
-In this case, both `text-red-100` and `text-red-200` styles will be added to the components style definition.
-
-### Using style urls
-
-Assuming the component has declared:
-```tsx
-@Component({
-  tag: 'component',
-  styleUrls: {
-    md: 'component.md.scss',
-    ios: 'component.ios.css',
-  },
-  shadow: true,
-})
-```
-
-In this case, all tailwind styles will be added to both `md` and `ios` style definitions.
+With the new CSS based configuration, usage of `@apply` is discouraged by the Tailwind community.
 
 ## Caveat on Function Components (1)
 
@@ -482,13 +286,10 @@ If `common/UtilsFunctionalComponents.tsx` is updated, neither `component-A.tsx` 
 
 Functional components can be composed of other functional components. However, there is a known issue where the subsequent functional component (the component that is being used inside the functional component) will not generate any styles. The styles are only generated for the first level of functional components. This is due to the way the Stencil compiler handles stylesheets and functional component building.
 
-## Caveat on base reset styles
-
-This plugin does not include base tailwind reset styles as this would bloat all the components with base styles. If based reset styles are required, the best is to place them in the `:host` selector. The plugin keeps the `:host` selector for being purged.
-
 ## Peer Dependencies
 
 This plugin requires the following peer dependencies:
+  - @tailwindcss/postcss
   - tailwindcss
   - typescript
 
@@ -498,12 +299,12 @@ These are provided as peer dependencies so consumers can override the versions.
 
 Clone the repo and install the dependencies:
 ```bash
-npm install
+pnpm install
 ```
 
 Run tests:
 ```bash
-npm run tests
+pnpm tests
 ```
 
 ## Honourable mentions
@@ -519,3 +320,37 @@ Special thanks to the above.
 For other ways of integrating Tailwind into your project, [Anthony Giuliano](https://twitter.com/a__giuliano) wrote a blog post:
 
 https://ionicframework.com/blog/how-to-integrate-tailwind-css-into-your-stencil-project/
+
+
+## Upgrade Guide from v1 to v2
+
+### Package installs
+
+`v2` uses the postcss plugin for tailwind more directly than `v1`. Install the `@tailwindcss/postcss`:
+```
+npm install -D @tailwindcss/postcss
+```
+
+### Configuration changes
+
+The configuration structure has changed for the new Tailwind v4 configuration in CSS.
+
+#### Deprecated options
+ - `tailwindCssContents` (see injectTailwindConfiguration)
+ - `tailwindConf` (see injectTailwindConfiguration)
+ - `useAutoPrefixer` (default Tailwind uses autoprefixer internally)
+ - `postcss` (see postcssPath)
+
+#### New options
+ - `injectTailwindConfiguration` - returns the configuration CSS for tailwind
+ - `postcssPath` - set to the path of the `postcssrc` file
+ - `optimise` - passed to Tailwind to optimise the output without minification. See Tailwind documentation.
+
+### Type changes
+
+There are numerous type renames. The generally exposed versions are:
+ - `PluginConfigOptsDefaults` renamed to `PluginConfigOptionsDefaults`
+ - `PluginConfigOpts` renamed to `PluginConfigurationOptions`
+
+### Option Default Updates
+ - `PluginOpts` renamed to `PluginOptions`
