@@ -25,17 +25,18 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
     const pathNode = walkPath[treeLevel];
     if (pathNode && node.kind === pathNode.nodeKind) {
       if (pathNode.has) {
-        if (!node.modifiers) return false;
+        // if (!node.modifiers) return false;
 
-        let found = false;
-        for (let i = 0; i < node.modifiers.length; ++i) {
-          if (node.modifiers[i].kind === pathNode.has) {
-            found = true;
-            break;
-          }
-        }
+        // let found = false;
+        // for (let i = 0; i < node.modifiers.length; ++i) {
+        //   if (node.modifiers[i].kind === pathNode.has) {
+        //     found = true;
+        //     break;
+        //   }
+        // }
 
-        if (!found) return false;
+        // if (!found) return false;
+        return false;
       }
 
       if (pathNode.name) {

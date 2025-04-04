@@ -2,9 +2,9 @@ import path from 'path';
 import ts, { ImportDeclaration, Identifier, Node, SourceFile, StringLiteral, SyntaxKind, VariableDeclaration } from 'typescript';
 import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll, walkTo } from '../helpers/tsFiles';
-import { processSourceTextForTailwindInlineClasses, processSourceTextForTailwindInlineClassesWithoutPreflight } from '../helpers/tailwindcss';
+import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
 import { registerAllImportsForFile, registerCssForInjection } from '../store/store';
-import { PluginConfigOpts } from '..';
+import { PluginConfigurationOptions } from '..';
 
 interface TransformationResult {
   text?: string;
@@ -50,10 +50,10 @@ function getStylePropertyGetterPath() {
   ];
 }
 
-function hasStylePropertyGetter(sourceFile: SourceFile) {
-  const getAccessorPath = getStylePropertyGetterPath();
-  return walkTo(sourceFile, getAccessorPath) !== undefined;
-}
+// function hasStylePropertyGetter(sourceFile: SourceFile) {
+//   const getAccessorPath = getStylePropertyGetterPath();
+//   return walkTo(sourceFile, getAccessorPath) !== undefined;
+// }
 
 function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
   // When there is no style url used, then Stencil does not generate a style property to
@@ -121,20 +121,20 @@ function preserveTailwindCssEscaping(css: string) {
   return css.replace(/\\/g, '\\\\');
 }
 
-export function transform(opts: PluginConfigOpts) {
-  return async (sourceText: string, filename: string): Promise<string> => {
+export function transform(opts: PluginConfigurationOptions) {
+  return async (sourceText: string, filename: string) => {
     debug('[Typescript]', 'Processing source file:', filename);
 
     const sourceFile = loadTypescriptCodeFromMemory(sourceText);
     const shouldTransform = shouldTransformSource(sourceFile);
 
-    // If there is going to be a transformation later, include the necessary preflight definitions
-    const transformFunction = shouldTransform && hasStylePropertyGetter(sourceFile)
-      ? processSourceTextForTailwindInlineClasses
-      : processSourceTextForTailwindInlineClassesWithoutPreflight;
+    // // If there is going to be a transformation later, include the necessary preflight definitions
+    // const transformFunction = shouldTransform && hasStylePropertyGetter(sourceFile)
+    //   ? processSourceTextForTailwindInlineClasses
+    //   : processSourceTextForTailwindInlineClassesWithoutPreflight;
 
     // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-    const tailwindClasses = await transformFunction(opts, filename, sourceText);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceText);
 
     if (tailwindClasses.length === 0) {
       // No classes from tailwind to add, just give source back

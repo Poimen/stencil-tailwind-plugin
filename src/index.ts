@@ -3,31 +3,31 @@ import { configurePluginOptions, PluginConfigDefaults } from './config/pluginCon
 import { configureLogging } from './debug/logger';
 import { configuredTransform, postTransformDependencyUpdate, buildStart, buildEnd, processGlobalStyles } from './plugin';
 
-export type TailwindConfig = object;
-export type TailwindPluginFunctionalConfig = ((filename: string, config: TailwindConfig) => TailwindConfig);
-export type TailwindPluginConfig = TailwindConfig | TailwindPluginFunctionalConfig;
+export type TailwindConfig = string;
+export type TailwindPluginFunctionalConfig = (filename: string) => TailwindConfig;
+export type TailwindPluginConfig = TailwindPluginFunctionalConfig;
 
-export interface PluginConfigOpts {
+export interface PluginConfigurationOptions {
   enableDebug?: boolean;
   tailwindCssPath?: string;
-  tailwindCssContents?: string;
-  tailwindConf?: TailwindPluginConfig;
+  injectTailwindConfiguration?: TailwindPluginConfig;
+  postcssPath?: string;
   stripComments?: boolean;
   minify?: boolean;
-  postcss?: string;
+  optimise?: boolean;
 }
 
-export interface PluginConfigOptsDefaults {
-  DEFAULT: PluginConfigOpts;
+export interface PluginConfigOptionsDefaults {
+  DEFAULT: PluginConfigurationOptions;
 }
 
-export const PluginOpts: PluginConfigOptsDefaults = Object.freeze(PluginConfigDefaults);
+export const PluginOptions = Object.freeze(PluginConfigDefaults);
 
-let pluginAppliedConfiguration: PluginConfigOpts = PluginOpts.DEFAULT;
+let globalPluginConfigurationOptions = PluginOptions.DEFAULT;
 
-function configureOptions(opts?: PluginConfigOpts) {
+function configureOptions(opts?: PluginConfigurationOptions) {
   const options = {
-    ...pluginAppliedConfiguration,
+    ...globalPluginConfigurationOptions,
     ...opts,
   };
 
@@ -37,7 +37,16 @@ function configureOptions(opts?: PluginConfigOpts) {
   return config;
 }
 
-export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
+export function setPluginConfigurationDefaults(opts: PluginConfigurationOptions): PluginConfigurationOptions {
+  globalPluginConfigurationOptions = {
+    ...globalPluginConfigurationOptions,
+    ...opts,
+  };
+
+  return globalPluginConfigurationOptions;
+}
+
+export default function tailwindPlugin(opts?: PluginConfigurationOptions): Plugin {
   const config = configureOptions(opts);
 
   return {
@@ -48,16 +57,7 @@ export default function tailwindPlugin(opts?: PluginConfigOpts): Plugin {
   } as Plugin;
 }
 
-export function setPluginConfigurationDefaults(opts: PluginConfigOpts): PluginConfigOpts {
-  pluginAppliedConfiguration = {
-    ...pluginAppliedConfiguration,
-    ...opts,
-  };
-
-  return pluginAppliedConfiguration;
-}
-
-export function tailwindHMR(opts?: PluginConfigOpts): Plugin {
+export function tailwindHMR(opts?: PluginConfigurationOptions): Plugin {
   const config = configureOptions(opts);
 
   return {
@@ -69,7 +69,7 @@ export function tailwindHMR(opts?: PluginConfigOpts): Plugin {
   } as Plugin;
 }
 
-export function tailwindGlobal(opts?: PluginConfigOpts): Plugin {
+export function tailwindGlobal(opts?: PluginConfigurationOptions): Plugin {
   const config = configureOptions(opts);
 
   return {

@@ -1,8 +1,10 @@
-import { Config as TailwindConfig } from 'tailwindcss';
+// import { Config as TailwindConfig } from 'tailwindcss';
 import { transformCssFromTsxFileFormat as transform } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 import { PluginConfigOpts } from '../..';
+
+type TailwindConfig = object;
 
 describe('style-component', () => {
   it('given style component with no tailwindcss styles, should output unaltered styles', async () => {

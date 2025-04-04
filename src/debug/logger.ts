@@ -7,19 +7,19 @@ export function json(obj: Record<string, unknown>): void {
   _debugEnabled && console.dir(obj, { depth: null });
 }
 
-export function debug(...statements: (string | object)[]): void {
+export function debug(...statements: (string | object | number)[]): void {
   _debugEnabled && console.log(chalk.bold.blue('[DBG]'), ...statements);
 }
 
-export function success(...statements: (string | object)[]): void {
+export function success(...statements: (string | object | number)[]): void {
   console.log(chalk.bold.green('[SCS]'), ...statements);
 }
 
-export function warn(...statements: (string | object)[]): void {
+export function warn(...statements: (string | object | number)[]): void {
   console.log(chalk.bold.yellowBright('[WRN]'), ...statements);
 }
 
-export function error(...statements: (string | object)[]): void {
+export function error(...statements: (string | object | number)[]): void {
   console.log(chalk.bold.bgRedBright('[ERR]'), chalk.bold.red(...statements));
 }
 

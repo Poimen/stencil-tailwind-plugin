@@ -5,24 +5,26 @@ import combine from 'postcss-combine-duplicated-selectors';
 import discardComments from 'postcss-discard-comments';
 
 import { debug } from '../debug/logger';
-import { PluginConfigOpts, PostcssPlugin } from '..';
+import { PluginConfigurationOptions } from '..';
 
-async function loadPlugins(postcssConf?: string | PostcssPlugin) {
+// type PostcssPlugin = Record<string, object>;
+
+async function loadPlugins(postcssPathConfiguration?: string) {
   const ctx = { plugins: [] };
-  let path = '';
-  if (
-    typeof postcssConf === 'object' &&
-    !Array.isArray(postcssConf) &&
-    postcssConf !== null &&
-    Array.isArray(postcssConf.plugins)
-  ) {
-    return postcssConf.plugins;
-  } else if (typeof postcssConf === 'string' || postcssConf instanceof String) {
-    path = postcssConf as string;
-  }
+  // let path = '';
+  // if (
+  //   typeof postcssConf === 'object' &&
+  //   !Array.isArray(postcssConf) &&
+  //   postcssConf !== null &&
+  //   Array.isArray(postcssConf.plugins)
+  // ) {
+  //   return postcssConf.plugins;
+  // } else if (typeof postcssConf === 'string' || postcssConf instanceof String) {
+  //   path = postcssConf as string;
+  // }
 
   try {
-    const configPlugins = await postcssrc(ctx as unknown, path);
+    const configPlugins = await postcssrc(ctx as unknown, postcssPathConfiguration);
     return configPlugins.plugins;
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
@@ -32,7 +34,7 @@ async function loadPlugins(postcssConf?: string | PostcssPlugin) {
     }
     // No config file found, fallthrough to manually configuring postcss
     // fallthrough expected
-    debug('[TW]', 'No postcss configuration file found in:', postcssConf);
+    debug('[TW]', 'No postcss configuration file found in:', postcssPathConfiguration);
   }
 
   return [];
@@ -70,8 +72,8 @@ export function getMinifyPlugins(): AcceptedPlugin[] {
   ];
 }
 
-export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<PostcssPlugins> {
-  const configPlugins = await loadPlugins(conf.postcss);
+export async function getPostcssPlugins(conf: PluginConfigurationOptions): Promise<PostcssPlugins> {
+  const configPlugins = await loadPlugins(conf.postcssPath);
 
   const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, 'tailwindcss');
 

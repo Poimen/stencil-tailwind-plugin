@@ -1,8 +1,10 @@
-import { Config as TailwindConfig } from 'tailwindcss';
+// import { Config as TailwindConfig } from 'tailwindcss';
 import { transform as transformTsx } from '../../processors/typescript';
 import { transformCssFromTsxFileFormat as transformStyle } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
+
+type TailwindConfig = object;
 
 describe('conditional-styles-component', () => {
   it('given class component with conditional tailwindcss styles but with tailwind disabled, should _not_ output tailwind styles', async () => {

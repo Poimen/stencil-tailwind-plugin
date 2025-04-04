@@ -5,7 +5,7 @@ import { transformCssFileFormat, transformCssFromTsxFileFormat as styleSheetTran
 import { transform as typescriptTransform } from './processors/typescript';
 import { PluginCtx, PluginTransformResults } from '@stencil/core/internal';
 import { getAllExternalCssDependencies } from './store/store';
-import { PluginConfigOpts } from '.';
+import { PluginConfigurationOptions } from '.';
 import { processSourceTextForTailwindInlineClasses } from './helpers/tailwindcss';
 
 export function buildStart(): void {
@@ -21,7 +21,7 @@ export function buildEnd(err?: Error): void {
 }
 
 function useStyleSheetTransform(filename: string) {
-  return filename.match(/\.s?(a|c)ss$/);
+  return filename.match(/\.s?(a|c)ss/);
 }
 
 function useTypescriptTransform(filename: string) {
@@ -33,12 +33,12 @@ function useTypescriptTransform(filename: string) {
 // transform. Hence queue the requests until we are ready for the next file to be processed
 const queue = new PQueue({ concurrency: 1 });
 
-export function configuredTransform(opts: PluginConfigOpts): (code: string, id: string) => Promise<PluginTransformResults> {
+export function configuredTransform(opts: PluginConfigurationOptions): (code: string, id: string) => Promise<PluginTransformResults | void> {
   const tsTransformer = typescriptTransform(opts);
   const cssTransformer = styleSheetTransform(opts);
 
-  return async (code: string, id: string): Promise<PluginTransformResults> => {
-    return await queue.add(async () => {
+  return async (code: string, id: string) => {
+    return await queue.add<PluginTransformResults>(async () => {
       let codeResult = code;
       if (useStyleSheetTransform(id)) {
         codeResult = await cssTransformer(code, id);
@@ -54,10 +54,10 @@ export function configuredTransform(opts: PluginConfigOpts): (code: string, id: 
   };
 }
 
-export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: string, id: string) => Promise<PluginTransformResults> {
+export function postTransformDependencyUpdate(opts: PluginConfigurationOptions): (code: string, id: string) => Promise<PluginTransformResults | void> {
   const cssTransformer = transformCssFileFormat(opts);
 
-  return async (code: string, id: string): Promise<PluginTransformResults> => {
+  return async (code: string, id: string) => {
     return await queue.add(async () => {
       const deps = getAllExternalCssDependencies(id);
       const finalCss = await cssTransformer(code, id);
@@ -71,8 +71,8 @@ export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: st
   };
 }
 
-export function processGlobalStyles(opts: PluginConfigOpts) {
-  return async (code: string, id: string, context: PluginCtx): Promise<PluginTransformResults> => {
+export function processGlobalStyles(opts: PluginConfigurationOptions) {
+  return async (code: string, id: string, context: PluginCtx) => {
     if (!context.config.globalStyle) {
       return {
         code, map: null,

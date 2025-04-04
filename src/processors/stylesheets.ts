@@ -3,9 +3,9 @@ import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
 import { getAllExternalCssDependencies } from '../store/store';
-import { PluginConfigOpts } from '..';
+import { PluginConfigurationOptions } from '..';
 
-async function transformStyleStatement(opts: PluginConfigOpts, sourceFile: SourceFile, sourceText: string, filename: string) {
+async function transformStyleStatement(opts: PluginConfigurationOptions, sourceFile: SourceFile, sourceText: string, filename: string) {
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
   // variable statement in the file. As such there is no clean way of detecting this, so just go grab the
   // first statement
@@ -38,7 +38,7 @@ async function transformStyleStatement(opts: PluginConfigOpts, sourceFile: Sourc
 // This function processes css that is contained as a string in a typescript file
 // This transform is used when stencil passes a typescript encoded css blob rather than
 // the raw file
-export function transformCssFromTsxFileFormat(opts: PluginConfigOpts) {
+export function transformCssFromTsxFileFormat(opts: PluginConfigurationOptions) {
   return async (sourceText: string, filename: string): Promise<string> => {
     debug('[Stylesheets]', 'Processing css from tsx source file:', filename);
 
@@ -51,7 +51,7 @@ export function transformCssFromTsxFileFormat(opts: PluginConfigOpts) {
 
 // This function processes a pure css file - i.e. a file with the contents of a css file
 // This transform is used during HMR where css files are passed around
-export function transformCssFileFormat(opts: PluginConfigOpts) {
+export function transformCssFileFormat(opts: PluginConfigurationOptions) {
   return async (sourceCss: string, filename: string): Promise<string> => {
     debug('[Stylesheets]', 'Processing css source file:', filename);
 
