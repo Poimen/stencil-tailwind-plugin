@@ -1,4 +1,3 @@
-import { PluginCtx, PluginTransformResults } from '@stencil/core/internal';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
 import { tailwindHMR } from '../../index';
 import { transform } from '../../processors/typescript';
@@ -14,7 +13,7 @@ describe('hmr', () => {
     const plugin = tailwindHMR(PluginConfigDefaults.DEFAULT);
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(style.text, filePath, { } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(style.text, filePath));
       convertedCss = transform.code;
     }
     // Assert
@@ -24,7 +23,7 @@ describe('hmr', () => {
   it('given style css with dependents should process @apply rules with dependents css attached', async () => {
     // Arrange
     let convertedCss: string | undefined;
-    let deps: string[];
+    let deps: (string | undefined)[];
     const styleForHMR = loadTestComponent('hmr-processing', 'style.css');
     const depLoadedFile = loadTestComponent('hmr-processing', 'css-hmr-component-tailwind.tsx');
 
@@ -32,18 +31,19 @@ describe('hmr', () => {
 
     const filePath = styleForHMR.path.replace(/\\/g, '/');
 
-    const plugin = tailwindHMR(PluginConfigDefaults.DEFAULT);
+    const plugin = tailwindHMR({ ...PluginConfigDefaults.DEFAULT, tailwindCssPath: 'src/test/configuration/tailwind.css' });
 
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(styleForHMR.text, filePath, { } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(styleForHMR.text, filePath));
       convertedCss = transform.code;
       deps = transform.dependencies ?? [];
 
       // Assert
       expect(convertedCss).toMatchSnapshot();
-      expect(deps.length).toBe(1);
+      expect(deps.length).toBe(2);
       expect(deps[0]).toContain('css-hmr-component-tailwind.tsx');
+      expect(deps[1]).toContain('src/test/configuration/tailwind.css');
     } else {
       fail('should have a transform function');
     }
