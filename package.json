@@ -8,8 +8,6 @@
     "dist/*"
   ],
   "scripts": {
-    "clean": "rimraf ./dist",
-    "prebuild": "pnpm clean",
     "build": "tsup",
     "lint": "eslint --fix ./src eslint.config.mjs tsup.config.js jest.config.js",
     "test": "jest --ci --runInBand",
