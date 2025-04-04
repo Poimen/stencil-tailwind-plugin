@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint --fix ./src eslint.config.mjs tsup.config.js jest.config.js",
+    "lint": "eslint --fix ./src eslint.config.mjs tsup.config.js jest.config.ts",
     "test": "jest --ci --runInBand",
     "test:watch": "jest --runInBand --no-cache --watch",
     "test:update": "jest --runInBand --no-cache --updateSnapshot",
