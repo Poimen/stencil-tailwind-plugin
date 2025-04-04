@@ -1,10 +1,7 @@
-// import { Config as TailwindConfig } from 'tailwindcss';
 import { transformCssFromTsxFileFormat as transform } from '../../processors/stylesheets';
 import { loadTestComponent } from '../utils';
 import { configurePluginOptions, PluginConfigDefaults } from '../../config/pluginConfiguration';
-import { PluginConfigOpts } from '../..';
-
-type TailwindConfig = object;
+import { PluginConfigurationOptions } from '../..';
 
 describe('style-component', () => {
   it('given style component with no tailwindcss styles, should output unaltered styles', async () => {
@@ -27,19 +24,12 @@ describe('style-component', () => {
 
   it('given style component with tailwindcss function configuration, should output styles configured with new file configuration', async () => {
     // Arrange
-    const twConfigurationFn = jest.fn((filename: string, config: TailwindConfig) => ({
-      ...config,
-      safelist: [
-        'bg-red-500',
-        'text-3xl',
-        'lg:text-4xl',
-      ],
-    }));
+    const twConfigurationFn = jest.fn(() => '');
 
-    const pluginConf = {
+    const pluginConf: PluginConfigurationOptions = {
       ...PluginConfigDefaults.DEFAULT,
-      tailwindConf: twConfigurationFn,
-    } as PluginConfigOpts;
+      injectTailwindConfiguration: twConfigurationFn,
+    };
 
     const loadedFile = loadTestComponent('style-component', 'style-component-tailwind.tsx');
     // Act
