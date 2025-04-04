@@ -33,9 +33,9 @@ function useTypescriptTransform(filename: string) {
 // transform. Hence queue the requests until we are ready for the next file to be processed
 const queue = new PQueue({ concurrency: 1 });
 
-export function configuredTransform(opts: PluginConfigurationOptions) {
-  const tsTransformer = typescriptTransform(opts);
-  const cssTransformer = styleSheetTransform(opts);
+export function configuredTransform(pluginOptions: PluginConfigurationOptions) {
+  const tsTransformer = typescriptTransform(pluginOptions);
+  const cssTransformer = styleSheetTransform(pluginOptions);
 
   return async (code: string, id: string) => {
     return await queue.add(async () => {
@@ -54,8 +54,8 @@ export function configuredTransform(opts: PluginConfigurationOptions) {
   };
 }
 
-export function postTransformDependencyUpdate(opts: PluginConfigurationOptions) {
-  const cssTransformer = transformCssFileFormat(opts);
+export function postTransformDependencyUpdate(pluginOptions: PluginConfigurationOptions) {
+  const cssTransformer = transformCssFileFormat(pluginOptions);
 
   return async (code: string, id: string) => {
     return await queue.add(async () => {
@@ -65,13 +65,13 @@ export function postTransformDependencyUpdate(opts: PluginConfigurationOptions) 
       return {
         code: finalCss,
         map: null,
-        dependencies: [...deps.dependencies, opts.tailwindCssPath],
+        dependencies: [...deps.dependencies, pluginOptions.tailwindCssPath],
       };
     });
   };
 }
 
-export function processGlobalStyles(opts: PluginConfigurationOptions) {
+export function processGlobalStyles(pluginOptions: PluginConfigurationOptions) {
   return async (code: string, id: string, context: PluginCtx) => {
     if (!context.config.globalStyle) {
       return {
@@ -94,7 +94,7 @@ export function processGlobalStyles(opts: PluginConfigurationOptions) {
       // Note: usage of `code` for sourceTsx is more to avoid the TS warning about no utilities found
       // in the source. Technically should be an empty string, but seeing the css and tsx are the same
       // there should be no extra classes generated
-      const newGlobalCss = await processSourceTextForTailwindInlineClasses(opts, id, code);
+      const newGlobalCss = await processSourceTextForTailwindInlineClasses(pluginOptions, id, code);
 
       return {
         code: newGlobalCss,
