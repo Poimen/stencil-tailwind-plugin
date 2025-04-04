@@ -13,7 +13,8 @@ export const PluginConfigDefaults: PluginConfigOptionsDefaults = {
 };
 
 function fetchTailwindCssContents(tailwindCssPath?: string) {
-  const tailwindCssContents = fs.readFileSync(path.resolve(tailwindCssPath)).toString();
+  const configurationPath = path.resolve(tailwindCssPath);
+  const tailwindCssContents = fs.readFileSync(configurationPath).toString();
 
   if (tailwindCssContents.length === 0) {
     warn('No css found when reading Tailwind configuration css - path', tailwindCssPath);
@@ -21,7 +22,7 @@ function fetchTailwindCssContents(tailwindCssPath?: string) {
     return makeDefaultTailwindConf();
   }
 
-  return () => tailwindCssContents;
+  return () => fs.readFileSync(configurationPath).toString();
 }
 
 function validateConfigurationOptions(opts: PluginConfigurationOptions) {

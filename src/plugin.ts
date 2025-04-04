@@ -65,7 +65,7 @@ export function postTransformDependencyUpdate(opts: PluginConfigurationOptions) 
       return {
         code: finalCss,
         map: null,
-        dependencies: deps.dependencies,
+        dependencies: [...deps.dependencies, opts.tailwindCssPath],
       };
     });
   };
