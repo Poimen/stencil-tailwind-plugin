@@ -50,11 +50,6 @@ function getStylePropertyGetterPath() {
   ];
 }
 
-// function hasStylePropertyGetter(sourceFile: SourceFile) {
-//   const getAccessorPath = getStylePropertyGetterPath();
-//   return walkTo(sourceFile, getAccessorPath) !== undefined;
-// }
-
 function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
   // When there is no style url used, then Stencil does not generate a style property to
   // use for Tailwind style, so add it in
@@ -128,13 +123,8 @@ export function transform(opts: PluginConfigurationOptions) {
     const sourceFile = loadTypescriptCodeFromMemory(sourceText);
     const shouldTransform = shouldTransformSource(sourceFile);
 
-    // // If there is going to be a transformation later, include the necessary preflight definitions
-    // const transformFunction = shouldTransform && hasStylePropertyGetter(sourceFile)
-    //   ? processSourceTextForTailwindInlineClasses
-    //   : processSourceTextForTailwindInlineClassesWithoutPreflight;
-
     // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceText);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename);
 
     if (tailwindClasses.length === 0) {
       // No classes from tailwind to add, just give source back

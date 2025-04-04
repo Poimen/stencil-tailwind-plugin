@@ -1,27 +1,12 @@
-import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
 import discardComments from 'postcss-discard-comments';
-
 import { debug } from '../debug/logger';
 import { PluginConfigurationOptions } from '..';
 
-// type PostcssPlugin = Record<string, object>;
-
 async function loadPlugins(postcssPathConfiguration?: string) {
   const ctx = { plugins: [] };
-  // let path = '';
-  // if (
-  //   typeof postcssConf === 'object' &&
-  //   !Array.isArray(postcssConf) &&
-  //   postcssConf !== null &&
-  //   Array.isArray(postcssConf.plugins)
-  // ) {
-  //   return postcssConf.plugins;
-  // } else if (typeof postcssConf === 'string' || postcssConf instanceof String) {
-  //   path = postcssConf as string;
-  // }
 
   try {
     const configPlugins = await postcssrc(ctx as unknown, postcssPathConfiguration);
@@ -59,16 +44,16 @@ interface PostcssPlugins {
   after: postcssrc.ResultPlugin[];
 }
 
-export function stripCommentsPlugin(): AcceptedPlugin {
+export function stripCommentsPlugin() {
   return discardComments({
     removeAll: true,
   });
 }
 
-export function getMinifyPlugins(): AcceptedPlugin[] {
+export function getMinifyPlugins() {
   return [
     combine(),
-    cssnano() as AcceptedPlugin,
+    cssnano(),
   ];
 }
 

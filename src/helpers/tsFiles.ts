@@ -1,4 +1,4 @@
-import ts, { ModifierSyntaxKind, Node, ScriptTarget, SourceFile, SyntaxKind, TransformationContext, TransformerFactory, Transformer } from 'typescript';
+import ts, { ModifierSyntaxKind, Node, ScriptTarget, SourceFile, SyntaxKind, TransformationContext, Transformer } from 'typescript';
 import { debug } from '../debug/logger';
 
 export interface TransformedResult {
@@ -16,7 +16,7 @@ export interface ASTMatcher {
 export type ASTMatchCallback = (node: Node) => Node;
 export type WalkerNodeCallback = (node: Node) => boolean;
 
-export function loadTypescriptCodeFromMemory(code: string): SourceFile {
+export function loadTypescriptCodeFromMemory(code: string) {
   return ts.createSourceFile('placeholder.ts', code, ScriptTarget.Latest);
 }
 
@@ -25,17 +25,6 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
     const pathNode = walkPath[treeLevel];
     if (pathNode && node.kind === pathNode.nodeKind) {
       if (pathNode.has) {
-        // if (!node.modifiers) return false;
-
-        // let found = false;
-        // for (let i = 0; i < node.modifiers.length; ++i) {
-        //   if (node.modifiers[i].kind === pathNode.has) {
-        //     found = true;
-        //     break;
-        //   }
-        // }
-
-        // if (!found) return false;
         return false;
       }
 
@@ -53,7 +42,7 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
   };
 }
 
-export function walkTo(file: SourceFile, walkPath: ASTMatcher[]): Node {
+export function walkTo(file: SourceFile, walkPath: ASTMatcher[]) {
   const doesMatch = doesNodeMatch(walkPath);
   let treeLevel = 0;
 
@@ -71,7 +60,7 @@ export function walkTo(file: SourceFile, walkPath: ASTMatcher[]): Node {
   return walkChildNodeTree(file);
 }
 
-export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCallback): void {
+export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCallback) {
   function walkChildNodeTree(node: Node) {
     if (node.kind === nodeKind) {
       if (cb(node)) {
@@ -83,11 +72,11 @@ export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCa
   return walkChildNodeTree(file);
 }
 
-export function makeMatcher(kind: SyntaxKind, { name, modifier, initializer }: { name?: string; modifier?: ModifierSyntaxKind; initializer?: SyntaxKind } = {}): ASTMatcher {
+export function makeMatcher(kind: SyntaxKind, { name, modifier, initializer }: { name?: string; modifier?: ModifierSyntaxKind; initializer?: SyntaxKind } = {}) {
   return { nodeKind: kind, name, has: modifier, initializerKind: initializer };
 }
 
-function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): TransformerFactory<Node> {
+function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback) {
   let treeLevel = 0;
   const doesMatch = doesNodeMatch(walkPath);
 
@@ -117,7 +106,7 @@ function getNodeToTransform(walkPath: ASTMatcher[], action: ASTMatchCallback): T
   };
 }
 
-export function transformNodeWith(sourceFile: SourceFile, walkPath: ASTMatcher[], userAction: ASTMatchCallback): TransformedResult {
+export function transformNodeWith(sourceFile: SourceFile, walkPath: ASTMatcher[], userAction: ASTMatchCallback) {
   let foundNodeInTree = false;
 
   function foundNodeInAST(node: Node) {

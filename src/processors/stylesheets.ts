@@ -22,7 +22,7 @@ async function transformStyleStatement(opts: PluginConfigurationOptions, sourceF
   const stringStyleRewriter = async (cssNode: StringLiteral) => {
     const originalCss = cssNode.text;
 
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceText, originalCss);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, originalCss);
     const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(opts, filename, tailwindClasses, injectedCss);
 
     cssNode.text = reducedClasses;
@@ -56,7 +56,7 @@ export function transformCssFileFormat(opts: PluginConfigurationOptions) {
     debug('[Stylesheets]', 'Processing css source file:', filename);
 
     const injectedCss = getAllExternalCssDependencies(filename).css;
-    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceCss, sourceCss);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, sourceCss);
     const reducedClasses = await reduceDuplicatedClassesFromFunctionalComponentInjection(opts, filename, tailwindClasses, injectedCss);
 
     return reducedClasses;

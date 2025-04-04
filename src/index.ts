@@ -1,4 +1,3 @@
-import { Plugin } from '@stencil/core/internal';
 import { configurePluginOptions, PluginConfigDefaults } from './config/pluginConfiguration';
 import { configureLogging } from './debug/logger';
 import { configuredTransform, postTransformDependencyUpdate, buildStart, buildEnd, processGlobalStyles } from './plugin';
@@ -46,7 +45,7 @@ export function setPluginConfigurationDefaults(opts: PluginConfigurationOptions)
   return globalPluginConfigurationOptions;
 }
 
-export default function tailwindPlugin(opts?: PluginConfigurationOptions): Plugin {
+export default function tailwindPlugin(opts?: PluginConfigurationOptions) {
   const config = configureOptions(opts);
 
   return {
@@ -54,10 +53,10 @@ export default function tailwindPlugin(opts?: PluginConfigurationOptions): Plugi
     transform: configuredTransform(config),
     buildStart,
     buildEnd,
-  } as Plugin;
+  };
 }
 
-export function tailwindHMR(opts?: PluginConfigurationOptions): Plugin {
+export function tailwindHMR(opts?: PluginConfigurationOptions) {
   const config = configureOptions(opts);
 
   return {
@@ -66,10 +65,10 @@ export function tailwindHMR(opts?: PluginConfigurationOptions): Plugin {
     transform: postTransformDependencyUpdate(config),
     buildStart,
     buildEnd,
-  } as Plugin;
+  };
 }
 
-export function tailwindGlobal(opts?: PluginConfigurationOptions): Plugin {
+export function tailwindGlobal(opts?: PluginConfigurationOptions) {
   const config = configureOptions(opts);
 
   return {
@@ -78,5 +77,5 @@ export function tailwindGlobal(opts?: PluginConfigurationOptions): Plugin {
     transform: processGlobalStyles(config),
     buildStart,
     buildEnd,
-  } as Plugin;
+  };
 }
