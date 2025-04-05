@@ -1,5 +1,4 @@
 import path from 'path';
-import { twMerge } from 'tailwind-merge';
 import { debug } from '../debug/logger';
 
 interface CssFileReference {
@@ -92,28 +91,24 @@ export function registerCssForInjection(filenameRef: string, css: string) {
   });
 }
 
-export function getAllExternalCssDependencies(filenameRef: string) {
+export function getAllExternalCssDependencies(filenameRef: string): CssDependencies {
   const filename = sanitiseJSImportPath(filenameRef);
   debug('[STORE]', 'Looking up import of', filename);
 
-  const cssInjection = getImportMatchesForCssFile(filename)
-    .reduce<{ css: string[]; dependencies: string[] }>((deps, file: ImportFileReference) => {
-      Object.entries(file.cssFiles).forEach(([, value]) => {
-        deps.css.push(value.css);
-        deps.dependencies.push(value.name);
-      });
-
-      return deps;
-    }, {
-      css: [],
-      dependencies: [],
-    });
+  const cssInjection = getImportMatchesForCssFile(filename).reduce<CssDependencies>((deps: CssDependencies, file: ImportFileReference) => {
+    deps.css += Object.entries(file.cssFiles).reduce((css: string, [, v]) => {
+      css += v.css;
+      deps.dependencies.push(v.name);
+      return css;
+    }, '');
+    return deps;
+  }, {
+    css: '',
+    dependencies: []
+  });
 
   debug('[STORE]', 'Injecting css', cssInjection);
-  return {
-    css: twMerge(cssInjection.css),
-    dependencies: cssInjection.dependencies,
-  };
+  return cssInjection;
 }
 
 // export function dump(): void {

@@ -1,7 +1,6 @@
 import path from 'path';
 import postcss, { AcceptedPlugin } from 'postcss';
 import tailwindPostcss from '@tailwindcss/postcss';
-import { twMerge } from 'tailwind-merge';
 import { debug } from '../debug/logger';
 import { getMinifyPlugins, getPostcssPlugins, stripCommentsPlugin } from './postcss';
 import { PluginConfigurationOptions } from '..';
@@ -73,7 +72,7 @@ export function processSourceTextForTailwindInlineClasses(opts: PluginConfigurat
 }
 
 export async function reduceDuplicatedClassesFromFunctionalComponentInjection(opts: PluginConfigurationOptions, filename: string, componentCss: string, injectCss: string) {
-  const cssToProcess = twMerge(injectCss, componentCss);
+  const cssToProcess = `${injectCss}${componentCss}`;
 
   const relativePath = path.join('.', path.relative(process.cwd(), filename));
 
