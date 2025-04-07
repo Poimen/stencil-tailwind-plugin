@@ -56,7 +56,6 @@ There are also a number of options that can be given to the plugin:
 | `stripComments` | Indicate if the comment headers should be stripped as well | `false`   |
 | `minify` | Indicate if the css should be minified by Tailwind | `true`   |
 | `optimise` | Indicate if the css should be optimised by Tailwind (css is not minified) *Note* if `optimise` and `minify` are set, configuration defaults to `minify` | `false`   |
-| `postcssPath` | Path to postcss configuration object or an object that contains the postcss configuration. | `undefined` |
 
 The default options can be referenced from the plugin as well:
 ```ts
@@ -178,11 +177,9 @@ If there are multiple distributions enabled in the StencilJS configuration, then
 
 ### Postcss custom configuration
 
-There are a number of `postcss` plugins that might be wanted when processing the tailwind output specifically. The nature of the stencil build makes it difficult to pass the custom css directly back into the css pipeline building. Hence, the `postcss` configuration can be completely overridden by specifying the `postcss` configuration path, or by creating a `postcss` configuration file.
+There are a number of `postcss` plugins that might be wanted when processing the tailwind output specifically. The nature of the stencil build makes it difficult to pass the custom css directly back into the css pipeline building. Hence, the `postcss` configuration can be completely overridden by creating a `postcss` configuration file.
 
 The plugin uses the default `postcss-load-config` [package](https://github.com/postcss/postcss-load-config). Hence, any the configuration options can be used as a file.
-
-The `postcssPath` config option can be used to specify the path. If the configuration file is not found in that path, the plugin will quietly fall over to use the built-in configuration. If there are modules not found, these will be reported to the user.
 
 As an example of a `postcss` configuration that could be used:
 ```js
@@ -339,11 +336,10 @@ The configuration structure has changed for the new Tailwind v4 configuration in
  - `tailwindCssContents` (see injectTailwindConfiguration)
  - `tailwindConf` (see injectTailwindConfiguration)
  - `useAutoPrefixer` (default Tailwind uses autoprefixer internally)
- - `postcss` (see postcssPath)
+ - `postcss` (removed)
 
 #### New options
  - `injectTailwindConfiguration` - returns the configuration CSS for tailwind
- - `postcssPath` - set to the path of the `postcssrc` file
  - `optimise` - passed to Tailwind to optimise the output without minification. See Tailwind documentation.
 
 ### Type changes

@@ -89,16 +89,6 @@ exports[`configuration given default configuration should match default options 
 }
 `;
 
-exports[`configuration given full postcssrc configuration, should set postcssrc path 1`] = `
-{
-  "enableDebug": false,
-  "injectTailwindConfiguration": [Function],
-  "minify": true,
-  "postcssPath": "src/test/configuration/postcss.config.js",
-  "stripComments": false,
-}
-`;
-
 exports[`configuration given no configuration should set default options 1`] = `
 {
   "enableDebug": false,

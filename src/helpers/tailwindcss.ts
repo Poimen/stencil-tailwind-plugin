@@ -33,7 +33,7 @@ function buildTailwindConfigurationForPostCss(configuration: PluginConfiguration
 
 async function getPostcssPluginsWithTailwind(configuration: PluginConfigurationOptions, filePath: string) {
   // Get all the user plugins if there are any
-  const { before, after } = await getPostcssPlugins(configuration);
+  const { before, after } = await getPostcssPlugins();
 
   const tailwindPluginConfiguration = buildTailwindConfigurationForPostCss(configuration, filePath);
 

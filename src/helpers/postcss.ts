@@ -2,37 +2,33 @@ import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
 import discardComments from 'postcss-discard-comments';
-import { debug } from '../debug/logger';
-import { PluginConfigurationOptions } from '..';
 
-async function loadPlugins(postcssPathConfiguration?: string) {
-  const ctx = { plugins: [] };
+async function loadPlugins() {
+  const ctx = { };
 
   try {
-    const configPlugins = await postcssrc(ctx as unknown, postcssPathConfiguration);
+    const configPlugins = await postcssrc(ctx as unknown);
     return configPlugins.plugins;
   } catch (err) {
-    if (err.code === 'MODULE_NOT_FOUND') {
+      if (err.message.startsWith('No PostCSS Config found in')) {
+        return [];
+      }
+
       throw new Error(
         `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
       );
-    }
-    // No config file found, fallthrough to manually configuring postcss
-    // fallthrough expected
-    debug('[TW]', 'No postcss configuration file found in:', postcssPathConfiguration);
   }
-
-  return [];
 }
 
 function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string) {
   return configPlugins.findIndex((plugin) => {
-    if (typeof plugin === 'function' && plugin.name === name) {
-      return true;
+    if ('postcssPlugin' in plugin) {
+      return plugin.postcssPlugin === name;
     }
 
-    if (typeof plugin === 'object' && plugin !== null && (plugin['postcssPlugin'] === name || plugin['name'] === name)) {
-      return true;
+    if (typeof plugin === 'function') {
+      const createdPlugin = (plugin as typeof Function)();
+      return 'postcssPlugin' in createdPlugin && createdPlugin.postcssPlugin === name;
     }
 
     return false;
@@ -57,10 +53,10 @@ export function getMinifyPlugins() {
   ];
 }
 
-export async function getPostcssPlugins(conf: PluginConfigurationOptions): Promise<PostcssPlugins> {
-  const configPlugins = await loadPlugins(conf.postcssPath);
+export async function getPostcssPlugins(): Promise<PostcssPlugins> {
+  const configPlugins = await loadPlugins();
 
-  const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, 'tailwindcss');
+  const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, '@tailwindcss/postcss');
 
   const beforeTailwind = configPluginTailwindIdx === -1 ? [] : configPlugins.slice(0, configPluginTailwindIdx);
   const afterTailwind = configPluginTailwindIdx === -1 ? configPlugins : configPlugins.slice(configPluginTailwindIdx + 1);

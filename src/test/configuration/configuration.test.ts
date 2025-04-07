@@ -68,19 +68,6 @@ describe('configuration', () => {
     expect(result.name).toBe('tailwind');
   });
 
-  it('given full postcssrc configuration, should set postcssrc path', async () => {
-    // Arrange
-    const { conf } = mockTransformModule();
-
-    const opts: PluginConfigurationOptions = {
-      postcssPath: 'src/test/configuration/postcss.config.js',
-    };
-    // Act
-    plugin(opts);
-    // Assert
-    expect(conf()).toMatchSnapshot();
-  });
-
   it('given configuration should set options', () => {
     // Arrange
     const { conf } = mockTransformModule();

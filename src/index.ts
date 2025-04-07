@@ -10,7 +10,6 @@ export interface PluginConfigurationOptions {
   enableDebug?: boolean;
   tailwindCssPath?: string;
   injectTailwindConfiguration?: TailwindPluginConfig;
-  postcssPath?: string;
   stripComments?: boolean;
   minify?: boolean;
   optimise?: boolean;
