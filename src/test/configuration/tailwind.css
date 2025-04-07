@@ -1,6 +1,6 @@
-@tailwind base;
+@import "tailwindcss";
 
-@layer base {
+@utility base {
   .autoplacement-example {
     display: grid;
     grid-template-columns: 1fr 1fr;

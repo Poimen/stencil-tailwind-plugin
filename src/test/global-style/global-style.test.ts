@@ -1,7 +1,7 @@
 import { tailwindGlobal } from '../../index';
 import { loadTestComponent } from '../utils';
 import { PluginConfigDefaults } from '../../config/pluginConfiguration';
-import { PluginCtx, PluginTransformResults } from '@stencil/core/internal';
+import { PluginCtx } from '@stencil/core/internal';
 
 describe('global-style', () => {
   it('given global style url should process tailwind styles', async () => {
@@ -13,7 +13,7 @@ describe('global-style', () => {
     const plugin = tailwindGlobal(PluginConfigDefaults.DEFAULT);
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath } } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath } } as PluginCtx));
       convertedCss = transform.code;
     }
     // Assert
@@ -29,7 +29,7 @@ describe('global-style', () => {
     const plugin = tailwindGlobal(PluginConfigDefaults.DEFAULT);
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(style.text, filePath, { config: { } } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(style.text, filePath, { config: { } } as PluginCtx));
       convertedCss = transform.code;
     }
     // Assert
@@ -45,7 +45,7 @@ describe('global-style', () => {
     const plugin = tailwindGlobal(PluginConfigDefaults.DEFAULT);
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath.replace('.css', '.sass') } } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath.replace('.css', '.sass') } } as PluginCtx));
       convertedCss = transform.code;
     }
     // Assert
@@ -61,7 +61,7 @@ describe('global-style', () => {
     const plugin = tailwindGlobal(PluginConfigDefaults.DEFAULT);
     // Act
     if (plugin.transform) {
-      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath.replace('.css', '.scss') } } as PluginCtx)) as PluginTransformResults;
+      const transform = (await plugin.transform(style.text, filePath, { config: { globalStyle: filePath.replace('.css', '.scss') } } as PluginCtx));
       convertedCss = transform.code;
     }
     // Assert

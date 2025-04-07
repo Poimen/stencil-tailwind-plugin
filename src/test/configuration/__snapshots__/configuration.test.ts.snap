@@ -1,256 +1,111 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`configuration changing the default configuration plugins should be able to set own config 1`] = `
-Object {
+{
   "enableDebug": false,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": true,
   "stripComments": false,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration changing the default configuration plugins should be able to set own config 2`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration changing the default configuration plugins should be able to set own config 3`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration changing the default configuration should apply the configuration to all plugins 1`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration changing the default configuration should apply the configuration to all plugins 2`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration changing the default configuration should apply the configuration to all plugins 3`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
-}
-`;
-
-exports[`configuration changing the default configuration should not change the provided defaults 1`] = `
-Object {
-  "enableDebug": true,
-  "minify": false,
-  "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "",
-  "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration given configuration should set options 1`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [Function],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration given configuration should set options 2`] = `
-Object {
+{
   "enableDebug": true,
+  "injectTailwindConfiguration": [MockFunction],
   "minify": false,
   "stripComments": true,
-  "tailwindConf": [MockFunction],
-  "tailwindCssContents": "@tailwind base;
-
-@layer base {
-  .autoplacement-example {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-gap: 20px;
-  }
-}
-",
   "tailwindCssPath": "src/test/configuration/tailwind.css",
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration given default configuration should match default options 1`] = `
-Object {
+{
   "enableDebug": false,
+  "injectTailwindConfiguration": [Function],
   "minify": true,
   "stripComments": false,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
-}
-`;
-
-exports[`configuration given full postcss object configuration, should set postcss object 1`] = `
-Object {
-  "enableDebug": false,
-  "minify": true,
-  "postcss": Object {
-    "plugins": Array [
-      [Function],
-    ],
-  },
-  "stripComments": false,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration given full postcssrc configuration, should set postcssrc path 1`] = `
-Object {
+{
   "enableDebug": false,
+  "injectTailwindConfiguration": [Function],
   "minify": true,
-  "postcss": "src/test/configuration/postcss.config.js",
+  "postcssPath": "src/test/configuration/postcss.config.js",
   "stripComments": false,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 
 exports[`configuration given no configuration should set default options 1`] = `
-Object {
+{
   "enableDebug": false,
+  "injectTailwindConfiguration": [Function],
   "minify": true,
   "stripComments": false,
-  "tailwindConf": [Function],
-  "tailwindCssContents": "@tailwind base;@tailwind utilities;@tailwind components;",
-  "tailwindCssPath": undefined,
-  "useAutoPrefixer": true,
 }
 `;
 
-exports[`configuration given no configuration should set default options 2`] = `
-Object {
-  "content": Array [],
-  "corePlugins": Object {
-    "preflight": true,
-  },
-  "plugins": Array [],
-  "theme": Object {
-    "extend": Object {},
-  },
-}
-`;
+exports[`configuration given no configuration should set default options 2`] = `"@import "tailwindcss";"`;

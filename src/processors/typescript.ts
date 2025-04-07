@@ -2,9 +2,9 @@ import path from 'path';
 import ts, { ImportDeclaration, Identifier, Node, SourceFile, StringLiteral, SyntaxKind, VariableDeclaration } from 'typescript';
 import { debug } from '../debug/logger';
 import { loadTypescriptCodeFromMemory, makeMatcher, transformNodeWith, walkAll, walkTo } from '../helpers/tsFiles';
-import { processSourceTextForTailwindInlineClasses, processSourceTextForTailwindInlineClassesWithoutPreflight } from '../helpers/tailwindcss';
+import { processSourceTextForTailwindInlineClasses } from '../helpers/tailwindcss';
 import { registerAllImportsForFile, registerCssForInjection } from '../store/store';
-import { PluginConfigOpts } from '..';
+import { PluginConfigurationOptions } from '..';
 
 interface TransformationResult {
   text?: string;
@@ -23,7 +23,7 @@ function hasStyleGetAccessor(sourceFile: SourceFile) {
     makeMatcher(SyntaxKind.ClassExpression),
     makeMatcher(SyntaxKind.GetAccessor, { name: 'style', modifier: SyntaxKind.StaticKeyword }),
     makeMatcher(SyntaxKind.Block),
-    makeMatcher(SyntaxKind.ReturnStatement)
+    makeMatcher(SyntaxKind.ReturnStatement),
   ];
 
   return walkTo(sourceFile, getAccessorPath) !== undefined;
@@ -35,7 +35,7 @@ function hasStyleProperty(sourceFile: SourceFile) {
   const binaryExpressionStylePath = [
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.ExpressionStatement),
-    makeMatcher(SyntaxKind.BinaryExpression)
+    makeMatcher(SyntaxKind.BinaryExpression),
   ];
 
   return walkTo(sourceFile, binaryExpressionStylePath) !== undefined;
@@ -46,13 +46,8 @@ function getStylePropertyGetterPath() {
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.VariableStatement),
     makeMatcher(SyntaxKind.VariableDeclarationList),
-    makeMatcher(SyntaxKind.VariableDeclaration, { initializer: SyntaxKind.ClassExpression })
+    makeMatcher(SyntaxKind.VariableDeclaration, { initializer: SyntaxKind.ClassExpression }),
   ];
-}
-
-function hasStylePropertyGetter(sourceFile: SourceFile) {
-  const getAccessorPath = getStylePropertyGetterPath();
-  return walkTo(sourceFile, getAccessorPath) !== undefined;
 }
 
 function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
@@ -107,7 +102,7 @@ function transformSourceToIncludeNewTailwindStyles(sourceFile: SourceFile, css: 
 
   return {
     text: result.fullText,
-    transformed: result.found
+    transformed: result.found,
   };
 }
 
@@ -121,20 +116,15 @@ function preserveTailwindCssEscaping(css: string) {
   return css.replace(/\\/g, '\\\\');
 }
 
-export function transform(opts: PluginConfigOpts) {
-  return async (sourceText: string, filename: string): Promise<string> => {
+export function transform(opts: PluginConfigurationOptions) {
+  return async (sourceText: string, filename: string) => {
     debug('[Typescript]', 'Processing source file:', filename);
 
     const sourceFile = loadTypescriptCodeFromMemory(sourceText);
     const shouldTransform = shouldTransformSource(sourceFile);
 
-    // If there is going to be a transformation later, include the necessary preflight definitions
-    const transformFunction = shouldTransform && hasStylePropertyGetter(sourceFile)
-      ? processSourceTextForTailwindInlineClasses
-      : processSourceTextForTailwindInlineClassesWithoutPreflight;
-
     // TODO: remove all import statements so that stencil shadow prop doesn't make classes appear
-    const tailwindClasses = await transformFunction(opts, filename, sourceText);
+    const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename);
 
     if (tailwindClasses.length === 0) {
       // No classes from tailwind to add, just give source back

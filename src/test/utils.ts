@@ -10,6 +10,6 @@ export function loadTestComponent(testBase: string, filename: string): TestFileL
   const resolvedPath = path.resolve(path.join('src', 'test', testBase, 'files', filename));
   return {
     text: fs.readFileSync(resolvedPath).toString(),
-    path: resolvedPath
+    path: resolvedPath,
   };
 }

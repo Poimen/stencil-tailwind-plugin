@@ -1,50 +1,36 @@
-import { AcceptedPlugin } from 'postcss';
 import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
 import discardComments from 'postcss-discard-comments';
-
 import { debug } from '../debug/logger';
-import { PluginConfigOpts, PostcssPlugin } from '..';
+import { PluginConfigurationOptions } from '..';
 
-async function loadPlugins(postcssConf?: string | PostcssPlugin) {
+async function loadPlugins(postcssPathConfiguration?: string) {
   const ctx = { plugins: [] };
-  let path = '';
-  if (
-    typeof postcssConf === 'object' &&
-    !Array.isArray(postcssConf) &&
-    postcssConf !== null &&
-    Array.isArray(postcssConf.plugins)
-  ) {
-    return postcssConf.plugins;
-  } else if (typeof postcssConf === 'string' || postcssConf instanceof String) {
-    path = postcssConf as string;
-  }
 
   try {
-    const configPlugins = await postcssrc(ctx as unknown, path);
+    const configPlugins = await postcssrc(ctx as unknown, postcssPathConfiguration);
     return configPlugins.plugins;
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
       throw new Error(
-        `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`
+        `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
       );
     }
     // No config file found, fallthrough to manually configuring postcss
     // fallthrough expected
-    debug('[TW]', 'No postcss configuration file found in:', postcssConf);
+    debug('[TW]', 'No postcss configuration file found in:', postcssPathConfiguration);
   }
 
   return [];
 }
 
 function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string) {
-  return configPlugins.findIndex(plugin => {
+  return configPlugins.findIndex((plugin) => {
     if (typeof plugin === 'function' && plugin.name === name) {
       return true;
     }
 
-    // eslint-disable-next-line dot-notation
     if (typeof plugin === 'object' && plugin !== null && (plugin['postcssPlugin'] === name || plugin['name'] === name)) {
       return true;
     }
@@ -56,27 +42,25 @@ function findIndexOfPlugin(configPlugins: postcssrc.ResultPlugin[], name: string
 interface PostcssPlugins {
   before: postcssrc.ResultPlugin[];
   after: postcssrc.ResultPlugin[];
-  hasAutoPrefixer: boolean;
 }
 
-export function stripCommentsPlugin(): AcceptedPlugin {
+export function stripCommentsPlugin() {
   return discardComments({
-    removeAll: true
+    removeAll: true,
   });
 }
 
-export function getMinifyPlugins(): AcceptedPlugin[] {
+export function getMinifyPlugins() {
   return [
     combine(),
-    cssnano() as AcceptedPlugin
+    cssnano(),
   ];
 }
 
-export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<PostcssPlugins> {
-  const configPlugins = await loadPlugins(conf.postcss);
+export async function getPostcssPlugins(conf: PluginConfigurationOptions): Promise<PostcssPlugins> {
+  const configPlugins = await loadPlugins(conf.postcssPath);
 
   const configPluginTailwindIdx = findIndexOfPlugin(configPlugins, 'tailwindcss');
-  const hasAutoPrefixer = findIndexOfPlugin(configPlugins, 'autoprefixer') !== -1;
 
   const beforeTailwind = configPluginTailwindIdx === -1 ? [] : configPlugins.slice(0, configPluginTailwindIdx);
   const afterTailwind = configPluginTailwindIdx === -1 ? configPlugins : configPlugins.slice(configPluginTailwindIdx + 1);
@@ -84,6 +68,5 @@ export async function getPostcssPlugins(conf: PluginConfigOpts): Promise<Postcss
   return {
     before: beforeTailwind,
     after: afterTailwind,
-    hasAutoPrefixer
   };
 }

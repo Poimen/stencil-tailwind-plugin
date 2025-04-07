@@ -2,9 +2,10 @@ import path from 'path';
 import { debug } from '../debug/logger';
 
 interface CssFileReference {
-  css: string
+  css: string;
   name: string;
 }
+
 interface CssFileMap {
   [key: string]: CssFileReference;
 }
@@ -17,7 +18,7 @@ interface ImportFileReference {
 
 export interface CssDependencies {
   css: string;
-  dependencies: string[]
+  dependencies: string[];
 }
 
 const filesWithImportMaps: ImportFileReference[] = [];
@@ -26,7 +27,7 @@ function sanitiseJSImportPath(importPath: string) {
   return importPath.replace(/\\/g, '/');
 }
 
-function findMatchingFileImport(filename: string): ImportFileReference | undefined {
+function findMatchingFileImport(filename: string) {
   return filesWithImportMaps.find(x => x.name === filename);
 }
 
@@ -42,9 +43,7 @@ function makeFileImportSpec(filename: string) {
 function makeImportAndNameMatcher(filename: string) {
   const importMatch = makeFileImportSpec(filename);
 
-  return function(file: ImportFileReference) {
-    return file.imports.indexOf(importMatch) !== -1 || file.name === filename;
-  };
+  return (file: ImportFileReference) => file.imports.indexOf(importMatch) !== -1 || file.name === filename;
 }
 
 function getImportMatchesForCssFile(filename: string) {
@@ -54,11 +53,12 @@ function getImportMatchesForCssFile(filename: string) {
   return filesWithImportMaps.filter(shouldUseCss);
 }
 
-export function registerAllImportsForFile(filenameRef: string, importedFilenames: string[]): void {
+export function registerAllImportsForFile(filenameRef: string, importedFilenames: string[]) {
   const filename = sanitiseJSImportPath(filenameRef);
   const imports = importedFilenames.map(makeFileImportSpec);
   const file = findMatchingFileImport(filename);
-  if (file === undefined) {
+
+  if (!file) {
     debug('[STORE]', 'Registered', imports, 'with', filename);
     filesWithImportMaps.push(makeFileReference(filename, imports));
     return;
@@ -68,7 +68,7 @@ export function registerAllImportsForFile(filenameRef: string, importedFilenames
   file.imports.push(...imports);
 }
 
-export function registerCssForInjection(filenameRef: string, css: string): void {
+export function registerCssForInjection(filenameRef: string, css: string) {
   const filename = sanitiseJSImportPath(filenameRef);
   debug('[STORE]', 'Registering css for', filename, 'against', css);
 
@@ -79,13 +79,13 @@ export function registerCssForInjection(filenameRef: string, css: string): void 
   // Create a import spec of the file name to match import paths
   const shouldStoreCss = makeImportAndNameMatcher(filename);
 
-  filesWithImportMaps.forEach(file => {
+  filesWithImportMaps.forEach((file) => {
     if (shouldStoreCss(file)) {
       // This file is imported by another module, or this is the master file - store the css against this match
       debug('[STORE]', 'Found cross reference for imported file', file.name, 'to store css against');
       file.cssFiles[filename] = {
         name: filename,
-        css
+        css,
       };
     }
   });
@@ -96,7 +96,7 @@ export function getAllExternalCssDependencies(filenameRef: string): CssDependenc
   debug('[STORE]', 'Looking up import of', filename);
 
   const cssInjection = getImportMatchesForCssFile(filename).reduce<CssDependencies>((deps: CssDependencies, file: ImportFileReference) => {
-    deps.css += Object.entries(file.cssFiles).reduce((css: string, [_, v]) => {
+    deps.css += Object.entries(file.cssFiles).reduce((css: string, [, v]) => {
       css += v.css;
       deps.dependencies.push(v.name);
       return css;

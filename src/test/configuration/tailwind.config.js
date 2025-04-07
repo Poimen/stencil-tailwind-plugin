@@ -4,14 +4,14 @@ module.exports = {
     './src/**/*.html',
     './src/**/*.js',
     './src/**/*.jsx',
-    './src/**/*.tsx'
+    './src/**/*.tsx',
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {}
+    extend: {},
   },
   variants: {
-    extend: {}
+    extend: {},
   },
-  plugins: []
+  plugins: [],
 };

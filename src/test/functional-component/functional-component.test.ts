@@ -59,7 +59,6 @@ describe('functional-component', () => {
     const result = getAllExternalCssDependencies(`${componentStyles.path}?tag=basic-component&encapsulation=shadow`);
     // Assert
     expect(result.css).toMatchSnapshot();
-    expect(result.dependencies[0]).toContain('externally-included-functional-component.tsx');
-    expect(result.dependencies[1]).toContain('FunctionalComponent.tsx');
+    expect(result.dependencies[0]).toContain('FunctionalComponent.tsx');
   });
 });

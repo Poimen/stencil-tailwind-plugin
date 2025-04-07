@@ -3,9 +3,9 @@ import PQueue from 'p-queue';
 import { debug, error } from './debug/logger';
 import { transformCssFileFormat, transformCssFromTsxFileFormat as styleSheetTransform } from './processors/stylesheets';
 import { transform as typescriptTransform } from './processors/typescript';
-import { PluginCtx, PluginTransformResults } from '@stencil/core/internal';
+import { PluginCtx } from '@stencil/core/internal';
 import { getAllExternalCssDependencies } from './store/store';
-import { PluginConfigOpts } from '.';
+import { PluginConfigurationOptions } from '.';
 import { processSourceTextForTailwindInlineClasses } from './helpers/tailwindcss';
 
 export function buildStart(): void {
@@ -21,7 +21,7 @@ export function buildEnd(err?: Error): void {
 }
 
 function useStyleSheetTransform(filename: string) {
-  return filename.match(/\.s?(a|c)ss$/);
+  return filename.match(/\.s?(a|c)ss/);
 }
 
 function useTypescriptTransform(filename: string) {
@@ -33,11 +33,11 @@ function useTypescriptTransform(filename: string) {
 // transform. Hence queue the requests until we are ready for the next file to be processed
 const queue = new PQueue({ concurrency: 1 });
 
-export function configuredTransform(opts: PluginConfigOpts): (code: string, id: string) => Promise<PluginTransformResults> {
-  const tsTransformer = typescriptTransform(opts);
-  const cssTransformer = styleSheetTransform(opts);
+export function configuredTransform(pluginOptions: PluginConfigurationOptions) {
+  const tsTransformer = typescriptTransform(pluginOptions);
+  const cssTransformer = styleSheetTransform(pluginOptions);
 
-  return async (code: string, id: string): Promise<PluginTransformResults> => {
+  return async (code: string, id: string) => {
     return await queue.add(async () => {
       let codeResult = code;
       if (useStyleSheetTransform(id)) {
@@ -48,16 +48,16 @@ export function configuredTransform(opts: PluginConfigOpts): (code: string, id: 
 
       return {
         code: codeResult,
-        map: null
+        map: null,
       };
     });
   };
 }
 
-export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: string, id: string) => Promise<PluginTransformResults> {
-  const cssTransformer = transformCssFileFormat(opts);
+export function postTransformDependencyUpdate(pluginOptions: PluginConfigurationOptions) {
+  const cssTransformer = transformCssFileFormat(pluginOptions);
 
-  return async (code: string, id: string): Promise<PluginTransformResults> => {
+  return async (code: string, id: string) => {
     return await queue.add(async () => {
       const deps = getAllExternalCssDependencies(id);
       const finalCss = await cssTransformer(code, id);
@@ -65,17 +65,17 @@ export function postTransformDependencyUpdate(opts: PluginConfigOpts): (code: st
       return {
         code: finalCss,
         map: null,
-        dependencies: deps.dependencies
+        dependencies: [...deps.dependencies, pluginOptions.tailwindCssPath],
       };
     });
   };
 }
 
-export function processGlobalStyles(opts: PluginConfigOpts) {
-  return async (code: string, id: string, context: PluginCtx): Promise<PluginTransformResults> => {
+export function processGlobalStyles(pluginOptions: PluginConfigurationOptions) {
+  return async (code: string, id: string, context: PluginCtx) => {
     if (!context.config.globalStyle) {
       return {
-        code, map: null
+        code, map: null,
       };
     }
 
@@ -86,7 +86,7 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
     const regex = new RegExp(`${file.dir}.${file.name}.s?(a|c)ss`);
     if (!id.match(regex)) {
       return {
-        code, map: null
+        code, map: null,
       };
     }
 
@@ -94,12 +94,12 @@ export function processGlobalStyles(opts: PluginConfigOpts) {
       // Note: usage of `code` for sourceTsx is more to avoid the TS warning about no utilities found
       // in the source. Technically should be an empty string, but seeing the css and tsx are the same
       // there should be no extra classes generated
-      const newGlobalCss = await processSourceTextForTailwindInlineClasses(opts, id, code, code);
+      const newGlobalCss = await processSourceTextForTailwindInlineClasses(pluginOptions, id, code);
 
       return {
         code: newGlobalCss,
         map: null,
-        dependencies: [context.config.globalStyle, id]
+        dependencies: [context.config.globalStyle, id],
       };
     });
   };

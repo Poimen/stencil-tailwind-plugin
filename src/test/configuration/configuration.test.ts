@@ -1,39 +1,31 @@
-import plugin, { PluginConfigOpts, PluginOpts, setPluginConfigurationDefaults, TailwindPluginFunctionalConfig, tailwindHMR, tailwindGlobal } from '../../index';
+import plugin, { PluginConfigurationOptions, setPluginConfigurationDefaults, TailwindPluginFunctionalConfig, tailwindHMR, tailwindGlobal, PluginOptions } from '../../index';
 import { configuredTransform, postTransformDependencyUpdate, processGlobalStyles } from '../../plugin';
 import { isDebugEnabled } from '../../debug/logger';
 
 jest.mock('../../plugin');
 
 describe('configuration', () => {
-  const defaultConfInput = { content: [], corePlugins: { preflight: true } };
-
-  let tailwindFrozenConfig: any;
-  beforeAll(() => {
-    const config = { conf: require('./tailwind.config') };
-    tailwindFrozenConfig = Object.freeze(config.conf);
-  });
-
   const mockTransformModule = () => {
-    let confSet: PluginConfigOpts | null = null;
-    let postTransformConfSet: PluginConfigOpts | null = null;
-    let globalStylesConfSet: PluginConfigOpts | null = null;
+    let confSet: PluginConfigurationOptions | null = null;
+    let postTransformConfSet: PluginConfigurationOptions | null = null;
+    let globalStylesConfSet: PluginConfigurationOptions | null = null;
 
-    configuredTransform.mockImplementation((opts: PluginConfigOpts) => {
+    configuredTransform.mockImplementation((opts: PluginConfigurationOptions) => {
       confSet = opts;
     });
 
-    postTransformDependencyUpdate.mockImplementation((opts: PluginConfigOpts) => {
+    postTransformDependencyUpdate.mockImplementation((opts: PluginConfigurationOptions) => {
       postTransformConfSet = opts;
     });
 
-    processGlobalStyles.mockImplementation((opts: PluginConfigOpts) => {
+    processGlobalStyles.mockImplementation((opts: PluginConfigurationOptions) => {
       globalStylesConfSet = opts;
     });
 
     return {
       conf: () => confSet,
       postTransformConf: () => postTransformConfSet,
-      globalStylesConf: () => globalStylesConfSet
+      globalStylesConf: () => globalStylesConfSet,
     };
   };
 
@@ -45,7 +37,7 @@ describe('configuration', () => {
     const confResult = conf();
     // Assert
     expect(confResult).toMatchSnapshot();
-    expect((confResult?.tailwindConf as TailwindPluginFunctionalConfig)('', defaultConfInput)).toMatchSnapshot();
+    expect((confResult?.injectTailwindConfiguration as TailwindPluginFunctionalConfig)('')).toMatchSnapshot();
     expect(isDebugEnabled()).toBe(false);
   });
 
@@ -53,7 +45,7 @@ describe('configuration', () => {
     // Arrange & Act
     const { conf } = mockTransformModule();
 
-    plugin(PluginOpts.DEFAULT);
+    plugin(PluginOptions.DEFAULT);
     // Assert
     expect(conf()).toMatchSnapshot();
   });
@@ -62,13 +54,11 @@ describe('configuration', () => {
     // Arrange
     const { conf } = mockTransformModule();
 
-    const opts: PluginConfigOpts = {
+    const opts: PluginConfigurationOptions = {
       enableDebug: true,
       tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: tailwindFrozenConfig,
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     const result = plugin(opts);
@@ -82,25 +72,8 @@ describe('configuration', () => {
     // Arrange
     const { conf } = mockTransformModule();
 
-    const opts: PluginConfigOpts = {
-      postcss: 'src/test/configuration/postcss.config.js'
-    };
-    // Act
-    plugin(opts);
-    // Assert
-    expect(conf()).toMatchSnapshot();
-  });
-
-  it('given full postcss object configuration, should set postcss object', async () => {
-    // Arrange
-    const { conf } = mockTransformModule();
-
-    const opts: PluginConfigOpts = {
-      postcss: {
-        plugins: [
-          require('autoprefixer')
-        ]
-      }
+    const opts: PluginConfigurationOptions = {
+      postcssPath: 'src/test/configuration/postcss.config.js',
     };
     // Act
     plugin(opts);
@@ -112,13 +85,12 @@ describe('configuration', () => {
     // Arrange
     const { conf } = mockTransformModule();
 
-    const opts: PluginConfigOpts = {
+    const opts: PluginConfigurationOptions = {
       enableDebug: true,
       tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: jest.fn(() => ({ content: [] })),
+      injectTailwindConfiguration: jest.fn(() => ''),
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     const result = plugin(opts);
@@ -128,36 +100,16 @@ describe('configuration', () => {
     expect(result.name).toBe('tailwind');
   });
 
-  it('changing the default configuration should not change the provided defaults', () => {
-    // Arrange
-    const preOpts = JSON.parse(JSON.stringify(PluginOpts));
-    const opts: PluginConfigOpts = {
-      enableDebug: true,
-      tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: jest.fn(() => ({ content: [] })),
-      stripComments: true,
-      minify: false
-    };
-    // Act
-    const result = setPluginConfigurationDefaults(opts);
-    // Assert
-    expect(PluginOpts).toEqual(preOpts);
-    expect(result).not.toEqual(preOpts);
-    expect(result).toMatchSnapshot();
-  });
-
   it('changing the default configuration should apply the configuration to all plugins', () => {
     // Arrange
     const { conf, globalStylesConf, postTransformConf } = mockTransformModule();
 
-    const opts: PluginConfigOpts = {
+    const opts: PluginConfigurationOptions = {
       enableDebug: true,
       tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: jest.fn(() => ({ content: [] })),
+      injectTailwindConfiguration: jest.fn(() => ''),
       stripComments: true,
-      minify: false
+      minify: false,
     };
     // Act
     setPluginConfigurationDefaults(opts);
@@ -183,22 +135,20 @@ describe('configuration', () => {
     // Arrange
     const { conf, globalStylesConf, postTransformConf } = mockTransformModule();
 
-    const optsDefault: PluginConfigOpts = {
+    const optsDefault: PluginConfigurationOptions = {
       enableDebug: true,
       tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: jest.fn(() => ({ content: [] })),
+      injectTailwindConfiguration: jest.fn(() => ''),
       stripComments: true,
-      minify: false
+      minify: false,
     };
 
-    const optsSingular: PluginConfigOpts = {
+    const optsSingular: PluginConfigurationOptions = {
       enableDebug: false,
       tailwindCssPath: 'src/test/configuration/tailwind.css',
-      tailwindCssContents: '',
-      tailwindConf: jest.fn(() => ({ content: [] })),
+      injectTailwindConfiguration: jest.fn(() => ''),
       stripComments: false,
-      minify: true
+      minify: true,
     };
     // Act
     setPluginConfigurationDefaults(optsDefault);
