@@ -8,7 +8,6 @@ import { PluginConfigurationOptions } from '..';
 function applyRawEscaping(css: string) {
   return css
     .replace(/\n/g, '')
-    .replace(/'/g, '"')
     .replace(/`/g, '\\`')
     .replace(/\t/g, ' ');
 }
