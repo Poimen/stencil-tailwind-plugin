@@ -9,7 +9,8 @@ function applyRawEscaping(css: string) {
   return css
     .replace(/\n/g, '')
     .replace(/`/g, '\\`')
-    .replace(/\t/g, ' ');
+    .replace(/\t/g, ' ')
+    .replace(/'/g, "%27");
 }
 
 function buildTailwindConfigurationForPostCss(configuration: PluginConfigurationOptions, filePath: string) {
