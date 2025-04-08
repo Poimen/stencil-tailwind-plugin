@@ -1,6 +1,7 @@
 import postcssrc from 'postcss-load-config';
 import cssnano from 'cssnano';
 import combine from 'postcss-combine-duplicated-selectors';
+import mediaCombine from 'postcss-combine-media-query';
 import discardComments from 'postcss-discard-comments';
 
 async function loadPlugins() {
@@ -48,7 +49,8 @@ export function stripCommentsPlugin() {
 
 export function getMinifyPlugins() {
   return [
-    combine(),
+    mediaCombine(),
+    combine({ removeDuplicatedValues: true }),
     cssnano(),
   ];
 }

@@ -43,7 +43,8 @@
     "fs-extra": "^11.3.0",
     "p-queue": "^6.6.2",
     "postcss": "^8.5.3",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
+    "postcss-combine-duplicated-selectors": "poimen/postcss-combine-duplicated-selectors#duplicated-keyframes-fix",
+    "postcss-combine-media-query": "^1.0.1",
     "postcss-discard-comments": "^7.0.3",
     "postcss-load-config": "^6.0.1"
   },

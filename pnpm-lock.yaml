@@ -27,8 +27,11 @@ importers:
         specifier: ^8.5.3
         version: 8.5.3
       postcss-combine-duplicated-selectors:
-        specifier: ^10.0.3
-        version: 10.0.3(postcss@8.5.3)
+        specifier: poimen/postcss-combine-duplicated-selectors#duplicated-keyframes-fix
+        version: https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9(postcss@8.5.3)
+      postcss-combine-media-query:
+        specifier: ^1.0.1
+        version: 1.0.1
       postcss-discard-comments:
         specifier: ^7.0.3
         version: 7.0.3(postcss@8.5.3)
@@ -2163,6 +2166,9 @@ packages:
     resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
     engines: {node: 20 || >=22}
 
+  picocolors@0.2.1:
+    resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==}
+
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -2194,11 +2200,15 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
-  postcss-combine-duplicated-selectors@10.0.3:
-    resolution: {integrity: sha512-IP0BmwFloCskv7DV7xqvzDXqMHpwdczJa6ZvIW8abgHdcIHs9mCJX2ltFhu3EwA51ozp13DByng30+Ke+eIExA==}
-    engines: {node: ^10.0.0 || ^12.0.0 || >=14.0.0}
+  postcss-combine-duplicated-selectors@https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9:
+    resolution: {tarball: https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9}
+    version: 10.0.3
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     peerDependencies:
       postcss: ^8.1.0
+
+  postcss-combine-media-query@1.0.1:
+    resolution: {integrity: sha512-DFSXuYy3ltDkC2esIF0ORoS9DCjlyfWhtoQkG9brZMuJY1ABOER95sm3dvccR6IEgSrYX4RgqiHD4Lq3JGrxyw==}
 
   postcss-convert-values@7.0.4:
     resolution: {integrity: sha512-e2LSXPqEHVW6aoGbjV9RsSSNDO3A0rZLCBxN24zvxF25WknMPpX8Dm9UxxThyEbaytzggRuZxaGXqaOhxQ514Q==}
@@ -2378,6 +2388,10 @@ packages:
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
+
+  postcss@7.0.39:
+    resolution: {integrity: sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==}
+    engines: {node: '>=6.0.0'}
 
   postcss@8.5.3:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
@@ -5042,6 +5056,8 @@ snapshots:
       lru-cache: 11.1.0
       minipass: 7.1.2
 
+  picocolors@0.2.1: {}
+
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -5068,10 +5084,14 @@ snapshots:
       postcss: 8.5.3
       postcss-value-parser: 4.2.0
 
-  postcss-combine-duplicated-selectors@10.0.3(postcss@8.5.3):
+  postcss-combine-duplicated-selectors@https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9(postcss@8.5.3):
     dependencies:
       postcss: 8.5.3
       postcss-selector-parser: 6.1.2
+
+  postcss-combine-media-query@1.0.1:
+    dependencies:
+      postcss: 7.0.39
 
   postcss-convert-values@7.0.4(postcss@8.5.3):
     dependencies:
@@ -5226,6 +5246,11 @@ snapshots:
       postcss-selector-parser: 6.1.2
 
   postcss-value-parser@4.2.0: {}
+
+  postcss@7.0.39:
+    dependencies:
+      picocolors: 0.2.1
+      source-map: 0.6.1
 
   postcss@8.5.3:
     dependencies:
