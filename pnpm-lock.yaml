@@ -27,8 +27,8 @@ importers:
         specifier: ^8.5.3
         version: 8.5.3
       postcss-combine-duplicated-selectors:
-        specifier: poimen/postcss-combine-duplicated-selectors#duplicated-keyframes-fix
-        version: https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9(postcss@8.5.3)
+        specifier: ^10.0.3
+        version: 10.0.3(postcss@8.5.3)
       postcss-combine-media-query:
         specifier: ^1.0.1
         version: 1.0.1
@@ -2200,10 +2200,9 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
-  postcss-combine-duplicated-selectors@https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9:
-    resolution: {tarball: https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9}
-    version: 10.0.3
-    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+  postcss-combine-duplicated-selectors@10.0.3:
+    resolution: {integrity: sha512-IP0BmwFloCskv7DV7xqvzDXqMHpwdczJa6ZvIW8abgHdcIHs9mCJX2ltFhu3EwA51ozp13DByng30+Ke+eIExA==}
+    engines: {node: ^10.0.0 || ^12.0.0 || >=14.0.0}
     peerDependencies:
       postcss: ^8.1.0
 
@@ -5084,7 +5083,7 @@ snapshots:
       postcss: 8.5.3
       postcss-value-parser: 4.2.0
 
-  postcss-combine-duplicated-selectors@https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/b993502206354b0d37b00995d334cb335b1254f9(postcss@8.5.3):
+  postcss-combine-duplicated-selectors@10.0.3(postcss@8.5.3):
     dependencies:
       postcss: 8.5.3
       postcss-selector-parser: 6.1.2
