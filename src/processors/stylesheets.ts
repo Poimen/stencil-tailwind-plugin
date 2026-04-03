@@ -29,6 +29,9 @@ async function transformStyleStatement(opts: PluginConfigurationOptions, sourceF
   };
 
   const cssNode = walkTo(sourceFile, stringLiteralPath);
+  if (!cssNode) {
+    return sourceText;
+  }
   await stringStyleRewriter(cssNode as StringLiteral);
 
   const printer = ts.createPrinter();
