@@ -1,6 +1,6 @@
-import ts, { SourceFile, StringLiteral, SyntaxKind } from 'typescript';
+import ts, { SourceFile, StringLiteralLike, SyntaxKind } from 'typescript';
 import { debug } from '../debug/logger';
-import { loadTypescriptCodeFromMemory, makeMatcher, walkTo } from '../helpers/tsFiles';
+import { loadTypescriptCodeFromMemory, makeMatcher, walkMultiplePathsTo, walkTo } from '../helpers/tsFiles';
 import { processSourceTextForTailwindInlineClasses, reduceDuplicatedClassesFromFunctionalComponentInjection } from '../helpers/tailwindcss';
 import { getAllExternalCssDependencies } from '../store/store';
 import { PluginConfigurationOptions } from '..';
@@ -9,17 +9,37 @@ async function transformStyleStatement(opts: PluginConfigurationOptions, sourceF
   // Stencil produces stylesheet in esm, so need to read and emit back. Stencil outputs the css in the first
   // variable statement in the file. As such there is no clean way of detecting this, so just go grab the
   // first statement
-  const stringLiteralPath = [
+  const variableDeclarationPath = [
     makeMatcher(SyntaxKind.SourceFile),
     makeMatcher(SyntaxKind.FirstStatement),
     makeMatcher(SyntaxKind.VariableDeclarationList),
     makeMatcher(SyntaxKind.VariableDeclaration),
+  ];
+  const variableDeclaration = walkTo(sourceFile, variableDeclarationPath);
+  if (variableDeclaration === undefined) {
+    throw new Error(`[Stylesheets] Unable to find variable declaration for style property in file ${filename}`);
+  }
+
+  // In the case of Stencil Core < 4.39.0, the output of the source text is a string literal.
+  const stringLiteralPath = [
+    makeMatcher(SyntaxKind.VariableDeclaration),
     makeMatcher(SyntaxKind.StringLiteral),
+  ];
+
+  // In the case of Stencil Core >= 4.39.0, the output of the source text is an arrow function rather than
+  // a string literal. The arrow function resolves to a template literal that contains the css.
+  const arrowFunctionPath = [
+    makeMatcher(SyntaxKind.SourceFile),
+    makeMatcher(SyntaxKind.FirstStatement),
+    makeMatcher(SyntaxKind.VariableDeclarationList),
+    makeMatcher(SyntaxKind.VariableDeclaration),
+    makeMatcher(SyntaxKind.ArrowFunction),
+    makeMatcher(SyntaxKind.NoSubstitutionTemplateLiteral),
   ];
 
   // Grab any css that needs to be injected by functional components that this component imported
   const injectedCss = getAllExternalCssDependencies(filename).css;
-  const stringStyleRewriter = async (cssNode: StringLiteral) => {
+  const stringStyleRewriter = async (cssNode: StringLiteralLike) => {
     const originalCss = cssNode.text;
 
     const tailwindClasses = await processSourceTextForTailwindInlineClasses(opts, filename, originalCss);
@@ -28,8 +48,12 @@ async function transformStyleStatement(opts: PluginConfigurationOptions, sourceF
     cssNode.text = reducedClasses;
   };
 
-  const cssNode = walkTo(sourceFile, stringLiteralPath);
-  await stringStyleRewriter(cssNode as StringLiteral);
+  const cssNode = walkMultiplePathsTo(sourceFile, [stringLiteralPath, arrowFunctionPath]);
+  if (cssNode === undefined) {
+    throw new Error(`[Stylesheets] Unable to find string literal or arrow function for style property in file ${filename}`);
+  }
+
+  await stringStyleRewriter(cssNode as StringLiteralLike);
 
   const printer = ts.createPrinter();
   return printer.printFile(sourceFile);

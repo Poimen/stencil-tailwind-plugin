@@ -42,13 +42,13 @@ function doesNodeMatch(walkPath: ASTMatcher[]) {
   };
 }
 
-export function walkTo(file: SourceFile, walkPath: ASTMatcher[]) {
+export function walkTo(file: SourceFile | Node, walkPath: ASTMatcher[]) {
   const doesMatch = doesNodeMatch(walkPath);
   let treeLevel = 0;
 
   const hasReachedLastSelector = () => treeLevel === walkPath.length;
 
-  function walkChildNodeTree(node: Node) {
+  function walkChildNodeTree(node: Node): Node | undefined {
     if (doesMatch(node, treeLevel)) {
       treeLevel++;
       if (hasReachedLastSelector()) {
@@ -58,6 +58,18 @@ export function walkTo(file: SourceFile, walkPath: ASTMatcher[]) {
     return ts.forEachChild(node, walkChildNodeTree);
   }
   return walkChildNodeTree(file);
+}
+
+export function walkMultiplePathsTo(startNode: Node, walkPaths: ASTMatcher[][]) {
+  // Walk through the provided source file covering all the provided paths before returning undefined. The order
+  // if the provided path is the priority matching - first one wins.
+  for (const walkPath of walkPaths) {
+    const matchingPath = walkTo(startNode, walkPath);
+    if (matchingPath) {
+      return matchingPath;
+    }
+  }
+  return undefined;
 }
 
 export function walkAll(file: SourceFile, nodeKind: SyntaxKind, cb: WalkerNodeCallback) {

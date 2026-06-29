@@ -46,4 +46,13 @@ describe('style-component', () => {
     // Assert
     expect(result).toMatchSnapshot();
   });
+
+  it('given style component with arrow function css, should output styles', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('style-component', 'style-component-tailwind-function-css.tsx');
+    // Act
+    const result = await transform(configurePluginOptions(PluginConfigDefaults.DEFAULT))(loadedFile.text, loadedFile.path);
+    // Assert
+    expect(result).toMatchSnapshot();
+  });
 });
