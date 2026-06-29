@@ -76,7 +76,7 @@ function addStylePropertyGetter(sourceFile: SourceFile, css: string) {
 
 function registerAllImports(sourceFile: SourceFile, filename: string) {
   const file = path.parse(filename);
-  const importedFiles = [];
+  const importedFiles: string[] = [];
 
   function handleImportDeclaration(node: Node): boolean {
     const importDecl = node as ImportDeclaration;
