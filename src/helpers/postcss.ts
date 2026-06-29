@@ -17,6 +17,7 @@ async function loadPlugins() {
 
     throw new Error(
       `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
+      { cause: err },
     );
   }
 }

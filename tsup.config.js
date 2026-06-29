@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup';
-import pkg from './package.json' with {type: 'json'};
+import pkg from './package.json' with { type: 'json' };
 
 const moduleName = pkg.name.replace(/^@.*\//, '');
 const banner = `
