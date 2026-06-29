@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`basic-component given basic component with no tailwindcss styles, should output no styles 1`] = `
 "/* eslint-disable */

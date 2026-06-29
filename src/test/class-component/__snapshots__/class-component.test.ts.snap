@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`class-component given class component with no tailwindcss styles and other get accessors, should output unaltered styles 1`] = `
 "/* eslint-disable */

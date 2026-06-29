@@ -2,3 +2,4 @@ allowBuilds:
   '@swc/core': true
   esbuild: true
   postcss-combine-duplicated-selectors@https://codeload.github.com/poimen/postcss-combine-duplicated-selectors/tar.gz/690c03192aa5c61b674ff9e7b8e6016edb56df53: true
+  unrs-resolver: true
