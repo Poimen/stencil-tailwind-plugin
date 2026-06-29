@@ -46,5 +46,4 @@ describe('style-component', () => {
     // Assert
     expect(result).toMatchSnapshot();
   });
-
 });

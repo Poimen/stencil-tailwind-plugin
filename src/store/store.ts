@@ -104,7 +104,7 @@ export function getAllExternalCssDependencies(filenameRef: string): CssDependenc
     return deps;
   }, {
     css: '',
-    dependencies: []
+    dependencies: [],
   });
 
   debug('[STORE]', 'Injecting css', cssInjection);

@@ -11,13 +11,13 @@ async function loadPlugins() {
     const configPlugins = await postcssrc(ctx as unknown);
     return configPlugins.plugins;
   } catch (err) {
-      if (err.message.startsWith('No PostCSS Config found in')) {
-        return [];
-      }
+    if (err.message.startsWith('No PostCSS Config found in')) {
+      return [];
+    }
 
-      throw new Error(
-        `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
-      );
+    throw new Error(
+      `'stencil-tailwind-plugin' is not able to resolve modules required from configuration files. Make sure it is installed\nError: ${err.message}`,
+    );
   }
 }
 

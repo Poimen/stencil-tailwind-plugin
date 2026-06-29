@@ -54,7 +54,7 @@
     "@stencil/core": "^4.28.2",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@swc/core": "^1.15.43",
-    "@swc/jest": "^0.2.37",
+    "@swc/jest": "^0.2.39",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.0",
