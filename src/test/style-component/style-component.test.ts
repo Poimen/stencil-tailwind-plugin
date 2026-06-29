@@ -37,4 +37,14 @@ describe('style-component', () => {
     // Assert
     expect(result).toMatchSnapshot();
   });
+
+  it('given style component with duplicated media query, should output single media query', async () => {
+    // Arrange
+    const loadedFile = loadTestComponent('style-component', 'style-component-duplicated-media.tsx');
+    // Act
+    const result = await transform(configurePluginOptions(PluginConfigDefaults.DEFAULT))(loadedFile.text, loadedFile.path);
+    // Assert
+    expect(result).toMatchSnapshot();
+  });
+
 });
